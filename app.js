@@ -104,10 +104,9 @@ function renderMovies(movies, page) {
 }
 
 // THUẬT TOÁN TẠO THANH PHÂN TRANG NHIỀU SỐ MƯỢT MÀ
-function renderPagination(currentPage, totalPages) {
+function renderPagination(currentPage) {
     const pagDiv = document.getElementById('pagination');
     pagDiv.innerHTML = '';
-    if (totalPages <= 1) return;
 
     // Nút Trước ( < )
     const prevBtn = document.createElement('button');
@@ -117,18 +116,13 @@ function renderPagination(currentPage, totalPages) {
     prevBtn.onclick = () => { displayPage(currentPage - 1); };
     pagDiv.appendChild(prevBtn);
 
-    // Thuật toán mảng tĩnh (chống lỗi ô vuông rỗng 100%)
+    // Thuật toán "Cửa sổ trượt" - Quên totalPages đi!
     let pages = [];
-    if (totalPages <= 7) {
-        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    if (currentPage <= 3) {
+        pages = [1, 2, 3, 4, 5];
     } else {
-        if (currentPage <= 4) {
-            pages = [1, 2, 3, 4, 5, '...', totalPages];
-        } else if (currentPage >= totalPages - 3) {
-            pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
-        } else {
-            pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
-        }
+        // Tự trượt số theo trang hiện tại
+        pages = ['...', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
     }
 
     // Đổ mảng ra HTML
@@ -151,7 +145,7 @@ function renderPagination(currentPage, totalPages) {
     const nextBtn = document.createElement('button');
     nextBtn.className = 'page-btn';
     nextBtn.innerText = '>';
-    nextBtn.disabled = currentPage === totalPages;
+    // Vì không giới hạn tổng số trang, bạn cứ cho phép bấm Next thoải mái
     nextBtn.onclick = () => { displayPage(currentPage + 1); };
     pagDiv.appendChild(nextBtn);
 }
