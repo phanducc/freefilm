@@ -117,9 +117,12 @@ body { background: #1a1a1a; color: #fff; overflow: hidden; }
     user-select: none; /* Không cho bôi đen emoji */
 }
 
-/* ⚡ THÊM MỚI ĐOẠN CSS NÀY (Phía dưới khối .actor-img vừa sửa) --- */
 .actor-no-img-placeholder {
-    font-size: 50px; /* Phóng to ký tự 👯 */
+    font-size: 50px; /* Độ lớn của icon 👯 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
 }
 .actor-card:hover .actor-img {
     border-color: #ff4500; /* Đổi màu viền khi hover */
