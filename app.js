@@ -119,10 +119,10 @@ function renderPagination(currentPage) {
     // Thuật toán "Cửa sổ trượt" - Quên totalPages đi!
     let pages = [];
     if (currentPage <= 3) {
-        pages = [1, 2, 3, 4, 5];
+        pages = [1, 2, 3, 4, 5, '...'];
     } else {
         // Tự trượt số theo trang hiện tại
-        pages = ['...', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
+        pages = ['...', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, '...'];
     }
 
     // Đổ mảng ra HTML
