@@ -34,8 +34,13 @@
                     <p id="movieDesc" class="movie-desc"></p>
                 </div>
 
+                <div class="episodes-section" id="serverSection" style="display: none; margin-bottom: 20px;">
+                    <h3 class="section-subtitle" style="color: #00e5ff; border-left-color: #00e5ff;">🌐 Chọn Nguồn Phát</h3>
+                    <div id="serverList" class="episodes-grid"></div>
+                </div>
+
                 <div class="episodes-section">
-                    <h3 class="section-subtitle">Danh Sách Tập</h3>
+                    <h3 class="section-subtitle">▶️ Danh Sách Tập</h3>
                     <div id="episodeList" class="episodes-grid"></div>
                 </div>
 
@@ -61,6 +66,8 @@
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
+        const serverSection = document.getElementById('serverSection');
+        const serverListDiv = document.getElementById('serverList');
         
         const actorsList = document.getElementById('actorsList');
         const imagesGallery = document.getElementById('imagesGallery');
@@ -69,7 +76,7 @@
 
         function playVideo(embedUrl, buttonEl) {
             iframePlayer.src = embedUrl;
-            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#episodeList .ep-btn').forEach(b => b.classList.remove('active'));
             if(buttonEl) buttonEl.classList.add('active');
             localStorage.setItem(`ff_history_${slug}`, embedUrl);
         }
@@ -102,13 +109,21 @@
                     document.getElementById('movieTitle').innerText = movie.name;
                     document.getElementById('movieDesc').innerHTML = movie.content || movie.description || "Chưa có mô tả chi tiết.";
 
+                    // --- ⚡ LOGIC RENDER NGUỒN PHÁT (SERVER) VÀ TẬP PHIM ---
                     if (!episodesArray || episodesArray.length === 0) { 
                         episodeListDiv.appendChild(createSafeNode('p', '', 'Chưa cập nhật link xem.')); 
                     } else {
-                        const episodes = episodesArray[0].server_data || [];
-                        if (episodes.length === 0) { 
-                            episodeListDiv.appendChild(createSafeNode('p', '', 'Chưa có tập phim nào.')); 
-                        } else {
+                        
+                        // Hàm đổ danh sách tập dựa theo server được chọn
+                        function renderEpisodesForServer(serverIndex) {
+                            episodeListDiv.innerHTML = ''; // Xóa sạch tập cũ
+                            const episodes = episodesArray[serverIndex].server_data || [];
+                            
+                            if (episodes.length === 0) { 
+                                episodeListDiv.appendChild(createSafeNode('p', '', 'Chưa có tập phim nào.')); 
+                                return;
+                            }
+
                             const savedEpUrl = localStorage.getItem(`ff_history_${slug}`);
                             let hasPlayed = false;
 
@@ -120,6 +135,7 @@
                                 };
                                 episodeListDiv.appendChild(btn);
 
+                                // Logic tự động Play
                                 if (savedEpUrl && tap.link_embed === savedEpUrl) {
                                     playVideo(tap.link_embed, btn);
                                     hasPlayed = true;
@@ -133,6 +149,28 @@
                                 playVideo(episodes[0].link_embed, episodeListDiv.firstChild);
                             }
                         }
+
+                        // Đổ danh sách Server ra màn hình
+                        if (episodesArray.length > 0) {
+                            serverSection.style.display = 'block';
+                            
+                            episodesArray.forEach((server, index) => {
+                                const srvBtn = createSafeNode('button', 'ep-btn', server.server_name || `Nguồn ${index + 1}`);
+                                
+                                srvBtn.onclick = () => {
+                                    // Xóa active ở các nút server khác
+                                    document.querySelectorAll('#serverList .ep-btn').forEach(b => b.classList.remove('active'));
+                                    srvBtn.classList.add('active');
+                                    
+                                    // Gọi hàm đổ tập phim của server này ra
+                                    renderEpisodesForServer(index);
+                                };
+                                serverListDiv.appendChild(srvBtn);
+
+                                // Tự động chọn Server đầu tiên khi mới vào web
+                                if (index === 0) srvBtn.click();
+                            });
+                        }
                     }
 
                     // --- DIỄN VIÊN ---
@@ -145,42 +183,47 @@
                         actorsList.appendChild(createSafeNode('span', 'actor-tag', 'Đang cập nhật...'));
                     }
 
-                    // --- HÌNH ẢNH (MÁY QUÉT ĐA NĂNG) ---
+                    // --- HÌNH ẢNH (MÁY QUÉT ĐA NĂNG TMDB & OPHIM) ---
                     imagesGallery.innerHTML = '';
                     let extractedImages = [];
 
-                    // 1. Quét sâu vào API Images
-                    if (resImages && resImages.data) {
-                        const imgData = resImages.data.items || resImages.data.item || resImages.data || [];
-                        if (Array.isArray(imgData)) {
-                            imgData.forEach(img => {
-                                // Lấy link dù nó giấu ở object nào
-                                let link = img.url || img.link || img.file || (typeof img === 'string' ? img : null);
-                                if (link) extractedImages.push(link);
-                            });
-                        }
+                    if (resImages) {
+                        let possibleArrays = [
+                            resImages.backdrops, resImages.posters, resImages.data?.items, resImages.data?.images, resImages.data, resImages.items, resImages.images, resImages
+                        ];
+                        
+                        possibleArrays.forEach(arr => {
+                            if (Array.isArray(arr) && arr.length > 0) {
+                                arr.forEach(img => {
+                                    let link = null;
+                                    if (typeof img === 'string') link = img;
+                                    else if (typeof img === 'object' && img !== null) link = img.file_path || img.url || img.link || img.file || img.path || img.src || img.image;
+                                    if (link) extractedImages.push(link);
+                                });
+                            }
+                        });
                     }
 
-                    // 2. Chế độ dự phòng (Nếu API phụ trống thì lấy luôn 2 ảnh chính của phim ra)
                     if (extractedImages.length === 0) {
                         if (movie.poster_url) extractedImages.push(movie.poster_url);
                         if (movie.thumb_url && movie.thumb_url !== movie.poster_url) extractedImages.push(movie.thumb_url);
                     }
 
-                    // 3. Lọc bỏ link trùng lặp và link rỗng
-                    extractedImages = [...new Set(extractedImages)].filter(url => url.trim() !== '');
+                    extractedImages = [...new Set(extractedImages)].filter(url => url && url.trim() !== '');
 
                     if (extractedImages.length > 0) {
                         extractedImages.forEach(url => {
                             if (!url.startsWith('http')) {
-                                if (!url.includes('uploads/movies/')) url = '/uploads/movies/' + url.replace(/^\//, '');
-                                else if (!url.startsWith('/')) url = '/' + url;
-                                url = imgDomain + url;
+                                if (url.startsWith('/') && (url.endsWith('.jpg') || url.endsWith('.png') || url.endsWith('.webp'))) {
+                                    url = 'https://image.tmdb.org/t/p/original' + url;
+                                } else {
+                                    if (!url.includes('uploads/movies/')) url = '/uploads/movies/' + url.replace(/^\//, '');
+                                    else if (!url.startsWith('/')) url = '/' + url;
+                                    url = imgDomain + url;
+                                }
                             }
                             const imgEl = document.createElement('img');
-                            imgEl.src = url; 
-                            imgEl.className = 'gallery-img'; 
-                            imgEl.alt = 'Cảnh phim';
+                            imgEl.src = url; imgEl.className = 'gallery-img'; imgEl.alt = 'Cảnh phim';
                             imagesGallery.appendChild(imgEl);
                         });
                     } else {
