@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeFilm - Sống dai thành huyền thoại</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-icon active" id="navHome" title="Trang Chủ">🔥</div>
+            <div class="sidebar-icon" id="navCategory" title="Danh Mục Phim">❤️</div>
+            <div class="sidebar-icon" id="navGenre" title="Thể Loại">⭐</div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="brand">
+                    <a href="index.html" class="logo-link">
+                        <img src="logo.png" alt="FreeFilm Logo" class="logo-img">
+                    </a>
+                </div>
+                
+                <div class="header-search">
+                    <input type="text" id="searchInput" placeholder="Nhập tên phim...">
+                    <button id="searchBtn">🔍</button>
+                </div>
+            </header>
+
+            <div id="categoryModal" class="genre-modal hidden">
+                <div class="genre-grid" id="categoryContainer">
+                    </div>
+            </div>
+
+            <div id="genreModal" class="genre-modal hidden">
+                <div class="genre-grid" id="genreContainer">
+                    </div>
+            </div>
+
+            <div class="content-wrapper">
+                <h2 id="page-title" class="section-title">Phim Mới Cập Nhật</h2>
+                
+                <div id="movie-grid" class="ff-grid">
+                    </div>
+
+                <div class="pagination" id="pagination">
+                    <button id="prevBtn" disabled>« Trước</button>
+                    <span id="pageInfo">Trang 1</span>
+                    <button id="nextBtn">Sau »</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

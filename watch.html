@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeFilm - Đang Xem Phim</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-icon" onclick="window.location.href='index.html'" title="Trang Chủ">🔥</div>
+            <div class="sidebar-icon active" title="Đang Xem">▶️</div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="brand">
+                    <a href="index.html" class="logo-link">
+                        <img src="logo.png" alt="FreeFilm Logo" class="logo-img">
+                    </a>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="back-btn" onclick="window.location.href='index.html'">🔙 Quay Lại</button>
+                </div>
+            </header>
+
+            <div class="content-wrapper watch-wrapper">
+                <div class="player-container">
+                    <iframe id="iframePlayer" allowfullscreen scrolling="no"></iframe>
+                </div>
+
+                <div class="movie-info-box">
+                    <h2 id="movieTitle" class="movie-detail-title">Đang tải dữ liệu...</h2>
+                    <p id="movieDesc" class="movie-desc"></p>
+                </div>
+
+                <div class="episodes-section">
+                    <h3 class="section-subtitle">Danh Sách Tập</h3>
+                    <div id="episodeList" class="episodes-grid">
+                        </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+        const iframePlayer = document.getElementById('iframePlayer');
+        const episodeListDiv = document.getElementById('episodeList');
+
+        function playVideo(embedUrl) {
+            if (embedUrl) {
+                iframePlayer.src = embedUrl;
+            } else {
+                alert("Không tìm thấy link xem phim!");
+            }
+        }
+
+        async function fetchDetail() {
+            if (!slug) {
+                document.getElementById('movieTitle').innerText = "Lỗi đường dẫn!";
+                return;
+            }
+            
+            try {
+                const res = await fetch(`https://phim.nguonc.com/api/film/${slug}`);
+                const data = await res.json();
+
+                if (data && data.movie) {
+                    // Đổi title tab trình duyệt theo tên phim
+                    document.title = `Đang xem: ${data.movie.name} - FreeFilm`;
+                    
+                    document.getElementById('movieTitle').innerText = data.movie.name;
+                    document.getElementById('movieDesc').innerHTML = data.movie.description || data.movie.content || "Chưa có mô tả chi tiết cho phim này.";
+
+                    let episodesArray = data.episodes || data.movie.episodes;
+                    if (!episodesArray || episodesArray.length === 0) {
+                        episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Phim này hiện tại chưa cập nhật link xem.</p>";
+                        return;
+                    }
+
+                    const episodes = episodesArray[0].items || episodesArray[0].server_data || [];
+
+                    if (episodes.length === 0) {
+                        episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>";
+                        return;
+                    }
+
+                    episodes.forEach((tap, index) => {
+                        const btn = document.createElement('button');
+                        btn.className = 'ep-btn'; // Gắn class CSS gaming
+                        btn.innerText = tap.name || `Tập ${index + 1}`;
+                        
+                        btn.onclick = () => {
+                            const embedLink = tap.embed || tap.link_embed;
+                            playVideo(embedLink);
+                            
+                            // Hiệu ứng nút đang chọn
+                            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            
+                            // Cuộn mượt lên trên cùng khu vực player
+                            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+                        };
+                        episodeListDiv.appendChild(btn);
+
+                        // Tự động load tập 1
+                        if (index === 0) btn.click();
+                    });
+                }
+            } catch (error) {
+                document.getElementById('movieTitle').innerText = "Lỗi tải phim từ máy chủ!";
+            }
+        }
+        fetchDetail();
+    </script>
+</body>
+</html>
