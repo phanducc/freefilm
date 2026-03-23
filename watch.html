@@ -188,24 +188,43 @@
                         resPeoples.data.peoples.forEach(actor => {
                             const actorCard = document.createElement('div');
                             actorCard.className = 'actor-card';
-                            const actorImg = document.createElement('img');
-                            actorImg.className = 'actor-img';
-                            // ⚡ Lấy profile_path ghép với domain của TMDB
-                            actorImg.src = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://via.placeholder.com/90x90/333/888?text=No+Image';
-                            actorImg.alt = actor.name;
-                            actorCard.append(actorImg, createSafeNode('p', 'actor-name', actor.name), createSafeNode('p', 'actor-role', actor.character || '...'));
+
+                            // --- ⚡ SỬA CHỖ NÀY ---
+                            let mediaElement;
+                            if (actor.profile_path) {
+                                // Nếu có ảnh -> Tạo thẻ <img> chuẩn
+                                mediaElement = document.createElement('img');
+                                mediaElement.className = 'actor-img';
+                                mediaElement.src = `https://image.tmdb.org/t/p/w185${actor.profile_path}`;
+                                mediaElement.alt = actor.name;
+                            } else {
+                                // Nếu KHÔNG có ảnh -> Tạo thẻ <div> chứa icon phóng to 👯
+                                mediaElement = document.createElement('div');
+                                // Gán class .actor-img để giữ khung tròn, và class mới để phóng to ký tự
+                                mediaElement.className = 'actor-img actor-no-img-placeholder'; 
+                                mediaElement.innerText = '👯'; 
+                                mediaElement.title = actor.name; // Hiện tên khi di chuột vào icon
+                            }
+                            // ⚡ Đổi actorImg thành mediaElement
+                            actorCard.append(mediaElement, createSafeNode('p', 'actor-name', actor.name), createSafeNode('p', 'actor-role', actor.character || '...'));
                             actorsList.appendChild(actorCard);
                         });
                     } else if (movie.actor && movie.actor.length > 0 && movie.actor[0] !== "") {
                         movie.actor.forEach(actorName => {
                             const actorCard = document.createElement('div');
                             actorCard.className = 'actor-card';
-                            const actorImg = document.createElement('img');
-                            actorImg.className = 'actor-img';
-                            actorImg.src = 'https://via.placeholder.com/90x90/333/888?text=No+Image';
-                            actorCard.append(actorImg, createSafeNode('p', 'actor-name', actorName), createSafeNode('p', 'actor-role', '...'));
+                            
+                            // --- ⚡ SỬA CHỖ NÀY ---
+                            // Trong chế độ Fallback, chúng ta chắc chắn không có ảnh phụ, nên dùng thẻ <div> luôn
+                            const mediaElement = document.createElement('div');
+                            mediaElement.className = 'actor-img actor-no-img-placeholder'; 
+                            mediaElement.innerText = '👯'; 
+                            mediaElement.title = actorName;
+
+                            actorCard.append(mediaElement, createSafeNode('p', 'actor-name', actorName), createSafeNode('p', 'actor-role', '...'));
                             actorsList.appendChild(actorCard);
                         });
+                    }                        
                     } else {
                         actorsList.appendChild(createSafeNode('span', 'actor-tag', 'Đang cập nhật...'));
                     }      

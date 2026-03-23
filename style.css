@@ -103,12 +103,23 @@ body { background: #1a1a1a; color: #fff; overflow: hidden; }
 .actor-img {
     width: 90px;
     height: 90px;
-    border-radius: 50%; /* Ảnh tròn */
+    border-radius: 50%; /* Khung tròn */
     object-fit: cover;
     border: 2px solid #333;
     margin-bottom: 10px;
     transition: 0.3s;
-    background-color: #333; /* Màu nền khi ảnh chưa load */
+    background-color: #333; /* Màu nền */
+    /* ⚡ THÊM ĐOẠN NÀY: Để căn giữa icon 👯 nếu dùng thẻ div */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    user-select: none; /* Không cho bôi đen emoji */
+}
+
+/* ⚡ THÊM MỚI ĐOẠN CSS NÀY (Phía dưới khối .actor-img vừa sửa) --- */
+.actor-no-img-placeholder {
+    font-size: 50px; /* Phóng to ký tự 👯 */
 }
 .actor-card:hover .actor-img {
     border-color: #ff4500; /* Đổi màu viền khi hover */
