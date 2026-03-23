@@ -104,11 +104,14 @@ function renderMovies(movies, page) {
 }
 
 // THUẬT TOÁN TẠO THANH PHÂN TRANG NHIỀU SỐ MƯỢT MÀ
-function renderPagination(currentPage) {
+function renderPagination(currentPage, totalPages) {
     const pagDiv = document.getElementById('pagination');
     pagDiv.innerHTML = '';
 
-    // Nút Trước ( < )
+    // ⚡ NẾU CHỈ CÓ 1 TRANG HOẶC KHÔNG CÓ PHIM -> ẨN LUÔN THANH PHÂN TRANG
+    if (totalPages <= 1) return;
+
+    // Nút Trước ( ⏪ )
     const prevBtn = document.createElement('button');
     prevBtn.className = 'page-btn';
     prevBtn.innerText = '⏪';
@@ -116,13 +119,18 @@ function renderPagination(currentPage) {
     prevBtn.onclick = () => { displayPage(currentPage - 1); };
     pagDiv.appendChild(prevBtn);
 
-    // Thuật toán "Cửa sổ trượt" - Quên totalPages đi!
+    // Thuật toán mảng tĩnh thông minh (Chống lỗi ô vuông)
     let pages = [];
-    if (currentPage <= 3) {
-        pages = [1, 2, 3, 4, 5, '...'];
+    if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-        // Tự trượt số theo trang hiện tại
-        pages = ['...', currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, '...'];
+        if (currentPage <= 3) {
+            pages = [1, 2, 3, 4, 5, '...'];
+        } else if (currentPage >= totalPages - 2) {
+            pages = ['...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        } else {
+            pages = ['...', currentPage - 1, currentPage, currentPage + 1, '...'];
+        }
     }
 
     // Đổ mảng ra HTML
@@ -141,23 +149,24 @@ function renderPagination(currentPage) {
         }
     });
 
-    // Nút Sau ( > )
+    // Nút Sau ( ⏩ )
     const nextBtn = document.createElement('button');
     nextBtn.className = 'page-btn';
     nextBtn.innerText = '⏩';
-    // Vì không giới hạn tổng số trang, bạn cứ cho phép bấm Next thoải mái
+    nextBtn.disabled = currentPage >= totalPages;
     nextBtn.onclick = () => { displayPage(currentPage + 1); };
     pagDiv.appendChild(nextBtn);
 }
 
-// CƠ CHẾ TẢI: BẤM TRANG NÀO, TẢI TRANG ĐÓ (1:1 với API)
+
+// CƠ CHẾ TẢI: BẤM TRANG NÀO, TẢI TRANG ĐÓ
 async function displayPage(page) {
     if (isLoading) return;
     isLoading = true;
     
     // Bật Spinner
     movieGrid.innerHTML = '';
-    document.getElementById('pagination').innerHTML = ''; // Xóa phân trang tạm lúc đang tải
+    document.getElementById('pagination').innerHTML = ''; 
     const loader = createNode('div', 'loader-container');
     loader.appendChild(createNode('div', 'spinner'));
     loader.style.display = 'flex';
@@ -165,7 +174,6 @@ async function displayPage(page) {
 
     try {
         let apiUrl = '';
-        // Đã thay /home thành /danh-sach/phim-moi-cap-nhat
         if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${page}`;
         else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${page}`;
         else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${page}`;
@@ -176,7 +184,20 @@ async function displayPage(page) {
         
         const dataObj = json.data || json; 
         const items = dataObj.items || json.items || [];
-        let totalPages = (dataObj.params && dataObj.params.pagination) ? dataObj.params.pagination.totalPages : 1;
+        
+        // ⚡ TÍNH TOÁN SỐ TRANG AN TOÀN (CHỐNG LỖI NaN)
+        let totalPages = 1;
+        if (dataObj.params && dataObj.params.pagination) {
+            const p = dataObj.params.pagination;
+            // Lấy totalPages, nếu không có thì lấy tổng số phim chia cho số phim 1 trang
+            totalPages = p.totalPages || Math.ceil(p.totalItems / p.totalItemsPerPage) || 1;
+        }
+        
+        // Cứu cánh: Nếu API lỗi không tính được trang, tự đoán bằng số lượng phim
+        if (totalPages === 1) {
+            if (items.length === 24) totalPages = page + 1; // Đủ 24 phim -> Mở đường cho trang tiếp theo
+            else totalPages = page; // Ít hơn 24 phim -> Chốt luôn đây là trang cuối
+        }
 
         if (items.length > 0) {
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
@@ -191,7 +212,7 @@ async function displayPage(page) {
             });
             
             renderMovies(processedItems, page);
-            renderPagination(page, totalPages);
+            renderPagination(page, totalPages); // Truyền totalPages vào để vẽ nút
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             renderMovies([], page);
