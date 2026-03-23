@@ -27,29 +27,37 @@ const GENRES = [
 const movieGrid = document.getElementById('movie-grid');
 const pageTitle = document.getElementById('page-title');
 const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const pageInfo = document.getElementById('pageInfo');
 
 let currentMode = 'new', currentQuery = '', allCachedMovies = [], currentLocalPage = 1, apiPageToFetch = 1;
+let isLoading = false;
 const MOVIES_PER_PAGE = window.innerWidth > 768 ? 25 : 20;
 const fetchOptions = { method: 'GET', headers: { accept: 'application/json' } };
 
+function createNode(tag, className, innerText) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (innerText) el.innerText = innerText;
+    return el;
+}
+
 function initMenus() {
     CATEGORIES.forEach(cat => {
-        const btn = document.createElement('div'); btn.className = 'genre-btn'; btn.innerText = cat.name;
+        const btn = createNode('div', 'genre-btn', cat.name);
         btn.onclick = () => { document.querySelectorAll('#categoryContainer .genre-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setMode('category', cat.slug, `Danh Mục: ${cat.name}`); };
         document.getElementById('categoryContainer').appendChild(btn);
     });
     GENRES.forEach(genre => {
-        const btn = document.createElement('div'); btn.className = 'genre-btn'; btn.innerText = genre.name;
+        const btn = createNode('div', 'genre-btn', genre.name);
         btn.onclick = () => { document.querySelectorAll('#genreContainer .genre-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setMode('genre', genre.slug, `Thể Loại: ${genre.name}`); };
         document.getElementById('genreContainer').appendChild(btn);
     });
 }
 
 function setMode(mode, query, title) {
+    if (isLoading) return;
     currentMode = mode; currentQuery = query; pageTitle.innerText = title;
     document.getElementById('categoryModal').classList.add('hidden'); document.getElementById('genreModal').classList.add('hidden');
     document.getElementById('navHome').classList.toggle('active', mode === 'new' || mode === 'search');
@@ -62,31 +70,53 @@ function setMode(mode, query, title) {
 function renderMovies(movies, startIndex) {
     movieGrid.innerHTML = '';
     if (!movies || movies.length === 0) {
-        movieGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding: 50px; color: #888;">Không tìm thấy phim nào.</p>'; return;
+        movieGrid.appendChild(createNode('p', '', 'Không tìm thấy phim nào.')).style = "grid-column:1/-1; text-align:center; padding: 50px; color: #888;"; return;
     }
+    
     movies.forEach((movie, index) => {
         const type = (movie.type === 'series' || movie.type === 'hoathinh') ? 'Phim Bộ' : 'Phim Lẻ';
-        const card = document.createElement('div'); card.className = 'ff-card';
+        const card = createNode('div', 'ff-card');
         card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
-        card.innerHTML = `
-            <div class="ff-card-header"><span class="ff-rank">#${startIndex + index + 1}</span><h3 class="ff-title" title="${movie.name}">${movie.name}</h3></div>
-            <img src="${movie.full_thumb}" class="ff-thumb" alt="${movie.name}">
-            <div class="ff-tags"><span class="tag-status">${type}</span><span class="tag-quality">${movie.quality || movie.lang || 'HD'}</span></div>
-            <div class="ff-card-footer"><div class="blue-underline"></div></div>
-        `;
+        
+        const header = createNode('div', 'ff-card-header');
+        header.appendChild(createNode('span', 'ff-rank', `#${startIndex + index + 1}`));
+        const titleEl = createNode('h3', 'ff-title', movie.name);
+        titleEl.title = movie.name;
+        header.appendChild(titleEl);
+
+        const img = document.createElement('img');
+        img.src = movie.full_thumb; img.className = 'ff-thumb'; img.alt = movie.name;
+
+        const tags = createNode('div', 'ff-tags');
+        tags.appendChild(createNode('span', 'tag-status', type));
+        tags.appendChild(createNode('span', 'tag-quality', movie.quality || movie.lang || 'HD'));
+
+        const footer = createNode('div', 'ff-card-footer');
+        footer.appendChild(createNode('div', 'blue-underline'));
+
+        card.append(header, img, tags, footer);
         movieGrid.appendChild(card);
     });
 }
 
 async function fetchAndCacheMovies(apiPage) {
+    if (isLoading) return null;
+    isLoading = true;
+    
+    movieGrid.innerHTML = '';
+    const loader = createNode('div', 'loader-container');
+    loader.appendChild(createNode('div', 'spinner'));
+    loader.style.display = 'flex';
+    movieGrid.appendChild(loader);
+
     try {
-        movieGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa; padding: 50px;">Đang tải dữ liệu từ Ophim...</p>';
         let apiUrl = '';
         
-        if (currentMode === 'new') apiUrl = `${API_BASE}/home?page=${apiPage}`;
+        // SỬA LỖI TRANG CHỦ: Dùng API phim mới cập nhật để có thể lật hàng ngàn trang
+        if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPage}`;
         else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPage}`;
         else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPage}`;
-        else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${currentQuery}&page=${apiPage}`;
+        else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${apiPage}`;
 
         const res = await fetch(apiUrl, fetchOptions); 
         const json = await res.json();
@@ -95,29 +125,24 @@ async function fetchAndCacheMovies(apiPage) {
         const items = dataObj.items || json.items || [];
 
         if (items.length > 0) {
-            // FIX ẢNH: Tự động chèn thư mục uploads/movies/
-            let imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live';
-            imgDomain = imgDomain.replace(/\/$/, ''); 
-
+            let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
             const processedItems = items.map(m => {
                 let thumb = m.thumb_url || m.poster_url || '';
                 if (!thumb.startsWith('http')) {
-                    if (!thumb.includes('uploads/movies/')) {
-                        thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
-                    } else if (!thumb.startsWith('/')) {
-                        thumb = '/' + thumb;
-                    }
+                    if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
+                    else if (!thumb.startsWith('/')) thumb = '/' + thumb;
                     m.full_thumb = imgDomain + thumb;
-                } else {
-                    m.full_thumb = thumb;
-                }
+                } else { m.full_thumb = thumb; }
                 return m;
             });
             
             allCachedMovies = [...allCachedMovies, ...processedItems];
+            isLoading = false;
             return { totalPages: (dataObj.params && dataObj.params.pagination) ? dataObj.params.pagination.totalPages : 1 };
         }
     } catch (error) { console.error("Lỗi API:", error); }
+    
+    isLoading = false;
     return null;
 }
 
@@ -139,7 +164,7 @@ document.getElementById('navCategory').onclick = () => { document.getElementById
 document.getElementById('navGenre').onclick = () => { document.getElementById('genreModal').classList.toggle('hidden'); document.getElementById('categoryModal').classList.add('hidden'); };
 prevBtn.onclick = () => { currentLocalPage--; displayLocalPage(currentLocalPage).then(() => document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' })); };
 nextBtn.onclick = () => { currentLocalPage++; displayLocalPage(currentLocalPage).then(() => document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' })); };
-searchBtn.onclick = () => { if (searchInput.value.trim()) setMode('search', searchInput.value.trim(), `Kết quả tìm kiếm: "${searchInput.value.trim()}"`); };
-searchInput.onkeypress = (e) => { if (e.key === 'Enter') searchBtn.click(); };
+document.getElementById('searchBtn').onclick = () => { if (searchInput.value.trim()) setMode('search', searchInput.value.trim(), `Kết quả tìm kiếm: "${searchInput.value.trim()}"`); };
+searchInput.onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('searchBtn').click(); };
 
 initMenus(); displayLocalPage(1);
