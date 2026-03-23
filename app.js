@@ -1,28 +1,31 @@
 // ========================================================
-// APP.JS - XỬ LÝ DỮ LIỆU PHIM (API NGUONC)
+// APP.JS - XỬ LÝ DỮ LIỆU PHIM (API OPHIM1.COM)
 // ========================================================
 
-const API_BASE = 'https://phim.nguonc.com/api/films';
+const API_BASE = 'https://ophim1.com/v1/api';
 
-// --- 1. DANH MỤC PHIM (Menu Trái Tim - Chỉ để Phim Bộ & Phim Lẻ) ---
+// --- 1. DANH MỤC PHIM (Menu Trái Tim) ---
 const CATEGORIES = [
     { name: 'Phim Bộ', slug: 'phim-bo' },
-    { name: 'Phim Lẻ', slug: 'phim-le' }
+    { name: 'Phim Lẻ', slug: 'phim-le' },
+    { name: 'TV Shows', slug: 'tv-shows' },
+    { name: 'Hoạt Hình', slug: 'hoat-hinh' }
 ];
 
-// --- 2. THỂ LOẠI PHIM (Menu Ngôi Sao) ---
+// --- 2. THỂ LOẠI PHIM (Menu Ngôi Sao - Đã cập nhật chuẩn danh sách) ---
 const GENRES = [
-    { name: 'Hành Động', slug: 'hanh-dong' }, { name: 'Phiêu Lưu', slug: 'phieu-luu' },
-    { name: 'Hoạt Hình', slug: 'hoat-hinh' }, { name: 'Hài', slug: 'hai' },
-    { name: 'Hình Sự', slug: 'hinh-su' }, { name: 'Tài Liệu', slug: 'tai-lieu' },
-    { name: 'Chính Kịch', slug: 'chinh-kich' }, { name: 'Gia Đình', slug: 'gia-dinh' },
-    { name: 'Giả Tưởng', slug: 'gia-tuong' }, { name: 'Lịch Sử', slug: 'lich-su' },
-    { name: 'Kinh Dị', slug: 'kinh-di' }, { name: 'Nhạc', slug: 'nhac' },
-    { name: 'Bí Ẩn', slug: 'bi-an' }, { name: 'Lãng Mạn', slug: 'lang-man' },
-    { name: 'Viễn Tưởng', slug: 'khoa-hoc-vien-tuong' }, { name: 'Gây Cấn', slug: 'gay-can' },
-    { name: 'Chiến Tranh', slug: 'chien-tranh' }, { name: 'Tâm Lý', slug: 'tam-ly' },
-    { name: 'Tình Cảm', slug: 'tinh-cam' }, { name: 'Cổ Trang', slug: 'co-trang' },
-    { name: 'Miền Tây', slug: 'mien-tay' }, { name: 'Phim 18+', slug: 'phim-18' }
+    { name: 'Short Drama', slug: 'short-drama' }, { name: 'Hành Động', slug: 'hanh-dong' },
+    { name: 'Tình Cảm', slug: 'tinh-cam' }, { name: 'Hài Hước', slug: 'hai-huoc' },
+    { name: 'Cổ Trang', slug: 'co-trang' }, { name: 'Tâm Lý', slug: 'tam-ly' },
+    { name: 'Hình Sự', slug: 'hinh-su' }, { name: 'Chiến Tranh', slug: 'chien-tranh' },
+    { name: 'Thể Thao', slug: 'the-thao' }, { name: 'Võ Thuật', slug: 'vo-thuat' },
+    { name: 'Viễn Tưởng', slug: 'vien-tuong' }, { name: 'Phiêu Lưu', slug: 'phieu-luu' },
+    { name: 'Khoa Học', slug: 'khoa-hoc' }, { name: 'Kinh Dị', slug: 'kinh-di' },
+    { name: 'Âm Nhạc', slug: 'am-nhac' }, { name: 'Thần Thoại', slug: 'than-thoai' },
+    { name: 'Tài Liệu', slug: 'tai-lieu' }, { name: 'Gia Đình', slug: 'gia-dinh' },
+    { name: 'Chính kịch', slug: 'chinh-kich' }, { name: 'Bí ẩn', slug: 'bi-an' },
+    { name: 'Học Đường', slug: 'hoc-duong' }, { name: 'Kinh Điển', slug: 'kinh-dien' },
+    { name: 'Phim 18+', slug: 'phim-18' }
 ];
 
 // --- CÁC BIẾN GIAO DIỆN (DOM) ---
@@ -44,7 +47,7 @@ const categoryContainer = document.getElementById('categoryContainer');
 const genreContainer = document.getElementById('genreContainer');
 
 // --- TRẠNG THÁI HỆ THỐNG ---
-let currentMode = 'new'; // 'new', 'search', 'genre', 'category'
+let currentMode = 'new'; 
 let currentQuery = '';   
 let allCachedMovies = [];
 let currentLocalPage = 1;
@@ -53,7 +56,6 @@ let apiPageToFetch = 1;
 
 // 1. Tạo các nút trong 2 Bảng Menu
 function initMenus() {
-    // Menu Trái Tim (Danh mục: Chỉ có Phim Bộ & Phim Lẻ)
     CATEGORIES.forEach(cat => {
         const btn = document.createElement('div');
         btn.className = 'genre-btn';
@@ -66,7 +68,6 @@ function initMenus() {
         categoryContainer.appendChild(btn);
     });
 
-    // Menu Ngôi Sao (Thể loại)
     GENRES.forEach(genre => {
         const btn = document.createElement('div');
         btn.className = 'genre-btn';
@@ -80,17 +81,15 @@ function initMenus() {
     });
 }
 
-// 2. Chuyển đổi trạng thái (Đóng menu & Tải lại phim)
+// 2. Chuyển đổi trạng thái
 function setMode(mode, query, title) {
     currentMode = mode;
     currentQuery = query;
     pageTitle.innerText = title;
     
-    // Đóng cả 2 bảng menu
     categoryModal.classList.add('hidden');
     genreModal.classList.add('hidden'); 
     
-    // Đổi màu thanh Dock
     navHome.classList.toggle('active', mode === 'new' || mode === 'search');
     navCategory.classList.toggle('active', mode === 'category');
     navGenre.classList.toggle('active', mode === 'genre');
@@ -112,14 +111,12 @@ function renderMovies(movies, startIndex) {
     movies.forEach((movie, index) => {
         const rankNum = startIndex + index + 1;
         
-        // --- NHẬN DIỆN PHIM BỘ / PHIM LẺ (Ô MÀU CAM) ---
         let movieType = 'Phim Lẻ';
-        const currentEp = (movie.episode_current || '').toLowerCase();
-        if (currentEp.includes('tập') || parseInt(movie.total_episodes) > 1) {
+        if (movie.type === 'series' || movie.type === 'hoathinh' || movie.type === 'tvshows') {
             movieType = 'Phim Bộ';
         }
         
-        const quality = movie.quality || 'HD'; // Ô Màu Tím
+        const quality = movie.quality || 'HD'; 
 
         const card = document.createElement('div');
         card.className = 'ff-card';
@@ -130,14 +127,11 @@ function renderMovies(movies, startIndex) {
                 <span class="ff-rank">#${rankNum}</span>
                 <h3 class="ff-title" title="${movie.name}">${movie.name}</h3>
             </div>
-            
-            <img src="${movie.thumb_url || movie.poster_url}" class="ff-thumb" alt="${movie.name}">
-            
+            <img src="${movie.full_thumb}" class="ff-thumb" alt="${movie.name}">
             <div class="ff-tags">
                 <span class="tag-status">${movieType}</span>
                 <span class="tag-quality">${quality}</span>
             </div>
-            
             <div class="ff-card-footer">
                 <div class="blue-underline"></div>
             </div>
@@ -146,31 +140,40 @@ function renderMovies(movies, startIndex) {
     });
 }
 
-// 4. Lấy dữ liệu API
+// 4. Lấy dữ liệu API từ Ophim
+const fetchOptions = { method: 'GET', headers: { accept: 'application/json' } };
+
 async function fetchAndCacheMovies(apiPage) {
     try {
         movieGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa; padding: 50px;">Đang tải dữ liệu...</p>';
         let apiUrl = '';
 
         if (currentMode === 'new') {
-            apiUrl = `${API_BASE}/phim-moi-cap-nhat?page=${apiPage}`;
+            apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPage}`;
         } else if (currentMode === 'category') { 
             apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPage}`; 
         } else if (currentMode === 'genre') { 
             apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPage}`; 
         } else if (currentMode === 'search') { 
-            apiUrl = `${API_BASE}/search?keyword=${currentQuery}`; 
+            apiUrl = `${API_BASE}/tim-kiem?keyword=${currentQuery}&page=${apiPage}`; 
         }
 
-        const res = await fetch(apiUrl);
+        const res = await fetch(apiUrl, fetchOptions);
         const data = await res.json();
 
-        if (data && data.items) {
-            allCachedMovies = [...allCachedMovies, ...data.items];
-            return data.paginate || { total_page: 1 };
+        if (data && data.status === "success" && data.data && data.data.items) {
+            // Ophim nối domain ảnh với tên file ảnh
+            const imgDomain = data.data.APP_DOMAIN_CDN_IMAGE || '';
+            const processedItems = data.data.items.map(m => {
+                m.full_thumb = (m.thumb_url && m.thumb_url.startsWith('http')) ? m.thumb_url : imgDomain + '/' + m.thumb_url;
+                return m;
+            });
+
+            allCachedMovies = [...allCachedMovies, ...processedItems];
+            return data.data.params.pagination || { totalPages: 1 };
         }
     } catch (error) {
-        console.error("Lỗi API:", error);
+        console.error("Lỗi API Ophim:", error);
     }
     return null;
 }
@@ -183,7 +186,7 @@ async function displayLocalPage(page) {
     if (endIndex > allCachedMovies.length) {
         const paginate = await fetchAndCacheMovies(apiPageToFetch);
         if (paginate) {
-            if (apiPageToFetch < paginate.total_page) apiPageToFetch++;
+            if (apiPageToFetch < paginate.totalPages) apiPageToFetch++;
         } else {
             return;
         }
@@ -199,32 +202,24 @@ async function displayLocalPage(page) {
 }
 
 // --- BẮT SỰ KIỆN NÚT BẤM DOCK ---
+navHome.addEventListener('click', () => { setMode('new', '', 'Phim Mới Cập Nhật'); });
 
-navHome.addEventListener('click', () => {
-    setMode('new', '', 'Phim Mới Cập Nhật');
-});
-
-// Bấm Trái Tim ❤️ (Bật/Tắt Danh Mục)
 navCategory.addEventListener('click', () => {
     categoryModal.classList.toggle('hidden');
-    genreModal.classList.add('hidden'); // Tự động đóng Ngôi sao nếu đang mở
-    
+    genreModal.classList.add('hidden');
     navCategory.classList.toggle('active');
     navGenre.classList.remove('active');
     navHome.classList.remove('active');
 });
 
-// Bấm Ngôi Sao ⭐ (Bật/Tắt Thể Loại)
 navGenre.addEventListener('click', () => {
     genreModal.classList.toggle('hidden');
-    categoryModal.classList.add('hidden'); // Tự động đóng Trái tim nếu đang mở
-    
+    categoryModal.classList.add('hidden');
     navGenre.classList.toggle('active');
     navCategory.classList.remove('active');
     navHome.classList.remove('active');
 });
 
-// Chuyển trang & Tìm kiếm
 prevBtn.addEventListener('click', () => {
     if (currentLocalPage > 1) { displayLocalPage(currentLocalPage - 1); document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); }
 });
@@ -238,6 +233,5 @@ searchBtn.addEventListener('click', () => {
 });
 searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchBtn.click(); });
 
-// Chạy lần đầu
 initMenus();
 displayLocalPage(1);

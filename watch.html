@@ -40,7 +40,7 @@
                 <div class="episodes-section">
                     <h3 class="section-subtitle">Danh Sách Tập</h3>
                     <div id="episodeList" class="episodes-grid">
-                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -67,23 +67,23 @@
             }
             
             try {
-                const res = await fetch(`https://phim.nguonc.com/api/film/${slug}`);
+                const options = { method: 'GET', headers: { accept: 'application/json' } };
+                const res = await fetch(`https://ophim1.com/v1/api/phim/${slug}`, options);
                 const data = await res.json();
 
-                if (data && data.movie) {
-                    // Đổi title tab trình duyệt theo tên phim
+                if (data && data.status && data.movie) {
                     document.title = `Đang xem: ${data.movie.name} - FreeFilm`;
-                    
                     document.getElementById('movieTitle').innerText = data.movie.name;
-                    document.getElementById('movieDesc').innerHTML = data.movie.description || data.movie.content || "Chưa có mô tả chi tiết cho phim này.";
+                    document.getElementById('movieDesc').innerHTML = data.movie.content || "Chưa có mô tả chi tiết cho phim này.";
 
-                    let episodesArray = data.episodes || data.movie.episodes;
+                    let episodesArray = data.episodes;
                     if (!episodesArray || episodesArray.length === 0) {
                         episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Phim này hiện tại chưa cập nhật link xem.</p>";
                         return;
                     }
 
-                    const episodes = episodesArray[0].items || episodesArray[0].server_data || [];
+                    // Lấy server đầu tiên (thường là Vietsub #1)
+                    const episodes = episodesArray[0].server_data || [];
 
                     if (episodes.length === 0) {
                         episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>";
@@ -92,18 +92,16 @@
 
                     episodes.forEach((tap, index) => {
                         const btn = document.createElement('button');
-                        btn.className = 'ep-btn'; // Gắn class CSS gaming
+                        btn.className = 'ep-btn'; 
                         btn.innerText = tap.name || `Tập ${index + 1}`;
                         
                         btn.onclick = () => {
-                            const embedLink = tap.embed || tap.link_embed;
+                            const embedLink = tap.link_embed;
                             playVideo(embedLink);
                             
-                            // Hiệu ứng nút đang chọn
                             document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
                             btn.classList.add('active');
                             
-                            // Cuộn mượt lên trên cùng khu vực player
                             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
                         };
                         episodeListDiv.appendChild(btn);
@@ -113,7 +111,8 @@
                     });
                 }
             } catch (error) {
-                document.getElementById('movieTitle').innerText = "Lỗi tải phim từ máy chủ!";
+                document.getElementById('movieTitle').innerText = "Lỗi tải phim từ máy chủ Ophim!";
+                console.error(error);
             }
         }
         fetchDetail();
