@@ -67,39 +67,24 @@ function setMode(mode, query, title) {
     displayPage(1); 
 }
 
-function renderMovies(movies, page) {
-    movieGrid.innerHTML = '';
-    if (!movies || movies.length === 0) {
-        movieGrid.appendChild(createNode('p', '', 'Không tìm thấy phim nào.')).style = "grid-column:1/-1; text-align:center; padding: 50px; color: #888;"; 
-        return;
-    }
-    
-    // Mỗi trang Ophim có 24 phim, tính toán số Rank cho ngầu
-    const startIndex = (page - 1) * 24;
-
+function renderMovies(movies, startIndex) {
+    // ... code trước vòng lặp ...
     movies.forEach((movie, index) => {
-        const type = (movie.type === 'series' || movie.type === 'hoathinh') ? 'Phim Bộ' : 'Phim Lẻ';
-        const card = createNode('div', 'ff-card');
-        card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
+        // ... code trước phần tạo tag-status ...
+
+        /* 1. Thay thế đoạn code tạo thẻ chất lượng */
+        // replace this line
+        const qualityTag = createNode('span', 'tag-quality', movie.quality || movie.lang || 'HD');
         
-        const header = createNode('div', 'ff-card-header');
-        header.appendChild(createNode('span', 'ff-rank', `#${startIndex + index + 1}`));
-        const titleEl = createNode('h3', 'ff-title', movie.name);
-        titleEl.title = movie.name;
-        header.appendChild(titleEl);
-
-        const img = document.createElement('img');
-        img.src = movie.full_thumb; img.className = 'ff-thumb'; img.alt = movie.name;
-
-        const tags = createNode('div', 'ff-tags');
+        // with this code
+        // Lấy điểm TMDB, mặc định là 0.0 nếu không có
+        const tmdbScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average).toFixed(1) : '0.0';
+        // Tạo thẻ TMDB với class .tag-tmdb đã sửa trong CSS
+        const tmdbTag = createNode('span', 'tag-tmdb', `★ ${tmdbScore}`);
+        // ... code tiếp theo ...
         tags.appendChild(createNode('span', 'tag-status', type));
-        tags.appendChild(createNode('span', 'tag-quality', movie.quality || movie.lang || 'HD'));
-
-        const footer = createNode('div', 'ff-card-footer');
-        footer.appendChild(createNode('div', 'blue-underline'));
-
-        card.append(header, img, tags, footer);
-        movieGrid.appendChild(card);
+        tags.appendChild(tmdbTag);
+        // ... code sau đó ...
     });
 }
 
