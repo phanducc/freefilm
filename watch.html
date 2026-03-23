@@ -181,10 +181,8 @@
                         scorePara.innerHTML = `<span>⭐ TMDB: ${tmdbScore}</span>`;
                         document.getElementById('movieTitle').parentNode.insertBefore(scorePara, document.getElementById('movieDesc'));
                     }    
-                    // --- DIỄN VIÊN (FIXED VERSION) ---
+// --- DIỄN VIÊN (ĐÃ TÍCH HỢP ICON 👯 KHI THIẾU ẢNH) ---
                     actorsList.innerHTML = '';
-
-                    // Check if we have data from the API (resPeoples)
                     if (resPeoples && resPeoples.data && resPeoples.data.peoples && resPeoples.data.peoples.length > 0) {
                         resPeoples.data.peoples.forEach(actor => {
                             const actorCard = document.createElement('div');
@@ -194,39 +192,34 @@
                             if (actor.profile_path) {
                                 mediaElement = document.createElement('img');
                                 mediaElement.className = 'actor-img';
-                                mediaElement.src = `https://image.tmdb.org/t/p/w185\${actor.profile_path}`;
+                                mediaElement.src = `https://image.tmdb.org/t/p/w185${actor.profile_path}`;
                                 mediaElement.alt = actor.name;
                             } else {
                                 mediaElement = document.createElement('div');
-                                mediaElement.className = 'actor-img actor-no-img-placeholder'; 
-                                mediaElement.innerText = '👯'; 
+                                mediaElement.className = 'actor-img actor-no-img-placeholder';
+                                mediaElement.innerText = '👯';
                                 mediaElement.title = actor.name;
                             }
 
                             actorCard.append(mediaElement, createSafeNode('p', 'actor-name', actor.name), createSafeNode('p', 'actor-role', actor.character || '...'));
                             actorsList.appendChild(actorCard);
                         });
-                    } 
-                    // Fallback if resPeoples is empty but movie.actor exists
-                    else if (movie.actor && movie.actor.length > 0 && movie.actor[0] !== "") {
+                    } else if (movie.actor && movie.actor.length > 0 && movie.actor[0] !== "") {
                         movie.actor.forEach(actorName => {
                             const actorCard = document.createElement('div');
                             actorCard.className = 'actor-card';
                             
                             const mediaElement = document.createElement('div');
-                            mediaElement.className = 'actor-img actor-no-img-placeholder'; 
-                            mediaElement.innerText = '👯'; 
+                            mediaElement.className = 'actor-img actor-no-img-placeholder';
+                            mediaElement.innerText = '👯';
                             mediaElement.title = actorName;
 
                             actorCard.append(mediaElement, createSafeNode('p', 'actor-name', actorName), createSafeNode('p', 'actor-role', '...'));
                             actorsList.appendChild(actorCard);
                         });
-                    } 
-                    // Final fallback if no actor data is found
-                    else {
-                        actorsList.appendChild(createSafeNode('span', 'actor-tag', 'Đang cập nhật...'));
-                    }
-                    
+                    } else {
+                        actorsList.innerHTML = '<span class="actor-tag">Đang cập nhật...</span>';
+                    }                    
                       // --- HÌNH ẢNH (MÁY QUÉT ĐA NĂNG TMDB & OPHIM) ---
                     imagesGallery.innerHTML = '';
                     let extractedImages = [];
