@@ -110,38 +110,39 @@ function renderPagination(currentPage, totalPages) {
     if (totalPages <= 1) return;
 
     // Nút Trước
-    const prevBtn = createNode('button', 'page-btn', '«');
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'page-btn';
+    prevBtn.innerText = '«';
     prevBtn.disabled = currentPage === 1;
     prevBtn.onclick = () => { displayPage(currentPage - 1); };
     pagDiv.appendChild(prevBtn);
 
-    // Tính toán các số sẽ hiển thị
-    let pages = [];
-    if (totalPages <= 7) {
-        for (let i = 1; i <= totalPages; i++) pages.push(i);
-    } else {
-        if (currentPage <= 4) {
-            pages = [1, 2, 3, 4, 5, '...', totalPages];
-        } else if (currentPage >= totalPages - 3) {
-            pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
-        } else {
-            pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
-        }
-    }
+    // Thuật toán gộp số thông minh (Tự loại bỏ số trùng và sắp xếp)
+    let pageNumbers = new Set([1, currentPage - 1, currentPage, currentPage + 1, totalPages]);
+    let sortedUniquePages = Array.from(pageNumbers)
+        .filter(p => p > 0 && p <= totalPages) 
+        .sort((a, b) => a - b); 
 
-    // Đổ nút số ra HTML
-    pages.forEach(p => {
-        if (p === '...') {
-            pagDiv.appendChild(createNode('span', 'page-dots', '...'));
-        } else {
-            const btn = createNode('button', `page-btn ${p === currentPage ? 'active' : ''}`, p);
-            btn.onclick = () => { if(p !== currentPage) displayPage(p); };
-            pagDiv.appendChild(btn);
+    sortedUniquePages.forEach((p, index) => {
+        // Thêm dấu "..." nếu các số không liền kề nhau
+        if (index > 0 && sortedUniquePages[index - 1] !== p - 1) {
+            const dots = document.createElement('span');
+            dots.className = 'page-dots';
+            dots.innerText = '...';
+            pagDiv.appendChild(dots);
         }
+        
+        const btn = document.createElement('button');
+        btn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
+        btn.innerText = p;
+        btn.onclick = () => { if(p !== currentPage) displayPage(p); };
+        pagDiv.appendChild(btn);
     });
 
     // Nút Sau
-    const nextBtn = createNode('button', 'page-btn', '»');
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'page-btn';
+    nextBtn.innerText = '»';
     nextBtn.disabled = currentPage === totalPages;
     nextBtn.onclick = () => { displayPage(currentPage + 1); };
     pagDiv.appendChild(nextBtn);
