@@ -38,6 +38,22 @@
                     <h3 class="section-subtitle">Danh Sách Tập</h3>
                     <div id="episodeList" class="episodes-grid"></div>
                 </div>
+
+                <div class="meta-section">
+                    <h3 class="meta-title">🎭 Diễn viên</h3>
+                    <div id="actorsList" class="actors-list"><span class="actor-tag">Đang tải...</span></div>
+                </div>
+
+                <div class="meta-section">
+                    <h3 class="meta-title">🖼️ Hình ảnh trong phim</h3>
+                    <div id="imagesGallery" class="images-gallery"><span class="actor-tag">Đang tải...</span></div>
+                </div>
+
+                <div class="meta-section">
+                    <h3 class="meta-title">🏷️ Từ khóa</h3>
+                    <div id="keywordsList" class="keywords-list"><span class="actor-tag">Đang tải...</span></div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -46,39 +62,88 @@
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
+        
+        const actorsList = document.getElementById('actorsList');
+        const imagesGallery = document.getElementById('imagesGallery');
+        const keywordsList = document.getElementById('keywordsList');
 
         async function fetchDetail() {
             if (!slug) { document.getElementById('movieTitle').innerText = "Lỗi đường dẫn!"; return; }
+            
+            const options = { method: 'GET', headers: { accept: 'application/json' } };
+            
             try {
-                const res = await fetch(`https://ophim1.com/v1/api/phim/${slug}`, { method: 'GET', headers: { accept: 'application/json' } });
-                const json = await res.json();
-                
-                const movie = (json.data && json.data.item) ? json.data.item : json.movie;
-                const episodesArray = (json.data && json.data.item && json.data.item.episodes) ? json.data.item.episodes : json.episodes;
+                // Tích hợp chạy song song 4 API cùng lúc để load nhanh hơn
+                const [resPhim, resPeoples, resImages, resKeywords] = await Promise.all([
+                    fetch(`https://ophim1.com/v1/api/phim/${slug}`, options).then(r => r.json()),
+                    fetch(`https://ophim1.com/v1/api/phim/${slug}/peoples`, options).then(r => r.json()).catch(() => null),
+                    fetch(`https://ophim1.com/v1/api/phim/${slug}/images`, options).then(r => r.json()).catch(() => null),
+                    fetch(`https://ophim1.com/v1/api/phim/${slug}/keywords`, options).then(r => r.json()).catch(() => null)
+                ]);
+
+                // 1. Xử lý thông tin Phim
+                const movie = (resPhim.data && resPhim.data.item) ? resPhim.data.item : resPhim.movie;
+                const episodesArray = (resPhim.data && resPhim.data.item && resPhim.data.item.episodes) ? resPhim.data.item.episodes : resPhim.episodes;
 
                 if (movie) {
                     document.title = `Đang xem: ${movie.name} - FreeFilm`;
                     document.getElementById('movieTitle').innerText = movie.name;
                     document.getElementById('movieDesc').innerHTML = movie.content || movie.description || "Chưa có mô tả chi tiết.";
 
-                    if (!episodesArray || episodesArray.length === 0) { episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa cập nhật link xem.</p>"; return; }
-                    
-                    const episodes = episodesArray[0].server_data || [];
-                    if (episodes.length === 0) { episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>"; return; }
+                    if (!episodesArray || episodesArray.length === 0) { 
+                        episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa cập nhật link xem.</p>"; 
+                    } else {
+                        const episodes = episodesArray[0].server_data || [];
+                        if (episodes.length === 0) { 
+                            episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>"; 
+                        } else {
+                            episodes.forEach((tap, index) => {
+                                const btn = document.createElement('button');
+                                btn.className = 'ep-btn'; btn.innerText = tap.name || `Tập ${index + 1}`;
+                                btn.onclick = () => {
+                                    iframePlayer.src = tap.link_embed;
+                                    document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+                                    document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+                                };
+                                episodeListDiv.appendChild(btn);
+                                if (index === 0) btn.click();
+                            });
+                        }
+                    }
+                } else { 
+                    document.getElementById('movieTitle').innerText = "Không tìm thấy dữ liệu!"; 
+                }
 
-                    episodes.forEach((tap, index) => {
-                        const btn = document.createElement('button');
-                        btn.className = 'ep-btn'; btn.innerText = tap.name || `Tập ${index + 1}`;
-                        btn.onclick = () => {
-                            iframePlayer.src = tap.link_embed;
-                            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-                            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
-                        };
-                        episodeListDiv.appendChild(btn);
-                        if (index === 0) btn.click();
-                    });
-                } else { document.getElementById('movieTitle').innerText = "Không tìm thấy dữ liệu!"; }
-            } catch (error) { document.getElementById('movieTitle').innerText = "Lỗi máy chủ Ophim!"; }
+                // 2. Xử lý Diễn viên
+                if (resPeoples && resPeoples.data && resPeoples.data.items && resPeoples.data.items.length > 0) {
+                    actorsList.innerHTML = resPeoples.data.items.map(actor => `<span class="actor-tag">${actor.name}</span>`).join('');
+                } else {
+                    actorsList.innerHTML = `<span class="actor-tag">Đang cập nhật...</span>`;
+                }
+
+                // 3. Xử lý Hình ảnh
+                if (resImages && resImages.data && resImages.data.items && resImages.data.items.length > 0) {
+                    const imgDomain = resImages.data.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
+                    imagesGallery.innerHTML = resImages.data.items.map(img => {
+                        let thumb = img.url || '';
+                        let fullLink = thumb.startsWith('http') ? thumb : `${imgDomain.replace(/\/$/, '')}/${thumb.replace(/^\//, '')}`;
+                        return `<img src="${fullLink}" class="gallery-img" alt="Cảnh phim">`;
+                    }).join('');
+                } else {
+                    imagesGallery.innerHTML = `<span class="actor-tag">Chưa có hình ảnh.</span>`;
+                }
+
+                // 4. Xử lý Từ khóa
+                if (resKeywords && resKeywords.data && resKeywords.data.items && resKeywords.data.items.length > 0) {
+                    keywordsList.innerHTML = resKeywords.data.items.map(kw => `<span class="keyword-tag">#${kw.name}</span>`).join('');
+                } else {
+                    keywordsList.innerHTML = `<span class="actor-tag">Chưa có từ khóa.</span>`;
+                }
+
+            } catch (error) { 
+                document.getElementById('movieTitle').innerText = "Lỗi máy chủ Ophim!"; 
+                console.error(error);
+            }
         }
         fetchDetail();
     </script>

@@ -1,14 +1,8 @@
-// ========================================================
-// APP.JS - XỬ LÝ DỮ LIỆU PHIM TỪ OPHIM1.COM
-// ========================================================
-
 const API_BASE = 'https://ophim1.com/v1/api';
 
 const CATEGORIES = [
-    { name: 'Phim Bộ', slug: 'phim-bo' },
-    { name: 'Phim Lẻ', slug: 'phim-le' },
-    { name: 'TV Shows', slug: 'tv-shows' },
-    { name: 'Hoạt Hình', slug: 'hoat-hinh' }
+    { name: 'Phim Bộ', slug: 'phim-bo' }, { name: 'Phim Lẻ', slug: 'phim-le' },
+    { name: 'TV Shows', slug: 'tv-shows' }, { name: 'Hoạt Hình', slug: 'hoat-hinh' }
 ];
 
 const GENRES = [
@@ -39,19 +33,15 @@ const MOVIES_PER_PAGE = window.innerWidth > 768 ? 25 : 20;
 const fetchOptions = { method: 'GET', headers: { accept: 'application/json' } };
 
 function initMenus() {
-    const catContainer = document.getElementById('categoryContainer');
-    const genContainer = document.getElementById('genreContainer');
-    
     CATEGORIES.forEach(cat => {
         const btn = document.createElement('div'); btn.className = 'genre-btn'; btn.innerText = cat.name;
         btn.onclick = () => { document.querySelectorAll('#categoryContainer .genre-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setMode('category', cat.slug, `Danh Mục: ${cat.name}`); };
-        catContainer.appendChild(btn);
+        document.getElementById('categoryContainer').appendChild(btn);
     });
-
     GENRES.forEach(genre => {
         const btn = document.createElement('div'); btn.className = 'genre-btn'; btn.innerText = genre.name;
         btn.onclick = () => { document.querySelectorAll('#genreContainer .genre-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setMode('genre', genre.slug, `Thể Loại: ${genre.name}`); };
-        genContainer.appendChild(btn);
+        document.getElementById('genreContainer').appendChild(btn);
     });
 }
 
@@ -88,22 +78,31 @@ async function fetchAndCacheMovies(apiPage) {
     try {
         movieGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa; padding: 50px;">Đang tải dữ liệu từ Ophim...</p>';
         let apiUrl = '';
-        if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPage}`;
+        
+        // SỬA LỖI API HOME: Dùng v1/api/home cho trang chủ, kết hợp page
+        if (currentMode === 'new') apiUrl = `${API_BASE}/home?page=${apiPage}`;
         else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPage}`;
         else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPage}`;
         else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${currentQuery}&page=${apiPage}`;
 
-        const res = await fetch(apiUrl, fetchOptions); const json = await res.json();
+        const res = await fetch(apiUrl, fetchOptions); 
+        const json = await res.json();
+        
         const dataObj = json.data || json; 
         const items = dataObj.items || json.items || [];
 
         if (items.length > 0) {
-            const imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
+            // SỬA LỖI ẢNH: Xử lý gộp domain chuẩn
+            let imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
+            imgDomain = imgDomain.replace(/\/$/, ''); // Xóa dấu gạch chéo thừa ở cuối nếu có
+
             const processedItems = items.map(m => {
                 let thumb = m.thumb_url || m.poster_url || '';
-                m.full_thumb = (thumb.startsWith('http')) ? thumb : imgDomain.replace(/\/$/, '') + '/' + thumb;
+                thumb = thumb.replace(/^\//, ''); // Xóa dấu gạch chéo thừa ở đầu tên ảnh
+                m.full_thumb = (thumb.startsWith('http')) ? thumb : `${imgDomain}/${thumb}`;
                 return m;
             });
+            
             allCachedMovies = [...allCachedMovies, ...processedItems];
             return { totalPages: (dataObj.params && dataObj.params.pagination) ? dataObj.params.pagination.totalPages : 1 };
         }
