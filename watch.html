@@ -183,12 +183,14 @@
                     }    
                     // --- DIỄN VIÊN ---
                     actorsList.innerHTML = '';
-                    if (resPeoples && resPeoples.data && resPeoples.data.items && resPeoples.data.items.length > 0) {
-                        resPeoples.data.items.forEach(actor => {
+                    // ⚡ Đã sửa thành resPeoples.data.peoples theo đúng API
+                    if (resPeoples && resPeoples.data && resPeoples.data.peoples && resPeoples.data.peoples.length > 0) {
+                        resPeoples.data.peoples.forEach(actor => {
                             const actorCard = document.createElement('div');
                             actorCard.className = 'actor-card';
                             const actorImg = document.createElement('img');
                             actorImg.className = 'actor-img';
+                            // ⚡ Lấy profile_path ghép với domain của TMDB
                             actorImg.src = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://via.placeholder.com/90x90/333/888?text=No+Image';
                             actorImg.alt = actor.name;
                             actorCard.append(actorImg, createSafeNode('p', 'actor-name', actor.name), createSafeNode('p', 'actor-role', actor.character || '...'));
@@ -206,8 +208,8 @@
                         });
                     } else {
                         actorsList.appendChild(createSafeNode('span', 'actor-tag', 'Đang cập nhật...'));
-                    }
-                    // --- HÌNH ẢNH (MÁY QUÉT ĐA NĂNG TMDB & OPHIM) ---
+                    }      
+                      // --- HÌNH ẢNH (MÁY QUÉT ĐA NĂNG TMDB & OPHIM) ---
                     imagesGallery.innerHTML = '';
                     let extractedImages = [];
 
@@ -256,8 +258,13 @@
 
                     // --- TỪ KHÓA ---
                     keywordsList.innerHTML = '';
-                    if (resKeywords && resKeywords.data && resKeywords.data.items && resKeywords.data.items.length > 0) {
-                        resKeywords.data.items.forEach(kw => keywordsList.appendChild(createSafeNode('span', 'keyword-badge', `#${kw.name.toLowerCase()}`)));
+                    // ⚡ Đã sửa thành resKeywords.data.keywords theo đúng API
+                    if (resKeywords && resKeywords.data && resKeywords.data.keywords && resKeywords.data.keywords.length > 0) {
+                        resKeywords.data.keywords.forEach(kw => {
+                            // ⚡ Ưu tiên lấy từ khóa Tiếng Việt (name_vn), nếu không có mới lấy Tiếng Anh (name)
+                            const keywordText = kw.name_vn || kw.name;
+                            keywordsList.appendChild(createSafeNode('span', 'keyword-badge', `#${keywordText.toLowerCase()}`));
+                        });
                     } else if (movie.category && movie.category.length > 0) {
                         movie.category.forEach(c => keywordsList.appendChild(createSafeNode('span', 'keyword-badge', `#${c.name.toLowerCase()}`)));
                     } else {
