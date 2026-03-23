@@ -111,7 +111,7 @@ function renderPagination(currentPage) {
     // Nút Trước ( < )
     const prevBtn = document.createElement('button');
     prevBtn.className = 'page-btn';
-    prevBtn.innerText = '<';
+    prevBtn.innerText = '⏪';
     prevBtn.disabled = currentPage === 1;
     prevBtn.onclick = () => { displayPage(currentPage - 1); };
     pagDiv.appendChild(prevBtn);
@@ -144,7 +144,7 @@ function renderPagination(currentPage) {
     // Nút Sau ( > )
     const nextBtn = document.createElement('button');
     nextBtn.className = 'page-btn';
-    nextBtn.innerText = '>';
+    nextBtn.innerText = '⏩';
     // Vì không giới hạn tổng số trang, bạn cứ cho phép bấm Next thoải mái
     nextBtn.onclick = () => { displayPage(currentPage + 1); };
     pagDiv.appendChild(nextBtn);
