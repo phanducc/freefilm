@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="meta-section">
-                    <h3 class="meta-title">🖼️ Hình ảnh trong phim</h3>
+                    <h3 class="meta-title">🖼️ Hình ảnh</h3>
                     <div id="imagesGallery" class="images-gallery"><span class="actor-tag">Đang tải...</span></div>
                 </div>
 
@@ -53,7 +53,6 @@
                     <h3 class="meta-title">🏷️ Từ khóa</h3>
                     <div id="keywordsList" class="keywords-list"><span class="actor-tag">Đang tải...</span></div>
                 </div>
-
             </div>
         </main>
     </div>
@@ -62,18 +61,13 @@
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
-        
-        const actorsList = document.getElementById('actorsList');
-        const imagesGallery = document.getElementById('imagesGallery');
-        const keywordsList = document.getElementById('keywordsList');
+        const options = { method: 'GET', headers: { accept: 'application/json' } };
 
         async function fetchDetail() {
             if (!slug) { document.getElementById('movieTitle').innerText = "Lỗi đường dẫn!"; return; }
             
-            const options = { method: 'GET', headers: { accept: 'application/json' } };
-            
             try {
-                // Tích hợp chạy song song 4 API cùng lúc để load nhanh hơn
+                // Chạy 4 API song song, nếu API phụ lỗi thì bỏ qua (catch trả về null)
                 const [resPhim, resPeoples, resImages, resKeywords] = await Promise.all([
                     fetch(`https://ophim1.com/v1/api/phim/${slug}`, options).then(r => r.json()),
                     fetch(`https://ophim1.com/v1/api/phim/${slug}/peoples`, options).then(r => r.json()).catch(() => null),
@@ -81,11 +75,16 @@
                     fetch(`https://ophim1.com/v1/api/phim/${slug}/keywords`, options).then(r => r.json()).catch(() => null)
                 ]);
 
-                // 1. Xử lý thông tin Phim
-                const movie = (resPhim.data && resPhim.data.item) ? resPhim.data.item : resPhim.movie;
-                const episodesArray = (resPhim.data && resPhim.data.item && resPhim.data.item.episodes) ? resPhim.data.item.episodes : resPhim.episodes;
+                const dataObj = resPhim.data || resPhim;
+                const movie = dataObj.item || dataObj.movie;
+                const episodesArray = movie.episodes || resPhim.episodes;
+                
+                // Lấy domain ảnh chuẩn
+                let imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live';
+                imgDomain = imgDomain.replace(/\/$/, '');
 
                 if (movie) {
+                    // --- 1. THÔNG TIN PHIM & TẬP ---
                     document.title = `Đang xem: ${movie.name} - FreeFilm`;
                     document.getElementById('movieTitle').innerText = movie.name;
                     document.getElementById('movieDesc').innerHTML = movie.content || movie.description || "Chưa có mô tả chi tiết.";
@@ -94,9 +93,8 @@
                         episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa cập nhật link xem.</p>"; 
                     } else {
                         const episodes = episodesArray[0].server_data || [];
-                        if (episodes.length === 0) { 
-                            episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>"; 
-                        } else {
+                        if (episodes.length === 0) { episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>"; } 
+                        else {
                             episodes.forEach((tap, index) => {
                                 const btn = document.createElement('button');
                                 btn.className = 'ep-btn'; btn.innerText = tap.name || `Tập ${index + 1}`;
@@ -110,36 +108,55 @@
                             });
                         }
                     }
-                } else { 
-                    document.getElementById('movieTitle').innerText = "Không tìm thấy dữ liệu!"; 
-                }
 
-                // 2. Xử lý Diễn viên
-                if (resPeoples && resPeoples.data && resPeoples.data.items && resPeoples.data.items.length > 0) {
-                    actorsList.innerHTML = resPeoples.data.items.map(actor => `<span class="actor-tag">${actor.name}</span>`).join('');
-                } else {
-                    actorsList.innerHTML = `<span class="actor-tag">Đang cập nhật...</span>`;
-                }
+                    // --- 2. DIỄN VIÊN (Dự phòng từ data.item.actor) ---
+                    let actorsHTML = '';
+                    if (movie.actor && movie.actor.length > 0 && movie.actor[0] !== "") {
+                        actorsHTML = movie.actor.map(a => `<span class="actor-tag">${a}</span>`).join('');
+                    } else if (resPeoples && resPeoples.data && resPeoples.data.items && resPeoples.data.items.length > 0) {
+                        actorsHTML = resPeoples.data.items.map(actor => `<span class="actor-tag">${actor.name}</span>`).join('');
+                    } else {
+                        actorsHTML = `<span class="actor-tag">Đang cập nhật...</span>`;
+                    }
+                    document.getElementById('actorsList').innerHTML = actorsHTML;
 
-                // 3. Xử lý Hình ảnh
-                if (resImages && resImages.data && resImages.data.items && resImages.data.items.length > 0) {
-                    const imgDomain = resImages.data.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
-                    imagesGallery.innerHTML = resImages.data.items.map(img => {
-                        let thumb = img.url || '';
-                        let fullLink = thumb.startsWith('http') ? thumb : `${imgDomain.replace(/\/$/, '')}/${thumb.replace(/^\//, '')}`;
-                        return `<img src="${fullLink}" class="gallery-img" alt="Cảnh phim">`;
-                    }).join('');
-                } else {
-                    imagesGallery.innerHTML = `<span class="actor-tag">Chưa có hình ảnh.</span>`;
-                }
+                    // --- 3. HÌNH ẢNH (Dự phòng poster gốc) ---
+                    let imagesHTML = '';
+                    if (resImages && resImages.data && resImages.data.items && resImages.data.items.length > 0) {
+                        imagesHTML = resImages.data.items.map(img => {
+                            let url = img.url || '';
+                            if (!url.startsWith('http')) {
+                                if (!url.includes('uploads/movies/')) url = '/uploads/movies/' + url.replace(/^\//, '');
+                                else if (!url.startsWith('/')) url = '/' + url;
+                                url = imgDomain + url;
+                            }
+                            return `<img src="${url}" class="gallery-img" alt="Cảnh phim">`;
+                        }).join('');
+                    } else {
+                        // Lấy tạm poster/thumb nếu không có gallery ảnh
+                        let fallbackImg = movie.poster_url || movie.thumb_url || '';
+                        if (fallbackImg && !fallbackImg.startsWith('http')) {
+                            if (!fallbackImg.includes('uploads/movies/')) fallbackImg = '/uploads/movies/' + fallbackImg.replace(/^\//, '');
+                            else if (!fallbackImg.startsWith('/')) fallbackImg = '/' + fallbackImg;
+                            fallbackImg = imgDomain + fallbackImg;
+                        }
+                        if (fallbackImg) imagesHTML = `<img src="${fallbackImg}" class="gallery-img" alt="Poster phim">`;
+                        else imagesHTML = `<span class="actor-tag">Chưa có hình ảnh.</span>`;
+                    }
+                    document.getElementById('imagesGallery').innerHTML = imagesHTML;
 
-                // 4. Xử lý Từ khóa
-                if (resKeywords && resKeywords.data && resKeywords.data.items && resKeywords.data.items.length > 0) {
-                    keywordsList.innerHTML = resKeywords.data.items.map(kw => `<span class="keyword-tag">#${kw.name}</span>`).join('');
-                } else {
-                    keywordsList.innerHTML = `<span class="actor-tag">Chưa có từ khóa.</span>`;
-                }
+                    // --- 4. TỪ KHÓA (Dự phòng từ Thể loại) ---
+                    let keywordsHTML = '';
+                    if (resKeywords && resKeywords.data && resKeywords.data.items && resKeywords.data.items.length > 0) {
+                        keywordsHTML = resKeywords.data.items.map(kw => `<span class="keyword-tag">#${kw.name}</span>`).join('');
+                    } else if (movie.category && movie.category.length > 0) {
+                        keywordsHTML = movie.category.map(c => `<span class="keyword-tag">#${c.name}</span>`).join('');
+                    } else {
+                        keywordsHTML = `<span class="actor-tag">Chưa có từ khóa.</span>`;
+                    }
+                    document.getElementById('keywordsList').innerHTML = keywordsHTML;
 
+                } else { document.getElementById('movieTitle').innerText = "Không tìm thấy dữ liệu!"; }
             } catch (error) { 
                 document.getElementById('movieTitle').innerText = "Lỗi máy chủ Ophim!"; 
                 console.error(error);

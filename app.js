@@ -1,3 +1,7 @@
+// ========================================================
+// APP.JS - XỬ LÝ DỮ LIỆU PHIM TỪ OPHIM1.COM
+// ========================================================
+
 const API_BASE = 'https://ophim1.com/v1/api';
 
 const CATEGORIES = [
@@ -79,7 +83,6 @@ async function fetchAndCacheMovies(apiPage) {
         movieGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa; padding: 50px;">Đang tải dữ liệu từ Ophim...</p>';
         let apiUrl = '';
         
-        // SỬA LỖI API HOME: Dùng v1/api/home cho trang chủ, kết hợp page
         if (currentMode === 'new') apiUrl = `${API_BASE}/home?page=${apiPage}`;
         else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPage}`;
         else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPage}`;
@@ -92,14 +95,22 @@ async function fetchAndCacheMovies(apiPage) {
         const items = dataObj.items || json.items || [];
 
         if (items.length > 0) {
-            // SỬA LỖI ẢNH: Xử lý gộp domain chuẩn
-            let imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
-            imgDomain = imgDomain.replace(/\/$/, ''); // Xóa dấu gạch chéo thừa ở cuối nếu có
+            // FIX ẢNH: Tự động chèn thư mục uploads/movies/
+            let imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live';
+            imgDomain = imgDomain.replace(/\/$/, ''); 
 
             const processedItems = items.map(m => {
                 let thumb = m.thumb_url || m.poster_url || '';
-                thumb = thumb.replace(/^\//, ''); // Xóa dấu gạch chéo thừa ở đầu tên ảnh
-                m.full_thumb = (thumb.startsWith('http')) ? thumb : `${imgDomain}/${thumb}`;
+                if (!thumb.startsWith('http')) {
+                    if (!thumb.includes('uploads/movies/')) {
+                        thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
+                    } else if (!thumb.startsWith('/')) {
+                        thumb = '/' + thumb;
+                    }
+                    m.full_thumb = imgDomain + thumb;
+                } else {
+                    m.full_thumb = thumb;
+                }
                 return m;
             });
             
