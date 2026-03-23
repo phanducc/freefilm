@@ -61,13 +61,30 @@
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
+        
+        const actorsList = document.getElementById('actorsList');
+        const imagesGallery = document.getElementById('imagesGallery');
+        const keywordsList = document.getElementById('keywordsList');
         const options = { method: 'GET', headers: { accept: 'application/json' } };
+
+        function playVideo(embedUrl, buttonEl) {
+            iframePlayer.src = embedUrl;
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            if(buttonEl) buttonEl.classList.add('active');
+            localStorage.setItem(`ff_history_${slug}`, embedUrl);
+        }
+
+        function createSafeNode(tag, className, text) {
+            const el = document.createElement(tag);
+            el.className = className;
+            el.innerText = text;
+            return el;
+        }
 
         async function fetchDetail() {
             if (!slug) { document.getElementById('movieTitle').innerText = "Lỗi đường dẫn!"; return; }
             
             try {
-                // Chạy 4 API song song, nếu API phụ lỗi thì bỏ qua (catch trả về null)
                 const [resPhim, resPeoples, resImages, resKeywords] = await Promise.all([
                     fetch(`https://ophim1.com/v1/api/phim/${slug}`, options).then(r => r.json()),
                     fetch(`https://ophim1.com/v1/api/phim/${slug}/peoples`, options).then(r => r.json()).catch(() => null),
@@ -78,83 +95,107 @@
                 const dataObj = resPhim.data || resPhim;
                 const movie = dataObj.item || dataObj.movie;
                 const episodesArray = movie.episodes || resPhim.episodes;
-                
-                // Lấy domain ảnh chuẩn
-                let imgDomain = dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live';
-                imgDomain = imgDomain.replace(/\/$/, '');
+                let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, '');
 
                 if (movie) {
-                    // --- 1. THÔNG TIN PHIM & TẬP ---
-                    document.title = `Đang xem: ${movie.name} - FreeFilm`;
+                    document.title = `Đang xem: ${movie.name}`;
                     document.getElementById('movieTitle').innerText = movie.name;
                     document.getElementById('movieDesc').innerHTML = movie.content || movie.description || "Chưa có mô tả chi tiết.";
 
                     if (!episodesArray || episodesArray.length === 0) { 
-                        episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa cập nhật link xem.</p>"; 
+                        episodeListDiv.appendChild(createSafeNode('p', '', 'Chưa cập nhật link xem.')); 
                     } else {
                         const episodes = episodesArray[0].server_data || [];
-                        if (episodes.length === 0) { episodeListDiv.innerHTML = "<p style='color: #ff4500;'>Chưa có tập phim nào.</p>"; } 
-                        else {
+                        if (episodes.length === 0) { 
+                            episodeListDiv.appendChild(createSafeNode('p', '', 'Chưa có tập phim nào.')); 
+                        } else {
+                            const savedEpUrl = localStorage.getItem(`ff_history_${slug}`);
+                            let hasPlayed = false;
+
                             episodes.forEach((tap, index) => {
-                                const btn = document.createElement('button');
-                                btn.className = 'ep-btn'; btn.innerText = tap.name || `Tập ${index + 1}`;
+                                const btn = createSafeNode('button', 'ep-btn', tap.name || `Tập ${index + 1}`);
                                 btn.onclick = () => {
-                                    iframePlayer.src = tap.link_embed;
-                                    document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-                                    document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+                                    playVideo(tap.link_embed, btn);
+                                    window.scrollTo(0, 0);
                                 };
                                 episodeListDiv.appendChild(btn);
-                                if (index === 0) btn.click();
+
+                                if (savedEpUrl && tap.link_embed === savedEpUrl) {
+                                    playVideo(tap.link_embed, btn);
+                                    hasPlayed = true;
+                                } else if (!savedEpUrl && index === 0) {
+                                    playVideo(tap.link_embed, btn);
+                                    hasPlayed = true;
+                                }
+                            });
+
+                            if (!hasPlayed && episodes.length > 0) {
+                                playVideo(episodes[0].link_embed, episodeListDiv.firstChild);
+                            }
+                        }
+                    }
+
+                    // --- DIỄN VIÊN ---
+                    actorsList.innerHTML = '';
+                    if (movie.actor && movie.actor.length > 0 && movie.actor[0] !== "") {
+                        movie.actor.forEach(a => actorsList.appendChild(createSafeNode('span', 'actor-tag', a)));
+                    } else if (resPeoples && resPeoples.data && resPeoples.data.items && resPeoples.data.items.length > 0) {
+                        resPeoples.data.items.forEach(a => actorsList.appendChild(createSafeNode('span', 'actor-tag', a.name)));
+                    } else {
+                        actorsList.appendChild(createSafeNode('span', 'actor-tag', 'Đang cập nhật...'));
+                    }
+
+                    // --- HÌNH ẢNH (MÁY QUÉT ĐA NĂNG) ---
+                    imagesGallery.innerHTML = '';
+                    let extractedImages = [];
+
+                    // 1. Quét sâu vào API Images
+                    if (resImages && resImages.data) {
+                        const imgData = resImages.data.items || resImages.data.item || resImages.data || [];
+                        if (Array.isArray(imgData)) {
+                            imgData.forEach(img => {
+                                // Lấy link dù nó giấu ở object nào
+                                let link = img.url || img.link || img.file || (typeof img === 'string' ? img : null);
+                                if (link) extractedImages.push(link);
                             });
                         }
                     }
 
-                    // --- 2. DIỄN VIÊN (Dự phòng từ data.item.actor) ---
-                    let actorsHTML = '';
-                    if (movie.actor && movie.actor.length > 0 && movie.actor[0] !== "") {
-                        actorsHTML = movie.actor.map(a => `<span class="actor-tag">${a}</span>`).join('');
-                    } else if (resPeoples && resPeoples.data && resPeoples.data.items && resPeoples.data.items.length > 0) {
-                        actorsHTML = resPeoples.data.items.map(actor => `<span class="actor-tag">${actor.name}</span>`).join('');
-                    } else {
-                        actorsHTML = `<span class="actor-tag">Đang cập nhật...</span>`;
+                    // 2. Chế độ dự phòng (Nếu API phụ trống thì lấy luôn 2 ảnh chính của phim ra)
+                    if (extractedImages.length === 0) {
+                        if (movie.poster_url) extractedImages.push(movie.poster_url);
+                        if (movie.thumb_url && movie.thumb_url !== movie.poster_url) extractedImages.push(movie.thumb_url);
                     }
-                    document.getElementById('actorsList').innerHTML = actorsHTML;
 
-                    // --- 3. HÌNH ẢNH (Dự phòng poster gốc) ---
-                    let imagesHTML = '';
-                    if (resImages && resImages.data && resImages.data.items && resImages.data.items.length > 0) {
-                        imagesHTML = resImages.data.items.map(img => {
-                            let url = img.url || '';
+                    // 3. Lọc bỏ link trùng lặp và link rỗng
+                    extractedImages = [...new Set(extractedImages)].filter(url => url.trim() !== '');
+
+                    if (extractedImages.length > 0) {
+                        extractedImages.forEach(url => {
                             if (!url.startsWith('http')) {
                                 if (!url.includes('uploads/movies/')) url = '/uploads/movies/' + url.replace(/^\//, '');
                                 else if (!url.startsWith('/')) url = '/' + url;
                                 url = imgDomain + url;
                             }
-                            return `<img src="${url}" class="gallery-img" alt="Cảnh phim">`;
-                        }).join('');
+                            const imgEl = document.createElement('img');
+                            imgEl.src = url; 
+                            imgEl.className = 'gallery-img'; 
+                            imgEl.alt = 'Cảnh phim';
+                            imagesGallery.appendChild(imgEl);
+                        });
                     } else {
-                        // Lấy tạm poster/thumb nếu không có gallery ảnh
-                        let fallbackImg = movie.poster_url || movie.thumb_url || '';
-                        if (fallbackImg && !fallbackImg.startsWith('http')) {
-                            if (!fallbackImg.includes('uploads/movies/')) fallbackImg = '/uploads/movies/' + fallbackImg.replace(/^\//, '');
-                            else if (!fallbackImg.startsWith('/')) fallbackImg = '/' + fallbackImg;
-                            fallbackImg = imgDomain + fallbackImg;
-                        }
-                        if (fallbackImg) imagesHTML = `<img src="${fallbackImg}" class="gallery-img" alt="Poster phim">`;
-                        else imagesHTML = `<span class="actor-tag">Chưa có hình ảnh.</span>`;
+                        imagesGallery.appendChild(createSafeNode('span', 'actor-tag', 'Chưa có hình ảnh.'));
                     }
-                    document.getElementById('imagesGallery').innerHTML = imagesHTML;
 
-                    // --- 4. TỪ KHÓA (Dự phòng từ Thể loại) ---
-                    let keywordsHTML = '';
+                    // --- TỪ KHÓA ---
+                    keywordsList.innerHTML = '';
                     if (resKeywords && resKeywords.data && resKeywords.data.items && resKeywords.data.items.length > 0) {
-                        keywordsHTML = resKeywords.data.items.map(kw => `<span class="keyword-tag">#${kw.name}</span>`).join('');
+                        resKeywords.data.items.forEach(kw => keywordsList.appendChild(createSafeNode('span', 'keyword-tag', `#${kw.name}`)));
                     } else if (movie.category && movie.category.length > 0) {
-                        keywordsHTML = movie.category.map(c => `<span class="keyword-tag">#${c.name}</span>`).join('');
+                        movie.category.forEach(c => keywordsList.appendChild(createSafeNode('span', 'keyword-tag', `#${c.name}`)));
                     } else {
-                        keywordsHTML = `<span class="actor-tag">Chưa có từ khóa.</span>`;
+                        keywordsList.appendChild(createSafeNode('span', 'actor-tag', 'Chưa có từ khóa.'));
                     }
-                    document.getElementById('keywordsList').innerHTML = keywordsHTML;
 
                 } else { document.getElementById('movieTitle').innerText = "Không tìm thấy dữ liệu!"; }
             } catch (error) { 
@@ -162,6 +203,10 @@
                 console.error(error);
             }
         }
+
+        const playerContainer = document.querySelector('.player-container');
+        playerContainer.insertAdjacentHTML('afterbegin', '<div class="iframe-fallback"><span>Đang tải video hoặc link máy chủ bị lỗi...</span></div>');
+        
         fetchDetail();
     </script>
 </body>
