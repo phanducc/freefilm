@@ -43,11 +43,15 @@ body { background: #1a1a1a; color: #fff; overflow: hidden; }
 .blue-underline { width: 100%; height: 3px; background: #00e5ff; border-radius: 2px; box-shadow: 0 0 8px rgba(0, 229, 255, 0.5); transition: 0.3s; }
 .ff-card:hover .blue-underline { box-shadow: 0 0 15px rgba(0, 229, 255, 0.9); }
 
-/* Pagination */
-.pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 40px; }
-.pagination button { padding: 10px 20px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;}
-.pagination button:hover:not(:disabled) { background: #ff4500; }
-.pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+/* =========================================
+   PHÂN TRANG CÓ SỐ (MỚI)
+   ========================================= */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px; flex-wrap: wrap; }
+.page-btn { padding: 10px 16px; background: #222; color: #ccc; border: 1px solid #333; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; }
+.page-btn:hover:not(:disabled) { background: #333; color: #fff; border-color: #666; }
+.page-btn.active { background: #ff4500; color: #fff; border-color: #ff4500; box-shadow: 0 0 12px rgba(255, 69, 0, 0.5); }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.page-dots { color: #888; font-weight: bold; padding: 0 5px; font-size: 16px;}
 
 /* =========================================
    TRANG XEM PHIM (WATCH.HTML)
@@ -66,18 +70,14 @@ body { background: #1a1a1a; color: #fff; overflow: hidden; }
 .ep-btn:hover { background: #333; color: #fff; border-color: #666; transform: translateY(-3px);}
 .ep-btn.active { background: linear-gradient(135deg, #ff4500, #ff8c00); color: #fff; border-color: #ff4500; box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4); transform: translateY(-3px);}
 
-/* Khu vực bổ sung: Diễn viên, Ảnh, Từ khóa */
 .meta-section { background: #141414; padding: 25px; border-radius: 8px; border: 1px solid #2a2a2a; margin-bottom: 20px; }
 .meta-title { color: #fff; font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;}
-
 .actors-list { display: flex; flex-wrap: wrap; gap: 10px; }
 .actor-tag { background: #2b2b2b; border: 1px solid #444; padding: 8px 15px; border-radius: 20px; color: #ccc; font-size: 13px; }
-
 .images-gallery { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scroll-behavior: smooth; }
 .images-gallery::-webkit-scrollbar { height: 8px; }
 .images-gallery::-webkit-scrollbar-thumb { background: #ff4500; border-radius: 4px; }
 .gallery-img { height: 160px; border-radius: 6px; object-fit: cover; border: 1px solid #333; }
-
 .keywords-list { display: flex; flex-wrap: wrap; gap: 10px; }
 .keyword-tag { background: rgba(0, 229, 255, 0.1); border: 1px solid #00e5ff; color: #00e5ff; padding: 6px 12px; border-radius: 4px; font-size: 12px; }
 
@@ -85,8 +85,6 @@ body { background: #1a1a1a; color: #fff; overflow: hidden; }
 .loader-container { display: none; justify-content: center; align-items: center; padding: 40px; grid-column: 1 / -1; width: 100%; }
 .spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 69, 0, 0.2); border-top-color: #ff4500; border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* Lớp lót nằm dưới iframe, nếu iframe fail hoặc chưa load xong thì chữ này hiện lên */
 .player-container { position: relative; }
 .iframe-fallback { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #111; color: #888; z-index: 0; font-size: 14px; }
 .player-container iframe { position: relative; z-index: 1; background: transparent; }

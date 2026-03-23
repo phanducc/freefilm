@@ -1,5 +1,5 @@
 // ========================================================
-// APP.JS - XỬ LÝ DỮ LIỆU PHIM TỪ OPHIM1.COM
+// APP.JS - PHÂN TRANG NHẢY SỐ (1:1 VỚI API)
 // ========================================================
 
 const API_BASE = 'https://ophim1.com/v1/api';
@@ -27,15 +27,13 @@ const GENRES = [
 const movieGrid = document.getElementById('movie-grid');
 const pageTitle = document.getElementById('page-title');
 const searchInput = document.getElementById('searchInput');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const pageInfo = document.getElementById('pageInfo');
+const searchBtn = document.getElementById('searchBtn');
 
-let currentMode = 'new', currentQuery = '', allCachedMovies = [], currentLocalPage = 1, apiPageToFetch = 1;
+let currentMode = 'new', currentQuery = '';
 let isLoading = false;
-const MOVIES_PER_PAGE = window.innerWidth > 768 ? 25 : 20;
 const fetchOptions = { method: 'GET', headers: { accept: 'application/json' } };
 
+// Tạo Node an toàn
 function createNode(tag, className, innerText) {
     const el = document.createElement(tag);
     if (className) el.className = className;
@@ -59,20 +57,26 @@ function initMenus() {
 function setMode(mode, query, title) {
     if (isLoading) return;
     currentMode = mode; currentQuery = query; pageTitle.innerText = title;
-    document.getElementById('categoryModal').classList.add('hidden'); document.getElementById('genreModal').classList.add('hidden');
+    
+    document.getElementById('categoryModal').classList.add('hidden'); 
+    document.getElementById('genreModal').classList.add('hidden');
     document.getElementById('navHome').classList.toggle('active', mode === 'new' || mode === 'search');
     document.getElementById('navCategory').classList.toggle('active', mode === 'category');
     document.getElementById('navGenre').classList.toggle('active', mode === 'genre');
-    allCachedMovies = []; currentLocalPage = 1; apiPageToFetch = 1;
-    displayLocalPage(1).then(() => { document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); });
+    
+    displayPage(1); 
 }
 
-function renderMovies(movies, startIndex) {
+function renderMovies(movies, page) {
     movieGrid.innerHTML = '';
     if (!movies || movies.length === 0) {
-        movieGrid.appendChild(createNode('p', '', 'Không tìm thấy phim nào.')).style = "grid-column:1/-1; text-align:center; padding: 50px; color: #888;"; return;
+        movieGrid.appendChild(createNode('p', '', 'Không tìm thấy phim nào.')).style = "grid-column:1/-1; text-align:center; padding: 50px; color: #888;"; 
+        return;
     }
     
+    // Mỗi trang Ophim có 24 phim, tính toán số Rank cho ngầu
+    const startIndex = (page - 1) * 24;
+
     movies.forEach((movie, index) => {
         const type = (movie.type === 'series' || movie.type === 'hoathinh') ? 'Phim Bộ' : 'Phim Lẻ';
         const card = createNode('div', 'ff-card');
@@ -99,11 +103,58 @@ function renderMovies(movies, startIndex) {
     });
 }
 
-async function fetchAndCacheMovies(apiPage) {
-    if (isLoading) return null;
+// THUẬT TOÁN TẠO THANH PHÂN TRANG NHIỀU SỐ MƯỢT MÀ
+function renderPagination(currentPage, totalPages) {
+    const pagDiv = document.getElementById('pagination');
+    pagDiv.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    // Nút Trước
+    const prevBtn = createNode('button', 'page-btn', '«');
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => { displayPage(currentPage - 1); };
+    pagDiv.appendChild(prevBtn);
+
+    // Tính toán các số sẽ hiển thị
+    let pages = [];
+    if (totalPages <= 7) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+        if (currentPage <= 4) {
+            pages = [1, 2, 3, 4, 5, '...', totalPages];
+        } else if (currentPage >= totalPages - 3) {
+            pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        } else {
+            pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+        }
+    }
+
+    // Đổ nút số ra HTML
+    pages.forEach(p => {
+        if (p === '...') {
+            pagDiv.appendChild(createNode('span', 'page-dots', '...'));
+        } else {
+            const btn = createNode('button', `page-btn ${p === currentPage ? 'active' : ''}`, p);
+            btn.onclick = () => { if(p !== currentPage) displayPage(p); };
+            pagDiv.appendChild(btn);
+        }
+    });
+
+    // Nút Sau
+    const nextBtn = createNode('button', 'page-btn', '»');
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => { displayPage(currentPage + 1); };
+    pagDiv.appendChild(nextBtn);
+}
+
+// CƠ CHẾ TẢI: BẤM TRANG NÀO, TẢI TRANG ĐÓ (1:1 với API)
+async function displayPage(page) {
+    if (isLoading) return;
     isLoading = true;
     
+    // Bật Spinner
     movieGrid.innerHTML = '';
+    document.getElementById('pagination').innerHTML = ''; // Xóa phân trang tạm lúc đang tải
     const loader = createNode('div', 'loader-container');
     loader.appendChild(createNode('div', 'spinner'));
     loader.style.display = 'flex';
@@ -111,18 +162,18 @@ async function fetchAndCacheMovies(apiPage) {
 
     try {
         let apiUrl = '';
-        
-        // SỬA LỖI TRANG CHỦ: Dùng API phim mới cập nhật để có thể lật hàng ngàn trang
-        if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPage}`;
-        else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPage}`;
-        else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPage}`;
-        else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${apiPage}`;
+        // Đã thay /home thành /danh-sach/phim-moi-cap-nhat
+        if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${page}`;
+        else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${page}`;
+        else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${page}`;
+        else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${page}`;
 
         const res = await fetch(apiUrl, fetchOptions); 
         const json = await res.json();
         
         const dataObj = json.data || json; 
         const items = dataObj.items || json.items || [];
+        let totalPages = (dataObj.params && dataObj.params.pagination) ? dataObj.params.pagination.totalPages : 1;
 
         if (items.length > 0) {
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
@@ -136,35 +187,22 @@ async function fetchAndCacheMovies(apiPage) {
                 return m;
             });
             
-            allCachedMovies = [...allCachedMovies, ...processedItems];
-            isLoading = false;
-            return { totalPages: (dataObj.params && dataObj.params.pagination) ? dataObj.params.pagination.totalPages : 1 };
+            renderMovies(processedItems, page);
+            renderPagination(page, totalPages);
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            renderMovies([], page);
         }
-    } catch (error) { console.error("Lỗi API:", error); }
+    } catch (error) { console.error("Lỗi API:", error); renderMovies([], page); }
     
     isLoading = false;
-    return null;
-}
-
-async function displayLocalPage(page) {
-    const start = (page - 1) * MOVIES_PER_PAGE; const end = start + MOVIES_PER_PAGE;
-    while (allCachedMovies.length < end) {
-        const paginate = await fetchAndCacheMovies(apiPageToFetch);
-        if (paginate && apiPageToFetch < paginate.totalPages) apiPageToFetch++; else break;
-    }
-    const moviesToDisplay = allCachedMovies.slice(start, end);
-    renderMovies(moviesToDisplay, start);
-    pageInfo.innerText = `Trang ${page}`;
-    prevBtn.disabled = page === 1; nextBtn.disabled = moviesToDisplay.length < MOVIES_PER_PAGE;
 }
 
 // EVENTS
 document.getElementById('navHome').onclick = () => setMode('new', '', 'Phim Mới Cập Nhật');
 document.getElementById('navCategory').onclick = () => { document.getElementById('categoryModal').classList.toggle('hidden'); document.getElementById('genreModal').classList.add('hidden'); };
 document.getElementById('navGenre').onclick = () => { document.getElementById('genreModal').classList.toggle('hidden'); document.getElementById('categoryModal').classList.add('hidden'); };
-prevBtn.onclick = () => { currentLocalPage--; displayLocalPage(currentLocalPage).then(() => document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' })); };
-nextBtn.onclick = () => { currentLocalPage++; displayLocalPage(currentLocalPage).then(() => document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' })); };
 document.getElementById('searchBtn').onclick = () => { if (searchInput.value.trim()) setMode('search', searchInput.value.trim(), `Kết quả tìm kiếm: "${searchInput.value.trim()}"`); };
 searchInput.onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('searchBtn').click(); };
 
-initMenus(); displayLocalPage(1);
+initMenus(); displayPage(1);
