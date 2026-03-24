@@ -267,11 +267,27 @@ async function displayPage(page) {
     isLoading = false;
 }
 
-// EVENTS
-document.getElementById('navHome').onclick = () => setMode('new', '', 'Phim Mới Cập Nhật');
-document.getElementById('navCategory').onclick = () => { document.getElementById('categoryModal').classList.toggle('hidden'); document.getElementById('genreModal').classList.add('hidden'); };
-document.getElementById('navGenre').onclick = () => { document.getElementById('genreModal').classList.toggle('hidden'); document.getElementById('categoryModal').classList.add('hidden'); };
-document.getElementById('searchBtn').onclick = () => { if (searchInput.value.trim()) setMode('search', searchInput.value.trim(), `Kết quả tìm kiếm: "${searchInput.value.trim()}"`); };
+// EVENTS (ĐÃ FIX LỖI TẢI TRANG ĐẦU VÀ NÚT NGÔI NHÀ)
+
+// ⚡ 1. Sửa chức năng nút 🏠 để nó chạy về trang chủ mặc định (setMode 'new')
+document.getElementById('navHome').onclick = () => {
+    // Xóa active ở các thể loại và pill để làm nổi bật nút 🏠
+    document.querySelectorAll('.cat-link, .genre-pill').forEach(b => b.classList.remove('active')); 
+    
+    // Đặt chế độ Phim mới
+    setMode('new', '', 'Phim Mới Cập Nhật');
+};
+
+document.getElementById('searchBtn').onclick = () => { 
+    if (searchInput.value.trim()) {
+        document.querySelectorAll('.cat-link, .genre-pill').forEach(b => b.classList.remove('active')); 
+        setMode('search', searchInput.value.trim(), `Kết quả tìm kiếm: "${searchInput.value.trim()}"`);
+    }
+};
 searchInput.onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('searchBtn').click(); };
 
-initMenus(); displayPage(1);
+// KHỞI TẠO (⚡ 2. FIX LỖI TRẮNG TRANG KHI MỚI VÀO)
+initMenus();
+
+// THAY THẾ LỆNH displayPage(1) cũ bằng lệnh này để tải trang chủ mặc định 1:1 với Ophim
+setMode('new', '', 'Phim Mới Cập Nhật');
