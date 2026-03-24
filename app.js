@@ -25,6 +25,7 @@ const GENRES = [
 ];
 
 const movieGrid = document.getElementById('movie-grid');
+const topMoviesList = document.getElementById('topMoviesList');
 const pageTitle = document.getElementById('page-title');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
@@ -42,15 +43,29 @@ function createNode(tag, className, innerText) {
 }
 
 function initMenus() {
+    const topNav = document.getElementById('topNavCategories');
+    const rightGenres = document.getElementById('genreContainer');
+
+    // 4 Thể loại chính lên Header
     CATEGORIES.forEach(cat => {
-        const btn = createNode('div', 'genre-btn', cat.name);
-        btn.onclick = () => { document.querySelectorAll('#categoryContainer .genre-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setMode('category', cat.slug, `Danh Mục: ${cat.name}`); };
-        document.getElementById('categoryContainer').appendChild(btn);
+        const btn = createNode('span', 'cat-link', cat.name);
+        btn.onclick = () => { 
+            document.querySelectorAll('.cat-link, .genre-pill').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            setMode('category', cat.slug, cat.name); 
+        };
+        if(topNav) topNav.appendChild(btn);
     });
+
+    // Các thể loại con vào Bảng bên phải
     GENRES.forEach(genre => {
-        const btn = createNode('div', 'genre-btn', genre.name);
-        btn.onclick = () => { document.querySelectorAll('#genreContainer .genre-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); setMode('genre', genre.slug, `Thể Loại: ${genre.name}`); };
-        document.getElementById('genreContainer').appendChild(btn);
+        const btn = createNode('div', 'genre-pill', genre.name);
+        btn.onclick = () => { 
+            document.querySelectorAll('.genre-pill, .cat-link').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); 
+            setMode('genre', genre.slug, `Thể Loại: ${genre.name}`); 
+        };
+        if(rightGenres) rightGenres.appendChild(btn);
     });
 }
 
@@ -103,6 +118,32 @@ function renderMovies(movies, page) {
 
         card.append(header, img, tags, footer);
         movieGrid.appendChild(card);
+    });
+}
+
+// Hiển thị 2 phim mới nhất ở cột phải
+function renderTopMovies(movies) {
+    if (!topMoviesList) return;
+    topMoviesList.innerHTML = '';
+    const top2 = movies.slice(0, 2); // Cắt lấy đúng 2 phim
+    
+    top2.forEach(movie => {
+        const card = createNode('div', 'top-card');
+        card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
+        
+        const img = document.createElement('img');
+        img.src = movie.full_thumb; 
+        
+        const overlay = createNode('div', 'top-card-overlay');
+        const title = createNode('h4', 'top-card-title', movie.name);
+        
+        const info = createNode('div', 'top-card-info');
+        const tmdbScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average).toFixed(1) : '0.0';
+        info.innerHTML = `<span>▶ Xem ngay</span> <span>⭐ ${tmdbScore}</span>`;
+
+        overlay.append(title, info);
+        card.append(img, overlay);
+        topMoviesList.appendChild(card);
     });
 }
 
@@ -215,6 +256,7 @@ async function displayPage(page) {
             });
             
             renderMovies(processedItems, page);
+            renderTopMovies(processedItems);
             renderPagination(page, totalPages); // Truyền totalPages vào để vẽ nút
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         } else {
