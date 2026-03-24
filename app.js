@@ -73,11 +73,11 @@ function setMode(mode, query, title) {
     if (isLoading) return;
     currentMode = mode; currentQuery = query; pageTitle.innerText = title;
     
-    document.getElementById('categoryModal').classList.add('hidden'); 
-    document.getElementById('genreModal').classList.add('hidden');
-    document.getElementById('navHome').classList.toggle('active', mode === 'new' || mode === 'search');
-    document.getElementById('navCategory').classList.toggle('active', mode === 'category');
-    document.getElementById('navGenre').classList.toggle('active', mode === 'genre');
+    // Chỉ giữ lại hiệu ứng sáng nút Home trên thanh Dock
+    const navHome = document.getElementById('navHome');
+    if (navHome) {
+        navHome.classList.toggle('active', mode === 'new' || mode === 'search');
+    }
     
     displayPage(1); 
 }
