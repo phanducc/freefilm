@@ -352,11 +352,37 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     
     .content-wrapper, .watch-wrapper { width: 100%; padding: 0;}
 
-    /* Lưới phim cân đối 2 phim 1 hàng full chiều ngang */
-    .ff-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; padding: 0 5px; }
-    .ff-thumb { height: 200px; }
-    .ff-card:hover { transform: scale(1.02); }
+/* --- TỐI ƯU 2 CỘT TRANG CHỦ CÂN ĐỐI --- */
+.ff-grid { 
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* Chia đúng 2 cột bằng nhau */
+    gap: 10px !important; /* Khoảng cách giữa 2 cột (giảm nhẹ để thêm không gian cho ảnh) */
+    width: 100% !important; 
+    padding: 0 !important; /* Bỏ padding để card sát ra lề cho đều */
+    margin: 0 auto;
+}
 
+.ff-card {
+    width: 100% !important;
+    margin: 0 !important; /* Triệt tiêu margin thừa gây lệch */
+    background: #1a1a24;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.ff-thumb { 
+    height: 240px !important; /* Tăng chiều cao ảnh một chút để tỷ lệ 2 cột nhìn "sang" hơn */
+    width: 100%;
+    object-fit: cover;
+}
+
+.ff-title {
+    font-size: 13px !important; /* Chữ nhỏ lại một chút để không bị rớt dòng quá nhiều trên mobile */
+    padding: 8px 5px;
+    line-height: 1.4;
+}
     /* Header cân đối full 100% */
     .top-header { flex-direction: column; gap: 15px; position: static; background: transparent; padding: 10px 0 20px 0;}
     .main-categories { width: 100%; justify-content: center; flex-wrap: wrap; gap: 12px; padding: 0 5px; }
@@ -390,7 +416,8 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     .player-container { margin: 0; }
     
     /* Dock điều khiển player cân đối (khối 2x2) */
-    .player-controls-dock { 
+    .player-controls-dock {
+        margin-top: 5px !important; 
         flex-wrap: wrap; 
         justify-content: space-between; 
         gap: 12px; 
@@ -409,10 +436,38 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     /* Bảng Meta Info 1 cột dọc */
     .movie-meta-info { grid-template-columns: 1fr; width: 100%; }
     
-    /* Danh sách tập phim cân đối */
-    .episodes-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-    .ep-btn { padding: 12px 8px; font-size: 13px; flex: 1; min-width: 0;}
-    
+/* --- DANH SÁCH TẬP PHIM: Ô VUÔNG 5 CỘT --- */
+    .episodes-grid {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important; /* Chia đúng 5 cột đều nhau */
+        gap: 8px !important; /* Khoảng cách giữa các ô */
+        width: 100% !important;
+        padding: 5px 0 !important;
+    }
+
+    .ep-btn {
+        width: 100% !important;
+        aspect-ratio: 1 / 1 !important; /* ⚡ QUAN TRỌNG: Tạo hình vuông tuyệt đối */
+        display: flex !important;
+        align-items: center; /* Căn chữ giữa theo chiều dọc */
+        justify-content: center; /* Căn chữ giữa theo chiều ngang */
+        padding: 0 !important; /* Bỏ padding để không làm lệch hình vuông */
+        margin: 0 !important;
+        font-size: 13px !important;
+        border-radius: 8px !important; /* Bo góc nhẹ cho đẹp */
+        background: #2a2a35;
+        color: #fff;
+        border: 1px solid #333;
+        transition: 0.3s;
+    }
+
+    /* Hiệu ứng khi tập đang được chọn */
+    .ep-btn.active {
+        background: #ff4500 !important;
+        border-color: #ff4500 !important;
+        box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+    }
+
     /* Khung Trailer đẩy xuống dưới cột diễn viên */
     #sideTrailerContainer { margin-bottom: 25px; }
 }
