@@ -264,11 +264,14 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
    TỐI ƯU HÓA MOBILE (ĐIỆN THOẠI & TABLET)
    ========================================= */
 @media (max-width: 1024px) {
+    /* ⚡ MỞ KHÓA CUỘN CHO MOBILE (Sửa lỗi bị đơ không vuốt được) */
+    body { overflow-y: auto !important; overflow-x: hidden; }
+
     /* 1. Xếp chồng toàn bộ cục diện thay vì nằm ngang */
     .app-layout {
-        flex-direction: column; /* Xếp dọc dọc */
-        overflow-y: auto; /* Cho phép cuộn toàn bộ trang */
-        height: auto;
+        flex-direction: column;
+        overflow: visible !important; /* Bỏ khóa cuộn của layout */
+        height: auto !important;
         min-height: 100vh;
         padding: 15px;
         padding-bottom: 90px; /* Chừa một khoảng trống dưới cùng để không bị thanh Dock che mất */
@@ -283,14 +286,14 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
         width: 100%;
         height: 70px;
         flex-direction: row;
-        background: rgba(26, 26, 36, 0.95); /* Màu nền hơi trong suốt */
+        background: rgba(26, 26, 36, 0.95);
         backdrop-filter: blur(10px);
-        z-index: 9999; /* Luôn nổi lên trên cùng */
+        z-index: 9999;
         padding: 0;
         border-radius: 0;
-        border-top: 1px solid #333; /* Đường viền phân cách mỏng */
+        border-top: 1px solid #333;
     }
-    .top-logo { display: none; } /* Ẩn cái Logo to ở thanh dưới đi cho gọn */
+    .top-logo { display: none; }
     .left-dock { width: 100%; padding: 0; border-radius: 0; box-shadow: none; background: transparent;}
     .dock-menu { flex-direction: row; justify-content: space-evenly; width: 100%; align-items: center; gap: 0;}
     .dock-btn { width: 45px; height: 45px; font-size: 20px; }
@@ -298,7 +301,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     /* 3. Nới rộng Cột Chính (Main Content) ra full 100% màn hình */
     .main-content {
         width: 100%;
-        overflow: visible; /* Bỏ cuộn riêng, dùng cuộn chung của cả trang */
+        overflow: visible !important; 
         padding-right: 0;
     }
     
@@ -306,19 +309,19 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     .top-header { flex-direction: column; gap: 15px; position: static; background: transparent; padding: 0 0 20px 0;}
     .main-categories { width: 100%; justify-content: center; flex-wrap: wrap; gap: 15px;}
     .header-search { width: 100%; max-width: none; }
-    .header-search:focus-within { width: 100%; } /* Tránh bị phóng to tràn viền khi gõ chữ */
+    .header-search:focus-within { width: 100%; }
 
     /* Chỉnh lưới phim thành 2 phim 1 hàng */
     .ff-grid { grid-template-columns: repeat(2, 1fr); gap: 12px;}
     .ff-thumb { height: 220px; }
 
     /* 4. Đẩy Bảng Phụ (Right Panel) xuống dưới cùng, sau phần lưới phim */
-    .right-panel {
+    .right-panel, .watch-right-panel {
         width: 100%;
         padding-left: 0;
-        overflow: visible;
+        overflow: visible !important;
         margin-top: 30px;
-        border-top: 2px dashed #333; /* Đường gạch đứt ngăn cách */
+        border-top: 2px dashed #333;
         padding-top: 30px;
     }
     
@@ -329,23 +332,16 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     /* =========================================
        TINH CHỈNH RIÊNG CHO TRANG XEM PHIM (WATCH)
        ========================================= */
-    .back-btn { width: 100%; text-align: center; } /* Nút quay lại to ra dễ bấm */
+    .back-btn { width: 100%; text-align: center; } 
     .player-controls-dock { 
-        flex-wrap: wrap; /* Cho phép rớt dòng */
+        flex-wrap: wrap; 
         justify-content: center; 
         gap: 10px; 
         padding: 15px 10px; 
     }
-    /* Chia 4 nút dưới player thành 2 hàng, mỗi hàng 2 nút */
     .control-btn { width: calc(50% - 5px); justify-content: center; padding: 10px 5px; font-size: 12px; }
-    
-    /* Bảng Meta Info 1 cột */
     .movie-meta-info { grid-template-columns: 1fr; }
-    
-    /* Danh sách tập thu nhỏ một chút */
     .ep-btn { padding: 10px; font-size: 13px; flex: 1; min-width: 80px;}
-
-    /* Khung Trailer đẩy xuống dưới */
     #sideTrailerContainer { margin-bottom: 20px; }
 }
 
@@ -353,5 +349,5 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
 @media (max-width: 480px) {
    .ff-thumb { height: 180px; }
    .top-card { height: 100px; }
-   .actors-list { grid-template-columns: repeat(2, 1fr); } /* 2 diễn viên 1 hàng */
+   .actors-list { grid-template-columns: repeat(2, 1fr); }
 }
