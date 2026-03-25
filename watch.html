@@ -65,7 +65,7 @@
             </div>
         </aside>
     </div>
-    
+
     <script>
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');
@@ -177,8 +177,8 @@
                         }
                     }
                     // Hiện điểm TMDB dưới tên phim
-                    const tmdbScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average).toFixed(1) : '0.0';
-                    if (!document.getElementById('movieTmdbScore')) {
+                    let rawScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0;
+                    let tmdbScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';                    if (!document.getElementById('movieTmdbScore')) {
                         const scorePara = document.createElement('p');
                         scorePara.id = 'movieTmdbScore';
                         scorePara.className = 'movie-tmdb-score';
