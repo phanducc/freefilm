@@ -112,7 +112,35 @@
                     document.title = `Đang xem: ${movie.name}`;
                     document.getElementById('movieTitle').innerText = movie.name;
                     document.getElementById('movieDesc').innerHTML = movie.content || movie.description || "Chưa có mô tả chi tiết.";
+                    // --- ⚡ HIỂN THỊ THÔNG TIN CHI TIẾT PHIM (META INFO) ---
+                    // Xóa khối info cũ nếu có (để tránh bị nhân đôi khi load lại)
+                    const oldInfo = document.getElementById('movieMetaInfo');
+                    if (oldInfo) oldInfo.remove();
 
+                    // Lấy dữ liệu an toàn
+                    const directorInfo = (movie.director && movie.director[0]) ? movie.director.join(', ') : 'Đang cập nhật';
+                    const countryInfo = (movie.country && movie.country.length > 0) ? movie.country[0].name : 'Đang cập nhật';
+                    const yearInfo = movie.year || 'Đang cập nhật';
+                    const timeInfo = movie.time || 'Đang cập nhật';
+                    const progressInfo = `${movie.episode_current || '?'} / ${movie.episode_total || '?'}`;
+                    const formatInfo = `${movie.quality || ''} ${movie.lang ? '- ' + movie.lang : ''}`;
+
+                    // Tạo bảng lưới thông tin
+                    const infoGrid = document.createElement('div');
+                    infoGrid.id = 'movieMetaInfo';
+                    infoGrid.className = 'movie-meta-info';
+                    infoGrid.innerHTML = `
+                        <div class="meta-item"><span>🎬 Đạo diễn:</span> ${directorInfo}</div>
+                        <div class="meta-item"><span>🌍 Quốc gia:</span> ${countryInfo}</div>
+                        <div class="meta-item"><span>📅 Phát hành:</span> ${yearInfo}</div>
+                        <div class="meta-item"><span>⏳ Thời lượng:</span> ${timeInfo}</div>
+                        <div class="meta-item"><span>📺 Tiến độ:</span> ${progressInfo}</div>
+                        <div class="meta-item"><span>✨ Định dạng:</span> ${formatInfo}</div>
+                    `;
+                    
+                    // Chèn cái bảng này vào ngay dưới phần Mô tả phim
+                    document.getElementById('movieDesc').parentNode.appendChild(infoGrid);
+                    
                     // --- ⚡ LOGIC RENDER NGUỒN PHÁT (SERVER) VÀ TẬP PHIM ---
                     if (!episodesArray || episodesArray.length === 0) { 
                         episodeListDiv.appendChild(createSafeNode('p', '', 'Chưa cập nhật link xem.')); 
