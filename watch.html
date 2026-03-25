@@ -79,18 +79,23 @@
         </main>
 
         <aside class="right-panel watch-right-panel">
-            <div class="right-section">
-                <h3 class="right-title">🎭 Diễn viên</h3>
-                <div id="actorsList" class="actors-list"><span class="actor-tag">Đang tải...</span></div>
-            </div>
-        </aside>
-    </div>
-    <div id="trailerModal" class="trailer-modal hidden">
-            <div class="trailer-content">
-                <button class="close-trailer" id="closeTrailer">❌</button>
-                <iframe id="trailerIframe" allowfullscreen></iframe>
-            </div>
-        </div>
+                    <div class="right-section" style="margin-bottom: 25px;">
+                        <h3 class="right-title" style="font-size: 16px;">🎬 Trailer / Hình Ảnh</h3>
+                        <div id="sideTrailerContainer" style="width: 100%; aspect-ratio: 16/9; background: #111; border-radius: 12px; overflow: hidden; border: 1px solid #333; position: relative;">
+                            <img id="placeholderImg" src="" style="width: 100%; height: 100%; object-fit: cover;" alt="Trailer Placeholder">
+                            <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #aaa;">
+                                <span style="font-size: 40px; margin-bottom: 10px;">▶️</span>
+                                <span style="font-size: 12px; text-align: center; padding: 0 10px;">Nhấn "Xem Trailer"<br>để phát video</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-section">
+                        <h3 class="right-title">🎭 Diễn viên</h3>
+                        <div id="actorsList" class="actors-list"><span class="actor-tag">Đang tải...</span></div>
+                    </div>
+                </aside>  
+      </div>
 <script>
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');
@@ -134,21 +139,27 @@
         document.getElementById('btnNextEp').onclick = () => { if(currentEpIndex < currentEpList.length - 1) playVideo(currentEpIndex + 1, episodeListDiv.children[currentEpIndex + 1]); };
         document.getElementById('btnReload').onclick = () => { iframePlayer.src = iframePlayer.src; };
         
-        // ⚡ SỰ KIỆN TRAILER
+ // ⚡ SỰ KIỆN TRAILER: Nhấn nút mới bơm Iframe vào khung bên phải
         document.getElementById('btnTrailer').onclick = () => {
-            if (movieTrailerUrl) {
+            if (movieTrailerUrl && movieTrailerUrl.trim() !== '') {
+                const sideTrailer = document.getElementById('sideTrailerContainer');
+                
+                // Đổi link watch Youtube thành link Embed
                 let embedUrl = movieTrailerUrl;
-                // Chuyển link watch Youtube thành link Embed
                 if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/');
-                document.getElementById('trailerIframe').src = embedUrl;
-                document.getElementById('trailerModal').classList.remove('hidden');
+                // Bơm thêm ?autoplay=1 để bấm nút xong là phát luôn
+                embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+
+                // Thay thế ảnh chờ bằng Iframe thật
+                sideTrailer.innerHTML = `<iframe src="${embedUrl}" style="width:100%; height:100%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
+                
+                // Cuộn mượt sang cột trailer
+                sideTrailer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                sideTrailer.style.boxShadow = '0 0 20px #ff4500';
+                setTimeout(() => sideTrailer.style.boxShadow = 'none', 1500);
             } else {
                 alert('Rất tiếc, bộ phim này chưa có Trailer cập nhật!');
             }
-        };
-        document.getElementById('closeTrailer').onclick = () => {
-            document.getElementById('trailerModal').classList.add('hidden');
-            document.getElementById('trailerIframe').src = ''; // Tắt tiếng khi đóng
         };
 
         // ⚡ HÀM LẤY PHIM LIÊN QUAN
@@ -225,6 +236,16 @@
                     document.title = `Đang xem: ${movie.name}`;
                     document.getElementById('movieTitle').innerText = movie.name;
                     movieTrailerUrl = movie.trailer_url || '';
+                    
+                    // ⚡ ĐỔ ẢNH DỰ PHÒNG VÀO KHUNG CHỜ TRAILER
+                    let thumb = movie.thumb_url || movie.poster_url || '';
+                    if (!thumb.startsWith('http')) {
+                        if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
+                        else if (!thumb.startsWith('/')) thumb = '/' + thumb;
+                        thumb = imgDomain + thumb;
+                    }
+                    const placeholderImg = document.getElementById('placeholderImg');
+                    if (placeholderImg) placeholderImg.src = thumb;
 
                     // Bảng Meta Info
                     const oldInfo = document.getElementById('movieMetaInfo');
