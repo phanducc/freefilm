@@ -307,7 +307,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
         justify-content: center; 
         align-items: center;
         width: 100%;
-        padding: 15px 0 15px 0; /* Tăng padding để logo nổi bật */
+        padding: 5px 0 5px 0; /* Tăng padding để logo nổi bật */
         order: -1;
     }
     
@@ -382,7 +382,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
 
     /* ⚡ TỰA PHIM: TO HƠN, ĐẬM HƠN ĐỂ CÂN VỚI ẢNH */
     .ff-title {
-        font-size: 50px !important; /* ⚡ Tăng từ 13px lên 15px */
+        font-size: 25px !important; /* ⚡ Tăng từ 13px lên 15px */
         font-weight: 600 !important; /* Làm đậm chữ lên */
         padding: 12px 8px !important; /* Thêm khoảng cách đệm */
         line-height: 1.3;
@@ -396,7 +396,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     }
 
     /* 7. HEADER TÌM KIẾM */
-    .top-header { flex-direction: column; gap: 15px; position: static; background: transparent; padding: 10px 0 20px 0;}
+    .top-header { flex-direction: column; gap: 15px; position: static; background: transparent; padding: 20px 0 25px 0;}
     .main-categories { width: 100%; justify-content: center; flex-wrap: wrap; gap: 12px; padding: 0 5px; }
     .cat-link { font-size: 14px; padding: 8px 14px; font-weight: 500;}
     
@@ -421,10 +421,10 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     /* --- DANH SÁCH TẬP PHIM: GỢI Ý ĐỂ 5 CỘT CHO DỄ BẤM --- */
     .episodes-grid {
         display: grid !important;
-        grid-template-columns: repeat(20, 1fr) !important; /* ⚡ Chỉnh về 5 để ngón tay dễ bấm hơn 10 */
-        gap: 10px !important;
+        grid-template-columns: repeat(10, 1fr) !important; /* ⚡ Chỉnh về 5 để ngón tay dễ bấm hơn 10 */
+        gap: 5px !important;
         width: 100% !important;
-        padding: 10px 0 !important;
+        padding: 5px 0 !important;
     }
 
     .ep-btn {
