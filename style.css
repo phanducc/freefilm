@@ -260,26 +260,98 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
 .iframe-fallback { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #111; color: #888; z-index: 0; font-size: 14px; }
 .player-container iframe { position: relative; z-index: 1; background: transparent; }
 
-/* Mobile */
-@media (max-width: 1200px) { .ff-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 768px) { 
-    .sidebar { width: 100%; height: 60px; flex-direction: row; justify-content: space-evenly; align-items: center; padding-top: 0; border-right: none; border-top: 1px solid #333; position: fixed; bottom: 0; left: 0; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); z-index: 999; }
-    .sidebar-icon { font-size: 22px; }
-    .main-content { padding-bottom: 120px; }
-    .top-header { flex-direction: column; height: auto; padding: 15px; gap: 15px; }
-    .brand { width: 100%; display: flex; justify-content: center; } 
-    .logo-img { height: 75px; } 
-    .header-search { width: 100%; } 
-    .content-wrapper { padding: 15px; }
-    .ff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } 
-    .ff-thumb { height: 200px; } 
-    .ff-title { font-size: 13px; }
-    .genre-modal { padding: 15px; }
-    .genre-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } 
-    .genre-btn { font-size: 12px; padding: 8px; }
-    .watch-wrapper { padding-top: 15px; }
-    .movie-detail-title { font-size: 20px; }
-    .episodes-grid { justify-content: flex-start; }
-    .ep-btn { padding: 10px 15px; min-width: 70px; }
-    .pagination { margin-bottom: 50px; }
+/* =========================================
+   TỐI ƯU HÓA MOBILE (ĐIỆN THOẠI & TABLET)
+   ========================================= */
+@media (max-width: 1024px) {
+    /* 1. Xếp chồng toàn bộ cục diện thay vì nằm ngang */
+    .app-layout {
+        flex-direction: column; /* Xếp dọc dọc */
+        overflow-y: auto; /* Cho phép cuộn toàn bộ trang */
+        height: auto;
+        min-height: 100vh;
+        padding: 15px;
+        padding-bottom: 90px; /* Chừa một khoảng trống dưới cùng để không bị thanh Dock che mất */
+        gap: 0;
+    }
+
+    /* 2. Biến Sidebar bên trái thành Thanh Bottom Nav dưới đáy màn hình */
+    .sidebar-wrapper {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        background: rgba(26, 26, 36, 0.95); /* Màu nền hơi trong suốt */
+        backdrop-filter: blur(10px);
+        z-index: 9999; /* Luôn nổi lên trên cùng */
+        padding: 0;
+        border-radius: 0;
+        border-top: 1px solid #333; /* Đường viền phân cách mỏng */
+    }
+    .top-logo { display: none; } /* Ẩn cái Logo to ở thanh dưới đi cho gọn */
+    .left-dock { width: 100%; padding: 0; border-radius: 0; box-shadow: none; background: transparent;}
+    .dock-menu { flex-direction: row; justify-content: space-evenly; width: 100%; align-items: center; gap: 0;}
+    .dock-btn { width: 45px; height: 45px; font-size: 20px; }
+
+    /* 3. Nới rộng Cột Chính (Main Content) ra full 100% màn hình */
+    .main-content {
+        width: 100%;
+        overflow: visible; /* Bỏ cuộn riêng, dùng cuộn chung của cả trang */
+        padding-right: 0;
+    }
+    
+    /* Chỉnh Header & Tìm kiếm trên Mobile */
+    .top-header { flex-direction: column; gap: 15px; position: static; background: transparent; padding: 0 0 20px 0;}
+    .main-categories { width: 100%; justify-content: center; flex-wrap: wrap; gap: 15px;}
+    .header-search { width: 100%; max-width: none; }
+    .header-search:focus-within { width: 100%; } /* Tránh bị phóng to tràn viền khi gõ chữ */
+
+    /* Chỉnh lưới phim thành 2 phim 1 hàng */
+    .ff-grid { grid-template-columns: repeat(2, 1fr); gap: 12px;}
+    .ff-thumb { height: 220px; }
+
+    /* 4. Đẩy Bảng Phụ (Right Panel) xuống dưới cùng, sau phần lưới phim */
+    .right-panel {
+        width: 100%;
+        padding-left: 0;
+        overflow: visible;
+        margin-top: 30px;
+        border-top: 2px dashed #333; /* Đường gạch đứt ngăn cách */
+        padding-top: 30px;
+    }
+    
+    /* Chia top 2 phim nằm ngang cạnh nhau cho đỡ dài */
+    .top-movies-list { flex-direction: row; gap: 10px; }
+    .top-card { width: calc(50% - 5px); height: 120px; }
+
+    /* =========================================
+       TINH CHỈNH RIÊNG CHO TRANG XEM PHIM (WATCH)
+       ========================================= */
+    .back-btn { width: 100%; text-align: center; } /* Nút quay lại to ra dễ bấm */
+    .player-controls-dock { 
+        flex-wrap: wrap; /* Cho phép rớt dòng */
+        justify-content: center; 
+        gap: 10px; 
+        padding: 15px 10px; 
+    }
+    /* Chia 4 nút dưới player thành 2 hàng, mỗi hàng 2 nút */
+    .control-btn { width: calc(50% - 5px); justify-content: center; padding: 10px 5px; font-size: 12px; }
+    
+    /* Bảng Meta Info 1 cột */
+    .movie-meta-info { grid-template-columns: 1fr; }
+    
+    /* Danh sách tập thu nhỏ một chút */
+    .ep-btn { padding: 10px; font-size: 13px; flex: 1; min-width: 80px;}
+
+    /* Khung Trailer đẩy xuống dưới */
+    #sideTrailerContainer { margin-bottom: 20px; }
+}
+
+/* Ép thêm cho màn hình điện thoại siêu nhỏ (iPhone cũ) */
+@media (max-width: 480px) {
+   .ff-thumb { height: 180px; }
+   .top-card { height: 100px; }
+   .actors-list { grid-template-columns: repeat(2, 1fr); } /* 2 diễn viên 1 hàng */
 }

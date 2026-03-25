@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreeFilm - Sống dai thành huyền thoại</title>
+    
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-layout">
         
-<div class="sidebar-wrapper">
+        <div class="sidebar-wrapper">
             <a href="index.html" class="top-logo">
                 <img src="logo.png" alt="FreeFilm" class="logo-img" onerror="this.outerHTML='<h2 class=\'logo-text\'>FREEFILM</h2>'">
             </a>
@@ -18,15 +19,15 @@
             <aside class="left-dock">
                 <div class="dock-menu">
                     <div class="dock-btn active" id="navHome" title="Trang Chủ">🏠</div>
-                    <div class="dock-btn" title="Yêu Thích (Comming Soon)">⭐</div>
+                    <div class="dock-btn" title="Yêu Thích (Coming Soon)">⭐</div>
                 </div>
             </aside>
         </div>
         
         <main class="main-content">
             <header class="top-header">
-                <nav class="main-categories" id="topNavCategories">
-                    </nav>
+                <nav class="main-categories" id="topNavCategories"></nav>
+                
                 <div class="header-search">
                     <input type="text" id="searchInput" placeholder="Tìm kiếm phim...">
                     <button id="searchBtn">🔍</button>
@@ -35,8 +36,9 @@
 
             <div class="content-wrapper">
                 <h2 class="section-title" id="page-title">Phim mới cập nhật</h2>
-                <div class="ff-grid" id="movie-grid">
-                    </div>
+                
+                <div class="ff-grid" id="movie-grid"></div>
+                
                 <div class="pagination" id="pagination"></div>
             </div>
         </main>
@@ -44,18 +46,17 @@
         <aside class="right-panel">
             <div class="right-section">
                 <h3 class="right-title">Top phim mới</h3>
-                <div class="top-movies-list" id="topMoviesList">
-                    </div>
+                <div class="top-movies-list" id="topMoviesList"></div>
             </div>
 
             <div class="right-section">
                 <h3 class="right-title">Thể loại</h3>
-                <div class="genres-pills" id="genreContainer">
-                    </div>
+                <div class="genres-pills" id="genreContainer"></div>
             </div>
         </aside>
 
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
