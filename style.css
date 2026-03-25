@@ -313,7 +313,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     
     .sidebar-wrapper .top-logo .logo-img { 
         display: block !important;
-        height: 65px !important; /* ⚡ Tăng từ 50px lên 65px cho to rõ */
+        height: 100px !important; /* ⚡ Tăng từ 50px lên 65px cho to rõ */
         width: auto !important; 
         object-fit: contain; 
     }
@@ -382,7 +382,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
 
     /* ⚡ TỰA PHIM: TO HƠN, ĐẬM HƠN ĐỂ CÂN VỚI ẢNH */
     .ff-title {
-        font-size: 15px !important; /* ⚡ Tăng từ 13px lên 15px */
+        font-size: 50px !important; /* ⚡ Tăng từ 13px lên 15px */
         font-weight: 600 !important; /* Làm đậm chữ lên */
         padding: 12px 8px !important; /* Thêm khoảng cách đệm */
         line-height: 1.3;
@@ -421,7 +421,7 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
     /* --- DANH SÁCH TẬP PHIM: GỢI Ý ĐỂ 5 CỘT CHO DỄ BẤM --- */
     .episodes-grid {
         display: grid !important;
-        grid-template-columns: repeat(5, 1fr) !important; /* ⚡ Chỉnh về 5 để ngón tay dễ bấm hơn 10 */
+        grid-template-columns: repeat(20, 1fr) !important; /* ⚡ Chỉnh về 5 để ngón tay dễ bấm hơn 10 */
         gap: 10px !important;
         width: 100% !important;
         padding: 10px 0 !important;
