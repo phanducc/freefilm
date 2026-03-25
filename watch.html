@@ -8,23 +8,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-layout">
-        <aside class="sidebar">
-            <div class="sidebar-icon" onclick="window.location.href='index.html'" title="Trang Chủ">🔥</div>
-            <div class="sidebar-icon active" title="Đang Xem">▶️</div>
-        </aside>
+<div class="app-layout">
+        <div class="sidebar-wrapper">
+            <a href="index.html" class="top-logo">
+                <img src="logo.png" alt="FreeFilm" class="logo-img" onerror="this.outerHTML='<h2 class=\'logo-text\'>FREEFILM</h2>'">
+            </a>
+            <aside class="left-dock">
+                <div class="dock-menu">
+                    <div class="dock-btn" onclick="window.location.href='index.html'" title="Trang Chủ">🏠</div>
+                    <div class="dock-btn active" title="Đang Xem">▶️</div>
+                </div>
+            </aside>
+        </div>
 
         <main class="main-content">
-            <header class="top-header">
-                <div class="brand">
-                    <a href="index.html" class="logo-link"><img src="logo.png" alt="FreeFilm Logo" class="logo-img"></a>
-                </div>
-                <div class="header-actions">
-                    <button class="back-btn" onclick="window.location.href='index.html'">🔙 Quay Lại</button>
-                </div>
+            <header class="top-header" style="justify-content: flex-end; margin-bottom: 15px;">
+                <button class="back-btn" onclick="window.location.href='index.html'">🔙 Quay Lại</button>
             </header>
 
-            <div class="content-wrapper watch-wrapper">
+            <div class="content-wrapper watch-wrapper" style="padding-top: 0;">
                 <div class="player-container">
                     <iframe id="iframePlayer" allowfullscreen scrolling="no"></iframe>
                 </div>
@@ -45,11 +47,6 @@
                 </div>
 
                 <div class="meta-section">
-                    <h3 class="meta-title">🎭 Diễn viên</h3>
-                    <div id="actorsList" class="actors-list"><span class="actor-tag">Đang tải...</span></div>
-                </div>
-
-                <div class="meta-section">
                     <h3 class="meta-title">🖼️ Hình ảnh</h3>
                     <div id="imagesGallery" class="images-gallery"><span class="actor-tag">Đang tải...</span></div>
                 </div>
@@ -60,8 +57,15 @@
                 </div>
             </div>
         </main>
-    </div>
 
+        <aside class="right-panel watch-right-panel">
+            <div class="right-section">
+                <h3 class="right-title">🎭 Diễn viên</h3>
+                <div id="actorsList" class="actors-list"><span class="actor-tag">Đang tải...</span></div>
+            </div>
+        </aside>
+    </div>
+    
     <script>
         const slug = new URLSearchParams(window.location.search).get('slug');
         const iframePlayer = document.getElementById('iframePlayer');

@@ -49,23 +49,35 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
 .ff-card-footer { margin-top: 15px; }
 .blue-underline { width: 100%; height: 3px; background: #00e5ff; border-radius: 2px; box-shadow: 0 0 8px rgba(0, 229, 255, 0.5); transition: 0.3s; }
 
-/* 3. BẢNG PHỤ (PHẢI) */
-.right-panel { width: 320px; background: transparent; flex-shrink: 0; overflow-y: auto; padding-left: 10px; }
-.right-panel::-webkit-scrollbar { display: none; }
-.right-section { margin-bottom: 40px; }
-.right-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #fff; }
+/* 3. BẢNG PHỤ (PHẢI) - ĐÃ KHÓA CUỘN (STATIC) & TỐI ƯU KHÔNG GIAN */
+.right-panel { width: 320px; background: transparent; flex-shrink: 0; padding-left: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.right-section { margin-bottom: 25px; } /* Ép nhẹ margin để vừa màn hình */
+.right-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #fff; }
 
-.top-movies-list { display: flex; flex-direction: column; gap: 20px; }
-.top-card { position: relative; width: 100%; height: 160px; border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+.top-movies-list { display: flex; flex-direction: column; gap: 12px; } /* Ép nhẹ khoảng cách 2 phim */
+.top-card { position: relative; width: 100%; height: 135px; border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.3s; } /* Giảm chiều cao thẻ 1 chút */
 .top-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0,0,0,0.6); }
 .top-card img { width: 100%; height: 100%; object-fit: cover; }
-.top-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 15px; }
+.top-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 70%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; }
 .top-card-title { font-size: 14px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;}
 .top-card-info { font-size: 11px; color: #ffd700; display: flex; gap: 10px; align-items: center; }
 
-.genres-pills { display: flex; flex-wrap: wrap; gap: 10px; }
-.genre-pill { background: #1a1a24; border: 1px solid #333; color: #aaa; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.3s; }
+.genres-pills { display: flex; flex-wrap: wrap; gap: 8px; } /* Ép nhẹ khoảng cách các nút thể loại */
+.genre-pill { background: #1a1a24; border: 1px solid #333; color: #aaa; padding: 7px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.3s; }
 .genre-pill:hover, .genre-pill.active { background: #ff4500; border-color: #ff4500; color: #fff; }
+
+/* =========================================
+   TÙY CHỈNH CỘT PHẢI CHO TRANG XEM PHIM
+   ========================================= */
+.watch-right-panel {
+    overflow-y: auto !important; /* Mở khóa cuộn dọc */
+    padding-right: 5px; /* Cách lề một chút cho đẹp */
+}
+
+/* Trang trí thanh cuộn cột Diễn viên thành màu Cam xịn xò */
+.watch-right-panel::-webkit-scrollbar { width: 6px; }
+.watch-right-panel::-webkit-scrollbar-track { background: transparent; }
+.watch-right-panel::-webkit-scrollbar-thumb { background: #ff4500; border-radius: 10px; }
 
 /* LOADER & PHÂN TRANG */
 .loader-container { display: none; justify-content: center; align-items: center; padding: 40px; grid-column: 1 / -1; width: 100%; }

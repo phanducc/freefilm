@@ -82,6 +82,7 @@ function setMode(mode, query, title) {
     displayPage(1); 
 }
 
+// HÀM 1: LƯỚI PHIM CHÍNH
 function renderMovies(movies, page) {
     movieGrid.innerHTML = '';
     if (!movies || movies.length === 0) {
@@ -92,7 +93,9 @@ function renderMovies(movies, page) {
     const startIndex = (page - 1) * 24;
 
     movies.forEach((movie, index) => {
-        const type = (movie.type === 'series' || movie.type === 'hoathinh') ? 'Phim Bộ' : 'Phim Lẻ';
+        // ⚡ NÂNG CẤP 1: Bắt chuẩn type là 'series' (Phim Bộ) và 'single' (Phim Lẻ)
+        const type = (movie.type === 'series') ? 'Phim Bộ' : 'Phim Lẻ';
+        
         const card = createNode('div', 'ff-card');
         card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
         
@@ -108,9 +111,10 @@ function renderMovies(movies, page) {
         const tags = createNode('div', 'ff-tags');
         tags.appendChild(createNode('span', 'tag-status', type));
         
-        // Hiện điểm TMDB thay cho chất lượng
-        const tmdbScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average).toFixed(1) : '0.0';
-        const tmdbTag = createNode('span', 'tag-tmdb', `★ ${tmdbScore}`);
+        // ⚡ NÂNG CẤP 2: Lấy điểm, nếu không có hoặc bằng 0 thì hiển thị N/A
+        let rawScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0;
+        let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
+        const tmdbTag = createNode('span', 'tag-tmdb', `★ ${displayScore}`);
         tags.appendChild(tmdbTag);
 
         const footer = createNode('div', 'ff-card-footer');
@@ -121,11 +125,11 @@ function renderMovies(movies, page) {
     });
 }
 
-// Hiển thị 2 phim mới nhất ở cột phải
+// HÀM 2: HIỂN THỊ 2 PHIM MỚI NHẤT Ở CỘT PHẢI
 function renderTopMovies(movies) {
     if (!topMoviesList) return;
     topMoviesList.innerHTML = '';
-    const top2 = movies.slice(0, 2); // Cắt lấy đúng 2 phim
+    const top2 = movies.slice(0, 2); 
     
     top2.forEach(movie => {
         const card = createNode('div', 'top-card');
@@ -138,8 +142,12 @@ function renderTopMovies(movies) {
         const title = createNode('h4', 'top-card-title', movie.name);
         
         const info = createNode('div', 'top-card-info');
-        const tmdbScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average).toFixed(1) : '0.0';
-        info.innerHTML = `<span>▶ Xem ngay</span> <span>⭐ ${tmdbScore}</span>`;
+        
+        // ⚡ NÂNG CẤP 2 (Cho cột phải): Xử lý điểm 0 -> N/A
+        let rawScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0;
+        let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
+        
+        info.innerHTML = `<span>▶ Xem ngay</span> <span>⭐ ${displayScore}</span>`;
 
         overlay.append(title, info);
         card.append(img, overlay);
