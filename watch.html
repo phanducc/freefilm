@@ -30,9 +30,6 @@
                 <div class="player-container">
                     <iframe id="iframePlayer" allowfullscreen scrolling="no"></iframe>
                 </div>
-                <div class="player-container">
-                    <iframe id="iframePlayer" allowfullscreen scrolling="no"></iframe>
-                </div>
                 
                 <div class="player-controls-dock">
                     <button class="control-btn" id="btnPrevEp"><span>⏮️</span> Tập trước</button>
@@ -60,10 +57,6 @@
                     <div id="imagesGallery" class="images-gallery"><span class="actor-tag">Đang tải...</span></div>
                 </div>
 
-                <div class="meta-section">
-                    <h3 class="meta-title">🏷️ Từ khóa</h3>
-                    <div id="keywordsList" class="keywords-list"><span class="actor-tag">Đang tải...</span></div>
-                </div>
                 <div class="meta-section">
                     <h3 class="meta-title">🏷️ Từ khóa</h3>
                     <div id="keywordsList" class="keywords-list"><span class="actor-tag">Đang tải...</span></div>
@@ -236,7 +229,7 @@
                     document.title = `Đang xem: ${movie.name}`;
                     document.getElementById('movieTitle').innerText = movie.name;
                     movieTrailerUrl = movie.trailer_url || '';
-                    
+
                     // ⚡ ĐỔ ẢNH DỰ PHÒNG VÀO KHUNG CHỜ TRAILER
                     let thumb = movie.thumb_url || movie.poster_url || '';
                     if (!thumb.startsWith('http')) {
