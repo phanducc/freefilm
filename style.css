@@ -261,195 +261,120 @@ body { background: #0d0d12; color: #fff; overflow: hidden; }
 .player-container iframe { position: relative; z-index: 1; background: transparent; }
 
 /* ============================================================================
-   TỐI ƯU HÓA MOBILE v0.0.1 - BẢN TINH CHỈNH CÂN ĐỐI CHỮ & LOGO
+   TỐI ƯU MOBILE v0.0.1 - PHIÊN BẢN CÂN ĐỐI TUYỆT ĐỐI
+   Logo gọn - Search rộng - Poster tỉ lệ Poster chuẩn (2:3)
    ============================================================================ */
 @media (max-width: 1024px) {
-    /* 1. KHOÁ THANH TRƯỢT NGANG */
+    /* 1. MỞ KHÓA CUỘN DỌC & KHOÁ CỨNG CUỘN NGANG */
     html, body {
         overflow-x: hidden !important;
         width: 100%;
         max-width: 100%;
-        box-sizing: border-box;
         overflow-y: auto !important;
     }
-    
-    * { box-sizing: border-box; }
 
-    /* 2. CẤU TRÚC APP-LAYOUT */
     .app-layout {
         flex-direction: column;
-        overflow: visible !important;
-        height: auto !important;
-        min-height: 100vh;
-        padding: 15px;
-        padding-bottom: 90px;
+        padding: 10px 12px; /* Padding hai bên vừa phải để khung search và phim rộng ra */
+        padding-bottom: 85px;
         gap: 0;
-        width: 100%;
-        max-width: 100%;
     }
 
-    /* 3. SIDEBAR-WRAPPER */
-    .sidebar-wrapper {
-        position: static;
+    /* 2. LOGO: RÚT NGẮN KHOẢNG CÁCH TRÊN DƯỚI */
+    .sidebar-wrapper .top-logo {
+        display: flex !important;
+        justify-content: center;
+        width: 100%;
+        padding: 5px 0 10px 0; /* Thu hẹp tối đa khoảng cách */
+        margin: 0;
+        order: -2;
+    }
+    .sidebar-wrapper .top-logo .logo-img {
+        height: 35px !important; /* Logo nhỏ gọn hơn để tiết kiệm diện tích */
+    }
+
+    /* 3. KHUNG SEARCH: TĂNG CHIỀU RỘNG TỐI ĐA */
+    .top-header {
         display: flex;
         flex-direction: column;
-        width: 100%;
-        padding: 0;
-        background: transparent;
-        margin-bottom: 10px;
-        border: none;
-        order: -1;
+        padding: 0 0 15px 0;
+        gap: 12px;
     }
-
-    /* ⚡ 4. LOGO: TĂNG KÍCH THƯỚC TO & RÕ NÉT HƠN */
-    .sidebar-wrapper .top-logo {
-        display: flex !important; 
-        justify-content: center; 
-        align-items: center;
-        width: 100%;
-        padding: 5px 0 5px 0; /* Tăng padding để logo nổi bật */
-        order: -1;
-    }
-    
-    .sidebar-wrapper .top-logo .logo-img { 
-        display: block !important;
-        height: 100px !important; /* ⚡ Tăng từ 50px lên 65px cho to rõ */
-        width: auto !important; 
-        object-fit: contain; 
-    }
-
-    /* 5. BOTTOM NAVIGATION */
-    .left-dock {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        flex-direction: row;
-        background: rgba(26, 26, 36, 0.95);
-        backdrop-filter: blur(10px);
-        z-index: 9999;
-        padding: 0;
-        border-radius: 0;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-        border-top: 1px solid #333;
-        margin: 0;
-    }
-    
-    .dock-menu { flex-direction: row; justify-content: space-evenly; width: 100%; align-items: center; gap: 0;}
-    .dock-btn { width: 45px; height: 45px; font-size: 20px; display: flex; align-items: center; justify-content: center; border-radius: 10px; }
-    .dock-btn.active { color: #fff; background: rgba(255, 69, 0, 0.2); }
-
-    /* 6. MAIN CONTENT */
-    .main-content {
-        width: 100%;
-        max-width: 100%;
-        overflow: visible !important;
-        padding-right: 0;
-        margin-top: 0;
-    }
-    
-    .content-wrapper, .watch-wrapper { width: 100%; padding: 0;}
-
-    /* --- TỐI ƯU 2 CỘT TRANG CHỦ CÂN ĐỐI --- */
-    .ff-grid { 
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 15px !important; /* Tăng khoảng cách một chút cho thoáng */
-        width: 100% !important; 
-        padding: 0 !important;
+    .header-search {
+        width: 100% !important; /* Chiều rộng lớn hơn, khớp với lưới phim */
+        max-width: none;
         margin: 0 auto;
     }
-
-    .ff-card {
-        height: auto !important;
-        width: 100% !important;
-        margin: 0 !important;
-        background: #1a1a24;
-        border-radius: 12px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+    .header-search input {
+        height: 40px;
+        font-size: 14px;
     }
 
-    .ff-thumb { 
-        height: auto !important;
+    /* 4. THỂ LOẠI (CATEGORIES): GỌN GÀNG */
+    .main-categories {
         width: 100%;
-        object-fit: cover;
-        aspect-ratio: 9/16; /* Tỷ lệ poster đứng */
-        border-radius: 12px 12px 0 0 !important; /* Chỉ bo góc trên */
+        justify-content: space-between; /* Dàn đều 4 thể loại chính */
+        padding: 0 5px;
+    }
+    .cat-link {
+        font-size: 12px;
+        padding: 5px 10px;
+        white-space: nowrap;
     }
 
-    /* ⚡ TỰA PHIM: TO HƠN, ĐẬM HƠN ĐỂ CÂN VỚI ẢNH */
-    .ff-title {
-        font-size: 25px !important; /* ⚡ Tăng từ 13px lên 15px */
-        font-weight: 600 !important; /* Làm đậm chữ lên */
-        padding: 12px 8px !important; /* Thêm khoảng cách đệm */
-        line-height: 1.3;
-        color: #fff;
-        /* Giới hạn 2 dòng để card luôn đều nhau */
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* 7. HEADER TÌM KIẾM */
-    .top-header { flex-direction: column; gap: 15px; position: static; background: transparent; padding: 20px 0 25px 0;}
-    .main-categories { width: 100%; justify-content: center; flex-wrap: wrap; gap: 12px; padding: 0 5px; }
-    .cat-link { font-size: 14px; padding: 8px 14px; font-weight: 500;}
-    
-    .header-search { width: 100%; max-width: none; padding: 0 5px;}
-
-    /* 8. TRANG XEM PHIM (WATCH) */
-    .back-btn { width: 100%; text-align: center; justify-content: center; margin: 0 0 15px 0;} 
-    .player-controls-dock {
-        margin-top: 10px !important; 
-        flex-wrap: wrap; 
-        justify-content: space-between; 
-        gap: 12px; 
-        padding: 15px; 
-    }
-    .control-btn { 
-        width: calc(50% - 6px);
-        justify-content: center; 
-        padding: 12px 5px; 
-        font-size: 13px; 
-    }
-
-    /* --- DANH SÁCH TẬP PHIM: GỢI Ý ĐỂ 5 CỘT CHO DỄ BẤM --- */
-    .episodes-grid {
+    /* 5. THẺ PHIM: TỈ LỆ 2:3 (CHUẨN POSTER) - CÂN ĐỐI HƠN 9:16 */
+    .ff-grid {
         display: grid !important;
-        grid-template-columns: repeat(10, 1fr) !important; /* ⚡ Chỉnh về 5 để ngón tay dễ bấm hơn 10 */
-        gap: 5px !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important; /* Khoảng cách giữa 2 cột phim */
         width: 100% !important;
-        padding: 5px 0 !important;
+    }
+    
+    .ff-card {
+        background: #16161f;
+        border-radius: 12px;
+        padding: 6px; /* Tạo viền bao quanh ảnh cho phim "nhỏ" lại và tinh tế hơn */
     }
 
-    .ep-btn {
+    .ff-thumb {
         width: 100% !important;
-        aspect-ratio: 1 / 1 !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px !important; /* Chữ số tập to hơn */
-        font-weight: bold;
-        border-radius: 10px !important;
+        height: auto !important;
+        /* Chuyển từ 9:16 sang 2:3 để poster ngắn lại, nhìn cân đối không bị quá dài */
+        aspect-ratio: 2 / 3 !important; 
+        object-fit: cover !important;
+        border-radius: 8px;
     }
 
-    /* 9. PANEL PHẢI (TRAILER & DIỄN VIÊN) */
+    .ff-title {
+        font-size: 12px !important;
+        font-weight: 600;
+        margin: 6px 2px !important;
+        line-height: 1.3;
+        height: 32px; /* Ép tiêu đề hiện tối đa 2 dòng cho cân bằng */
+        overflow: hidden;
+    }
+
+    /* 6. THANH ĐIỀU HƯỚNG DƯỚI (BOTTOM NAV) */
+    .left-dock {
+        position: fixed;
+        bottom: 0; left: 0; width: 100%;
+        height: 65px;
+        background: rgba(20, 20, 28, 0.98);
+        border-top: 1px solid #222;
+        z-index: 10000;
+    }
+    .dock-menu { flex-direction: row; justify-content: space-around; height: 100%; }
+    .dock-btn { width: 45px; height: 45px; font-size: 20px; }
+
+    /* 7. PHẦN RIGHT PANEL (DƯỚI LƯỚI PHIM) */
     .right-panel, .watch-right-panel {
         width: 100%;
-        margin-top: 35px;
-        border-top: 2px dashed #333;
-        padding-top: 30px;
+        margin-top: 30px;
+        border-top: 1px solid #222;
+        padding-top: 20px;
     }
-}
-
-/* Tinh chỉnh cho điện thoại siêu nhỏ */
-@media (max-width: 480px) {
-   .sidebar-wrapper .top-logo .logo-img { height: 55px !important; }
-   .ff-title { font-size: 14px !important; }
-   .episodes-grid { grid-template-columns: repeat(5, 1fr); }
+    
+    /* 2 Phim top nằm ngang */
+    .top-movies-list { flex-direction: row; gap: 10px; }
+    .top-card { width: 50%; height: 100px; }
 }
