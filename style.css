@@ -229,6 +229,7 @@ body {
         box-sizing: border-box !important;
         overflow-x: hidden !important;
         padding-top: 170px !important;
+        padding-bottom: 80px !important;
     }
 
     /* 2. HEADER: LOGO TO GẤP 4 LẦN & MENU THU NHỎ */
@@ -312,6 +313,26 @@ body {
         margin: 0 !important;
     }
 
+    /* Thu nhỏ tiêu đề phim nổi bật */
+    .hero-card h2, .banner-item h2, .hero-title { 
+        font-size: 18px !important; /* Giảm size chữ tiêu đề */
+        margin-bottom: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Thu nhỏ nút "Xem ngay" */
+    .hero-card button, .hero-card .btn-play, .watch-now {
+        padding: 6px 14px !important; /* Thu nhỏ phần đệm của nút */
+        font-size: 12px !important;   /* Chữ trong nút nhỏ lại */
+        border-radius: 20px !important; /* Bo tròn gọn gàng hơn */
+    }
+
+    /* Nếu có icon trong nút, thu nhỏ nó luôn */
+    .hero-card button svg, .hero-card button i {
+        width: 14px !important;
+        height: 14px !important;
+    }
+    
     /* 5. FIX LỆCH LƯỚI PHIM VÀ THU NHỎ (ÉP CHẶT 2 CỘT) */
     .movies-grid, .ff-grid, #moviesGrid, .related-grid {
         display: grid !important;
