@@ -167,8 +167,25 @@ body {
 .thumb-wrapper { overflow: hidden; border-radius: 16px; margin-bottom: 12px; aspect-ratio: 2/3; }
 .movie-thumb { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
 .movie-title { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
-.movie-meta { display: flex; gap: 10px; font-size: 13px; color: #d0d8e0; font-weight: 600; }
-.movie-score { color: #f5c518; } /* Màu vàng TMDB */
+/* Sửa lại class này để đẩy 2 item ra 2 góc */
+.movie-meta { 
+    display: flex; 
+    justify-content: space-between; /* ⚡ Thuộc tính này đẩy ra 2 bên */
+    align-items: center;
+    font-size: 13px; 
+    color: #d0d8e0; 
+    font-weight: 600; 
+}
+
+/* Thêm một chút màu sắc cho loại phim (tùy chọn) */
+.movie-type-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #fff;
+    letter-spacing: 0.5px;
+}.movie-score { color: #f5c518; } /* Màu vàng TMDB */
 
 /* --- LOADER & PHÂN TRANG --- */
 .loader-container { display: flex; justify-content: center; padding: 50px; grid-column: 1/-1; }

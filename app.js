@@ -172,10 +172,24 @@ function renderMoviesGrid(movies) {
         card.className = 'movie-card';
         card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
 
-        let rawScore = (movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0;
+        // 1. ⚡ Ưu tiên lấy điểm IMDb, nếu phim nào chưa có IMDb thì lấy TMDB bù vào, nếu không có cả hai thì để N/A
+        let rawScore = 0;
+        if (movie.imdb && movie.imdb.vote_average) {
+            rawScore = parseFloat(movie.imdb.vote_average);
+        } else if (movie.tmdb && movie.tmdb.vote_average) {
+            rawScore = parseFloat(movie.tmdb.vote_average);
+        }
         let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
+
+        // 2. ⚡ Chỉ lấy Phim Bộ và Phim Lẻ
+        let typeText = 'Phim Lẻ'; // Mặc định là Phim Lẻ
+        if (movie.type === 'series') {
+            typeText = 'Phim Bộ'; // Nếu type là 'series' thì đổi thành Phim Bộ
+        }
+
         const year = movie.year || new Date().getFullYear();
 
+        // 3. Đổ HTML ra thẻ phim (Điểm bên trái, Loại bên phải)
         card.innerHTML = `
             <div class="thumb-wrapper">
                 <img src="${movie.full_thumb}" class="movie-thumb" alt="${movie.name}">
@@ -183,7 +197,7 @@ function renderMoviesGrid(movies) {
             <h3 class="movie-title">${movie.name}</h3>
             <div class="movie-meta">
                 <span class="movie-score">★ ${displayScore}</span>
-                <span>${year}</span>
+                <span class="movie-type-badge">${typeText}</span>
             </div>
         `;
         movieGrid.appendChild(card);
@@ -191,7 +205,6 @@ function renderMoviesGrid(movies) {
 }
 
 // --- Render Phân Trang ---
-// --- Render Phân Trang Thông Minh ---
 function renderPagination(currentPage, totalPages) {
     const pagDiv = document.getElementById('pagination');
     pagDiv.innerHTML = '';
