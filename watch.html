@@ -224,13 +224,13 @@
             
             // Mở khung tìm kiếm
             searchToggleBtn.onclick = () => {
-                navPill.classList.add('search-active');
+                navPill.classList.add('searching');
                 searchInput.focus();
             };
 
             // Đóng khung tìm kiếm
             closeSearchBtn.onclick = () => {
-                navPill.classList.remove('search-active');
+                navPill.classList.remove('searching');
                 searchInput.value = '';
             };
 
