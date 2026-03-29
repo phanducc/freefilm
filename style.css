@@ -1,442 +1,192 @@
 /* ============================================================================
-   TÊN DỰ ÁN   : FREEFILM v0.0.1 Glass Cinematic Redesign
-   MÔ TẢ       : Redesign hoàn toàn dựa trên phong cách Tối tối giản & Glassmorphism
+   FREEFILM - NEW CINEMATIC DESIGN (Dribbble Inspired)
    ============================================================================ */
-
-/* --- RESET & GLOBAL RULES --- */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-    background-color: #6a7b8a; /* Màu nền xanh xám như ảnh mẫu */
-    color: #fff; 
-    font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif; /* Phông Nunito xịn hơn */
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+
+body {
+    background-color: #7b8a97; /* Màu nền xanh xám như ảnh mẫu */
+    background-image: radial-gradient(circle at 50% 0%, #9baab8 0%, #7b8a97 50%, #5c6b78 100%);
+    color: #fff;
     min-height: 100vh;
     overflow-x: hidden;
+    padding-bottom: 50px;
 }
 
-/* Hiệu ứng Glowing cho tiêu đề (ff-glow) */
-.ff-glow { text-shadow: 0 0 20px rgba(255,255,255,0.4); }
-
-/* --- HEADER BỒNG BỀNH (GLASSMORPHISM) --- */
-.glass-header { 
-    position: fixed; /* Bám chặt trên đầu */
-    top: 0; 
-    left: 0; 
-    width: 100%; 
+/* --- HEADER GLASSMORPHISM --- */
+.glass-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
     padding: 20px 0;
     z-index: 1000;
 }
-.header-container { 
-    max-width: 1400px; /* Chiều rộng tối đa */
-    margin: 0 auto; 
-    padding: 0 40px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+.header-container {
+    max-width: 1400px; margin: 0 auto; padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
 }
+.logo-text { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 1px; text-decoration: none; }
+.logo img { height: 40px; }
+.header-right { width: 100px; } /* Giữ cân bằng Flexbox */
 
-/* Logo bên trái (Rút gọn) */
-.logo { text-decoration: none; display: flex; align-items: center;}
-.logo img { height: 40px; width: auto; object-fit: contain;}
-.logo-text { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 1px; }
-
-/* ⚡ THANH ĐIỀU HƯỚNG & TÌM KIẾM TƯƠNG TÁC (Glass Pill) */
-.nav-pill-container { 
-    display: flex; 
-    align-items: center; 
-    background: rgba(13, 13, 18, 0.85); /* Nền tối mờ */
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); /* Hiệu ứng kính */
-    border: 1px solid rgba(255,255,255,0.1); /* Viền mờ */
-    border-radius: 50px; 
+/* Nav Pill (Khung Điều Hướng Ở Giữa) */
+.nav-pill {
+    background: rgba(15, 20, 25, 0.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    display: flex; align-items: center;
     padding: 6px 6px 6px 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    height: 50px;
-    overflow: hidden; /* Giấu khung search ẩn */
     transition: all 0.4s ease;
-    position: relative; /* Cho search overlay */
-    width: auto;
-}
-
-/* 4 Thể loại chính ban đầu */
-.nav-links { 
-    display: flex; 
-    gap: 15px; 
-    margin: 0; 
-    opacity: 1;
-    transition: opacity 0.3s;
-}
-.nav-item { 
-    color: #aaa; 
-    font-size: 15px; 
-    font-weight: 600; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    white-space: nowrap;
-    padding: 8px 15px;
-    border-radius: 30px;
-}
-.nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
-
-/* Khung nhập liệu tìm kiếm chèn lên (Ban đầu ẩn) */
-.search-overlay {
-    display: flex;
-    align-items: center;
-    width: 0;
-    opacity: 0;
-    height: 100%;
-    pointer-events: none; /* Không cho tương tác khi đang ẩn */
-    position: absolute; /* Chèn lên menu thể loại */
-    top: 0;
-    right: 50px; /* Nằm bên trái nút kính lúp */
-    transform: translateX(100%);
-    transition: width 0.4s ease, transform 0.4s ease, opacity 0.3s;
+    height: 50px;
     overflow: hidden;
 }
-.search-overlay input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    width: 100%;
-    font-size: 15px;
-    padding: 0 10px;
-}
-.close-search-btn {
-    background: transparent;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 5px;
-    margin-right: 5px;
-}
-.close-search-btn:hover { color: #ff4500; }
 
-/* Nút Icon Kính Lúp Kính Mờ */
-.glass-btn { 
-    border: 1px solid rgba(255,255,255,0.1); 
-    background: transparent; 
-    color: #fff; 
-    transition: 0.3s; 
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+.nav-links { display: flex; gap: 5px; align-items: center; transition: opacity 0.3s; }
+.nav-item {
+    padding: 8px 16px; border-radius: 30px; font-size: 14px; font-weight: 600;
+    color: #a0aab2; cursor: pointer; transition: 0.3s; white-space: nowrap;
 }
-.glass-btn:hover { 
-    background: rgba(255,255,255,0.1); 
-    box-shadow: 0 0 15px rgba(255,255,255,0.2); 
-    transform: scale(1.05);
-}
-.search-toggle-btn { width: 38px; height: 38px; flex-shrink: 0;}
+.nav-item:hover { color: #fff; }
+.nav-item.active { background: #fff; color: #111; }
 
-/* Nút Yêu thích/Diễn viên ⭐ (Header Right) */
-.header-right { display: flex; align-items: center; gap: 15px; width: 40px; }
-.favorite-btn { width: 40px; height: 40px; font-size: 18px;}
+/* Trạng thái Tìm Kiếm (Khung Search đè lên) */
+.search-box {
+    display: none; align-items: center; width: 0; opacity: 0; transition: all 0.4s ease;
+}
+.search-box input {
+    background: transparent; border: none; outline: none; color: #fff; font-size: 15px;
+    width: 100%; padding: 0 10px; font-family: 'Nunito', sans-serif;
+}
+.search-box input::placeholder { color: #888; }
+.close-search { background: transparent; border: none; color: #aaa; cursor: pointer; font-size: 16px; padding: 0 10px; }
 
-/* ⚡ Kích hoạt trạng thái tìm kiếm (JS thêm class này) */
-.search-active .nav-pill-container {
-    width: 600px; /* Chiều rộng lớn hơn, bằng với thanh thể loại */
+.search-toggle-btn {
+    background: rgba(255,255,255,0.1); border: none; color: #fff; width: 38px; height: 38px;
+    border-radius: 50%; display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: 0.3s; margin-left: 10px; flex-shrink: 0;
 }
-.search-active .search-overlay {
-    width: calc(100% - 60px) !important; /* Chiếm hết chiều ngang trừ nút kính lúp */
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(0); /* Kéo vào trong màn hình */
-}
-.search-active .nav-links {
-    opacity: 0; /* Ẩn menu thể loại đi cho gọn */
-    pointer-events: none;
-}
-.search-active .search-toggle-btn {
-    background: rgba(255, 69, 0, 0.2);
-    border-color: #ff4500;
+.search-toggle-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* Animation Khi Bấm Search */
+/* Ẩn các nút menu khi đang tìm kiếm */
+.nav-pill.searching .nav-links { 
+    opacity: 0; 
+    visibility: hidden; 
+    position: absolute; /* Giúp khung search lấy trọn không gian */
 }
 
-/* ============================================================================
-   MAIN CONTENT (TRỤC GIỮA - TRANG CHỦ MỚI)
-   ============================================================================ */
-.main-container { 
-    max-width: 1400px; 
-    margin: 0 auto; 
-    padding: 100px 40px 0 40px; /* Padding trên chừa chỗ cho Header */
-    width: 100%;
-}
-
-.content-wrapper { padding: 0; width: 100%; }
-.section { margin-bottom: 25px; width: 100%; }
-.section-title { font-size: 26px; font-weight: 700; margin-bottom: 20px; color: #fff; }
-
-/* =========================================
-   PHẦN 1: 2 PHIM NGẪU NHIÊN PROMINENT (2:3 DỌC)
-   ========================================= */
-.hero-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 20px; 
-    width: 100%;
-}
-
-/* Thẻ phim prominent to và đứng tỉ lệ 2:3 */
-.prominent-card { 
-    background: rgba(20, 20, 28, 0.9); 
-    border-radius: 20px; 
-    padding: 10px; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    border: 1px solid rgba(255,255,255,0.05); 
+/* ⚡ TỐI ƯU KÍCH THƯỚC KHUNG TÌM KIẾM LIỀN MẠCH */
+.nav-pill.searching .search-box { 
     display: flex; 
-    flex-direction: column; 
-    position: relative;
-    aspect-ratio: 2 / 3 !important; /* Ép tỉ lệ Poster đứng chiếu rạp xịn */
-    overflow: hidden;
+    width: 380px; /* Độ rộng này sẽ vừa khớp với khu vực 4 nút menu cũ */
+    opacity: 1; 
 }
-.prominent-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
-.prominent-card .ff-thumb { 
-    width: 100%; 
-    height: auto; 
-    object-fit: cover; 
-    border-radius: 12px; 
-    margin-bottom: 15px; 
-}
-.prominent-card .ff-title { font-size: 18px; margin: 10px 5px; font-weight: 700; text-shadow: 0 0 10px rgba(255,255,255,0.4);}
-.prominent-card .ff-tags { padding: 0 5px; margin-bottom: 5px; }
+.nav-pill.searching .search-toggle-btn { display: none; }
 
-/* =========================================
-   PHẦN 2: TOÀN BỘ CÁC THỂ LOẠI (SCROLL SCALING PILLS)
-   ========================================= */
-.section-subtitle { color: #eee; font-size: 20px; margin-bottom: 15px; border-left: 3px solid #00e5ff; padding-left: 10px; text-transform: uppercase; font-weight: 700;}
-.genres-pills-scroll { 
+/* --- MAIN CONTAINER --- */
+.main-container { max-width: 1400px; margin: 0 auto; padding: 100px 40px 0 40px; }
+
+/* --- 1. HERO BANNERS (2 PHIM NGẪU NHIÊN NẰM NGANG) --- */
+.hero-section { margin-bottom: 30px; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.hero-card {
+    position: relative; border-radius: 24px; overflow: hidden; aspect-ratio: 21/9;
+    display: flex; align-items: flex-end; padding: 30px; cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: 0.3s;
+}
+.hero-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.25); }
+.hero-bg {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;
+}
+.hero-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+    background: linear-gradient(to right, rgba(20, 30, 48, 0.9) 0%, rgba(20, 30, 48, 0.4) 50%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 3; width: 60%; }
+.hero-title { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.btn-play {
+    background: #fff; color: #111; border: none; padding: 10px 20px; border-radius: 30px;
+    font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
+}
+.btn-play:hover { background: #e0e0e0; transform: scale(1.05); }
+
+/* --- 2. THỂ LOẠI (GENRES PILLS CUỘN NGANG) --- */
+.genres-section { margin-bottom: 40px; }
+.genres-scroll {
+    display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;
+    scrollbar-width: none; /* Firefox */
+}
+.genres-scroll::-webkit-scrollbar { display: none; } /* Chrome */
+.genre-pill {
+    background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 16px;
+    font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; white-space: nowrap; color: #fff;
+}
+.genre-pill:hover, .genre-pill.active { background: #fff; color: #111; }
+
+/* --- 3. LƯỚI PHIM MỚI CẬP NHẬT --- */
+.section-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.movies-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;
+}
+.movie-card {
+    background: transparent; border-radius: 16px; cursor: pointer; transition: 0.3s;
+}
+.movie-card:hover .movie-thumb { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+.thumb-wrapper { overflow: hidden; border-radius: 16px; margin-bottom: 12px; aspect-ratio: 2/3; }
+.movie-thumb { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+.movie-title { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+.movie-meta { display: flex; gap: 10px; font-size: 13px; color: #d0d8e0; font-weight: 600; }
+.movie-score { color: #f5c518; } /* Màu vàng TMDB */
+
+/* --- LOADER & PHÂN TRANG --- */
+.loader-container { display: flex; justify-content: center; padding: 50px; grid-column: 1/-1; }
+.spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.pagination { display: flex; justify-content: center; gap: 8px; margin-top: 50px; }
+.page-btn {
+    background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 10px 15px;
+    border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s;
+}
+.page-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
+.page-btn.active { background: #fff; color: #111; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Trang trí dấu ba chấm cho thanh phân trang */
+.page-dots { 
+    color: #888; 
+    font-weight: 800; 
+    font-size: 18px; 
     display: flex; 
-    gap: 15px; 
-    width: 100%;
-    justify-content: flex-start; /* Dàn đều trên PC */
-    overflow: visible;
-}
-.genre-pill { 
-    border: 1px solid rgba(255,255,255,0.1); 
-    border-radius: 50px; 
-    background: rgba(255,255,255,0.05);
-    transition: 0.3s;
-    color: #eee; font-size: 13px; font-weight: 600; padding: 10px 20px; cursor: pointer; text-transform: capitalize;
-    white-space: nowrap;
-}
-.genre-pill:hover { 
-    background: rgba(255,255,255,0.15); 
-    border-color: rgba(255,255,255,0.3);
-    color: #fff;
-}
-.genre-pill.active { 
-    background: #fff; 
-    border-color: #fff; 
-    color: #111;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); 
+    align-items: flex-end; /* Căn mép dưới cho ngang bằng với số */
+    padding-bottom: 5px;
+    letter-spacing: 2px;
 }
 
 /* =========================================
-   PHẦN 3: PHIM MỚI CẬP NHẬT (LƯỚI PHIM CANON 4 CỘT v0.0.1)
+   TỐI ƯU MOBILE
    ========================================= */
-.ff-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; width: 100%; }
-
-/* Thẻ phim canon 4 cộtv0.0.1 */
-.ff-card { 
-    background: transparent; 
-    border-radius: 16px; 
-    padding: 10px; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    border: 1px solid transparent; 
-    display: flex; 
-    flex-direction: column; 
-    position: relative;
-}
-.ff-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-8px); }
-.ff-card-header { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 10px; gap: 8px; width: 100%; overflow: hidden; }
-.ff-rank { background: #333; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;}
-.ff-title { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; flex: 1; }
-.ff-thumb { width: 100%; height: 260px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; transition: 0.3s;}
-.ff-card:hover .ff-thumb { box-shadow: 0 12px 20px rgba(0,0,0,0.6); }
-
-.ff-tags { display: flex; gap: 8px; justify-content: space-between; align-items: center;}
-.tag-tmdb { background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; color: #ffd700; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; white-space: nowrap;}
-.ff-card-footer { margin-top: 10px; padding: 0 5px;}
-.blue-underline { width: 100%; height: 3px; background: #00e5ff; border-radius: 2px; box-shadow: 0 0 8px rgba(0, 229, 255, 0.5); transition: 0.3s; }
-
-/* ==========================================
-   CỘT 3: BẢNG PHỤ (DIỄN VIÊN, TRAILERS, RATING)
-   BÁM CHẶT BÊN PHẢI PC (CŨ)
-   ========================================== */
-.right-panel { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 20px; 
-    flex-shrink: 0; 
-    width: 280px; 
-    padding: 10px; 
-    background: transparent; 
-    overflow-y: auto;
-    scrollbar-width: none;
-    order: 10;
-}
-.right-panel::-webkit-scrollbar { display: none; }
-
-.right-section { margin-bottom: 15px; padding: 0 10px;}
-.right-title { color: #fff; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
-
-/* Bảng Ratings */
-.ratings-box { background: rgba(13, 13, 18, 0.9); padding: 15px; border-radius: 12px; border: 1px solid #ff4500; display: flex; align-items: center; justify-content: space-evenly;}
-.tmdb-rating { text-align: center; }
-
-/* Bảng Trailers */
-.trailer-box { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #333; aspect-ratio: 16/9; width: 100%; background: #000;}
-.trailer-box:hover { border-color: rgba(255,255,255,0.3); }
-
-/* Danh sách Diễn viên (Chuẩn Avatar tròn) */
-.actors-list { 
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* 3 Diễn viên 1 hàng trên PC */
-    gap: 12px; 
-    width: 100%;
-}
-.actor-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; cursor: default; }
-.actor-img { 
-    width: 60px; 
-    height: 60px; 
-    border-radius: 50%; /* Khung tròn */
-    object-fit: cover; 
-    border: 2px solid #333; 
-    transition: 0.3s; 
-    background-color: #333; /* Màu nền */
-}
-.actor-card:hover .actor-img { border-color: rgba(255,255,255,0.4); transform: scale(1.05); }
-.actor-name { color: #ccc; font-size: 10px; line-height: 1.4; max-width: 100%; }
-
-/* LOADER & PHÂN TRANG */
-.loader-container { display: none; justify-content: center; align-items: center; padding: 40px; grid-column: 1 / -1; width: 100%; }
-.spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 40px 0; flex-wrap: wrap; }
-.page-btn { padding: 10px 16px; background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; }
-.page-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: #fff; }
-.page-btn.active { background: #fff; color: #111; border-color: #fff; box-shadow: 0 0 12px rgba(255,255,255,0.4); }
-.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.page-dots { color: #888; font-weight: bold; padding: 0 5px; font-size: 16px;}
-
-
-/* ============================================================================
-   TỐI ƯU HÓA MOBILE TOÀN DIỆN (ĐIỆN THOẠI & TABLET)
-   ============================================================================ */
 @media (max-width: 1024px) {
-    /* ⚡ KHOÁ CUỘN NGANG */
-    html, body {
-        overflow-x: hidden !important;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        overflow-y: auto !important;
-    }
-    
-    * { box-sizing: border-box; }
-
-    /* 1. CHUYỂN BỐ CỤC THÀNH 1 CỘT ĐỨNG CÂN ĐỐI */
-    .app-layout {
-        flex-direction: column; /* Xếp dọc các cột thay vì ngang */
-        overflow: visible !important; 
-        height: auto !important;
-        min-height: 100vh;
-        padding: 0;
-        gap: 0;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    /* Đổi vị trí các phần tử cho Mobile */
-    .glass-header { order: -2; position: static; padding: 10px 0; }
-    .main-container { order: -1; padding: 0 15px; margin: 0; }
-    .right-panel { order: 10; margin-top: 30px; border-top: 2px dashed #333;}
-
-    /* 2. HEADER MOBILE */
     .header-container { padding: 0 15px; }
-    .logo img { height: 30px; }
+    .main-container { padding: 80px 15px 0 15px; }
+    .header-right { display: none; }
     
-    /* ⚡ Thanh điều hướng tương tác MOBILE */
-    .search-active .nav-pill-container {
-        width: 250px; /* Thu hẹp lại trên mobile */
-    }
-    .search-active .search-overlay input { font-size: 13px; }
-    .search-active .search-overlay {
-        width: calc(100% - 50px) !important;
-    }
+    /* Hero Banner chuyển thành xếp chồng (1 cột) */
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-card { aspect-ratio: 16/9; padding: 20px; }
+    .hero-content { width: 80%; }
+    .hero-title { font-size: 22px; }
 
-    /* Thể loại trong search pill thu nhỏ */
-    .nav-item { font-size: 12px; padding: 8px 10px; }
-    .nav-links { gap: 8px; }
-
-    /* Nút ⭐ MOBILE (Right Header) */
-    .header-right { order: 10; width: auto; position: fixed; bottom: 20px; right: 20px; z-index: 10001;}
-    .favorite-btn { width: 50px; height: 50px; font-size: 22px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-
-    /* 3. MAIN CONTENT (CÂN ĐỐI v0.0.1) */
-    .ff-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; padding: 0 5px; }
-    .ff-thumb { height: 180px; }
-    .ff-title { font-size: 13px; }
-
-    /* Lưới phim prominent 1 cột dọc chuẩn mobile */
-    .hero-grid { grid-template-columns: 1fr !important; gap: 12px; width: 100%; padding: 0; }
-    .prominent-card { padding: 8px; border-radius: 12px; aspect-ratio: auto !important;}
-    .prominent-card .ff-thumb { height: auto !important; aspect-ratio: 2 / 3 !important; }
-    .prominent-card .ff-title { font-size: 16px; margin: 8px 2px !important;}
-    .prominent-card .ff-tags { padding: 0 5px; margin-bottom: 2px; }
-
-    /* Thể loại (Scroll ngang) */
-    .genres-pills-scroll { 
-        justify-content: flex-start !important; 
-        overflow-x: auto !important; 
-        scrollbar-width: none;
-        padding-bottom: 5px;
-    }
-    .genres-pills-scroll::-webkit-scrollbar { display: none; }
-    .genre-pill { padding: 8px 15px; font-size: 12px; }
-
-    /* 4. RIGHT PANEL (MENU TRƯỢT TỪ BÊN PHẢI) */
-    .right-panel {
-        position: fixed !important; 
-        top: 0;
-        right: 0;
-        width: 80% !important; /* Rộng 80% màn hình mobile */
-        max-width: 320px;
-        height: 100vh !important;
-        margin-top: 0 !important;
-        padding: 20px 15px !important;
-        background: rgba(13, 13, 18, 0.98) !important; /* Nền tối mờ sang trọng */
-        backdrop-filter: blur(20px);
-        border: none !important;
-        border-radius: 0 !important;
-        z-index: 9998;
-        box-shadow: -10px 0 40px rgba(0,0,0,0.8);
-        
-        /* Hiệu ứng trượt */
-        transform: translateX(100%); /* Ẩn ra ngoài */
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow-y: auto !important; 
-    }
+    /* Lưới phim: 2 cột trên điện thoại */
+    .movies-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
     
-    /* Hiển thị Menu trượt Mobile */
-    .right-panel.show-panel {
-        transform: translateX(0); /* Kéo vào trong */
-    }
-
-    /* Diễn viên mobile 2 cột gọn */
-    .actors-list { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
-    .actor-img { width: 60px; height: 60px; }
-    .actor-name { font-size: 10px; }
-    .actor-no-img-placeholder { font-size: 40px; }
+    /* Search Box chiếm full màn hình khi mở */
+    .nav-pill.searching .search-box { width: 200px; }
 }
-
-/* Ép thêm cho màn hình điện thoại siêu nhỏ */
 @media (max-width: 480px) {
-    .nav-item { font-size: 11px; padding: 8px 6px; }
-    .search-active .search-overlay input { font-size: 12px; }
-    .ff-thumb { height: 160px; }
-    .prominent-card .ff-title { font-size: 14px; }
-    .favorite-btn { width: 45px; height: 45px; font-size: 20px; }
+    .logo img { height: 30px; }
+    .nav-item { padding: 8px 10px; font-size: 12px; }
+    .nav-pill { padding: 5px 5px 5px 10px; }
+    .nav-pill.searching .search-box { width: 180px; }
 }
