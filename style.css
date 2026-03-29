@@ -323,11 +323,8 @@ body {
     gap: 20px;
 }
 
-.movie-card {
-    background: transparent; 
-    border-radius: 16px; 
-    cursor: pointer; 
-    transition: 0.3s;
+.movie-card, .ff-card {
+    position: relative !important;
 }
 
 .movie-card:hover .movie-thumb { 
@@ -349,36 +346,41 @@ body {
     transition: 0.4s; 
 }
 
-.movie-title { 
-    font-size: 16px; 
-    font-weight: 700; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    margin-bottom: 5px; 
-    color: #222;
+.movie-meta {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    right: 8px !important;
+    z-index: 10 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
 }
 
-.movie-meta { 
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px; 
-    color: #555; 
-    font-weight: 600; 
+.movie-score {
+    color: #d49a00 !important;
+    white-space: nowrap !important;
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.9) !important;
 }
 
 .movie-type-badge {
-    background: rgba(0, 0, 0, 0.1);
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    color: #333;
-    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(2px) !important; 
+    -webkit-backdrop-filter: blur(2px) !important;
+    padding: 2px 8px !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    color: #333 !important;
+    letter-spacing: 0.5px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
 }
 
-.movie-score { 
-    color: #d49a00; 
+.movie-title {
+    margin-top: 8px !important;
+    margin-bottom: 5px !important;
 }
 
 .loader-container { 
@@ -601,36 +603,6 @@ body {
         width: 100% !important;
         box-sizing: border-box !important;
         margin: 0 !important;
-    }
-
-    .movie-card, .ff-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-        overflow: hidden !important;
-    }
-
-    .movie-title {
-        font-size: 13px !important;
-    }
-
-    .movie-type-badge {
-        font-size: 9px !important;
-        padding: 2px 5px !important;
-        white-space: nowrap !important;
-        flex-shrink: 0 !important;
-    }
-
-    .movie-score {
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-        
-    .movie-meta {
-        font-size: 11px !important;
-        gap: 4px !important;
     }
 
     .controls-bar {
