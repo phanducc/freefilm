@@ -276,11 +276,19 @@ async function displayPage(page) {
         const dataObj = json.data || json;
         const items = dataObj.items || json.items || [];
         
+// --- ⚡ XỬ LÝ LỖI SỐ TRANG (Khôi phục thanh phân trang) ---
         let totalPages = 1;
         if (dataObj.params && dataObj.params.pagination) {
-            totalPages = dataObj.params.pagination.totalPages || 1;
+            const p = dataObj.params.pagination;
+            totalPages = p.totalPages || Math.ceil(p.totalItems / p.totalItemsPerPage) || 1;
+        } else if (dataObj.pagination) {
+            totalPages = dataObj.pagination.totalPages || 1;
         }
-
+        
+        // Cứu cánh cuối cùng: Nếu API giấu totalPages nhưng vẫn trả về đủ 24 phim/trang
+        if (totalPages === 1 && items.length >= 24) {
+            totalPages = page + 2; // Luôn mở đường cho các trang tiếp theo
+        }
         if (items.length > 0) {
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
             const processedItems = items.map(m => {
