@@ -26,7 +26,7 @@ body {
     display: flex; justify-content: space-between; align-items: center;
 }
 .logo-text { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 1px; text-decoration: none; }
-.logo img { height: 60px; width: auto; object-fit: contain;}
+.logo img { height: 80px; width: auto; object-fit: contain;}
 .header-right { width: 100px; } /* Giữ cân bằng Flexbox */
 
 /* Nav Pill (Khung Điều Hướng Ở Giữa) */
