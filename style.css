@@ -553,21 +553,23 @@ body {
     }
 
     #genresScroll {
-        display: grid !important;
-        grid-template-columns: repeat(5, 1fr) !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
         gap: 6px !important;
         padding: 0 10px !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        margin: 15px 0 !important;
+        margin: 15px 0 25px 0 !important;
     }
 
     .genre-pill {
-        padding: 6px 2px !important; 
+        flex: 0 0 auto !important;
+        padding: 6px 10px !important; 
         font-size: 9px !important; 
         text-align: center !important;
         justify-content: center !important;
-        border-radius: 6px !important;
+        border-radius: 10px !important;
         white-space: nowrap !important; 
         overflow: hidden;
         text-overflow: ellipsis; 
@@ -613,8 +615,22 @@ body {
         font-size: 13px !important;
     }
 
+    .movie-type-badge {
+        font-size: 9px !important;
+        padding: 2px 5px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+
+    .movie-score {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+        
     .movie-meta {
         font-size: 11px !important;
+        gap: 4px !important;
     }
 
     .controls-bar {
