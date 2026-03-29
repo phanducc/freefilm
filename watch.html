@@ -215,7 +215,7 @@
         let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
         // --- XỬ LÝ THANH TÌM KIẾM ---
-        const navPill = document.getElementById('navPillContainer');
+        const navPill = document.getElementById('navPill');
         const searchToggleBtn = document.getElementById('searchToggleBtn');
         const closeSearchBtn = document.getElementById('closeSearchBtn');
         const searchInput = document.getElementById('searchInput');
@@ -224,13 +224,13 @@
             
             // Mở khung tìm kiếm
             searchToggleBtn.onclick = () => {
-                navPill.classList.add('searching');
+                navPill.classList.add('search-active');
                 searchInput.focus();
             };
 
             // Đóng khung tìm kiếm
             closeSearchBtn.onclick = () => {
-                navPill.classList.remove('searching');
+                navPill.classList.remove('search-active');
                 searchInput.value = '';
             };
 
@@ -245,17 +245,7 @@
                 }
             };
         }
-// --- XỬ LÝ CLICK MENU CHÍNH ---
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.onclick = () => {
-                // Lấy data-slug (phim-bo) và tên (Phim Bộ) từ thẻ HTML
-                const slug = item.dataset.slug;
-                const title = item.innerText;
-                
-                // Đẩy người dùng về index.html kèm theo data
-                window.location.href = `index.html?category=${slug}&title=${encodeURIComponent(title)}`;
-            };
-        });
+
 
         // --- XỬ LÝ TRAILER MODAL ---
         const trailerModal = document.getElementById('trailerModal');
