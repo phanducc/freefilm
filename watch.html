@@ -11,10 +11,6 @@
            CSS BỔ SUNG RIÊNG CHO TRANG XEM PHIM
            ========================================= */
         .watch-container { max-width: 1200px; margin: 0 auto; padding: 100px 20px 50px 20px; width: 100%; }
-        /* CSS Tìm Kiếm trên watch.html */
-        .search-active { width: 400px !important; }
-        .search-active .search-overlay { width: calc(100% - 50px) !important; opacity: 1 !important; pointer-events: auto !important; }
-        .search-active .nav-links { opacity: 0 !important; pointer-events: none !important; }
         /* Khung Player */
         .player-wrapper { 
             aspect-ratio: 16/9; background: #000; border-radius: 20px; 
@@ -115,20 +111,21 @@
                 <img src="logo.png" alt="FreeFilm" onerror="this.outerHTML='<span class=\'logo-text\'>FREEFILM</span>'">
             </a>
             
-            <div class="nav-pill-container" id="navPillContainer" style="height: 50px; overflow: hidden; position: relative; display: flex; align-items: center; background: rgba(13, 13, 18, 0.85); backdrop-filter: blur(20px); border-radius: 50px; padding: 6px 6px 6px 20px; transition: all 0.4s ease;">
+            <div class="nav-pill-container" id="navPillContainer">
                 
-                <nav class="nav-links" id="navLinks" style="display: flex; gap: 15px; transition: opacity 0.3s; margin: 0;">
-                    <span class="nav-item" style="color:#aaa; cursor:pointer; font-weight:600; font-size:15px;" onclick="window.location.href='index.html'">Phim Bộ</span>
-                    <span class="nav-item" style="color:#aaa; cursor:pointer; font-weight:600; font-size:15px;" onclick="window.location.href='index.html'">Phim Lẻ</span>
-                    <span class="nav-item" style="color:#aaa; cursor:pointer; font-weight:600; font-size:15px;" onclick="window.location.href='index.html'">Hoạt Hình</span>
-                    <span class="nav-item" style="color:#aaa; cursor:pointer; font-weight:600; font-size:15px;" onclick="window.location.href='index.html'">TV Shows</span>
+                <nav class="nav-links" id="navLinks">
+                    <span class="nav-item" onclick="window.location.href='index.html'">Phim Bộ</span>
+                    <span class="nav-item" onclick="window.location.href='index.html'">Phim Lẻ</span>
+                    <span class="nav-item" onclick="window.location.href='index.html'">Hoạt Hình</span>
+                    <span class="nav-item" onclick="window.location.href='index.html'">TV Shows</span>
                 </nav>
                 
-<div class="search-overlay" id="searchOverlay" style="position: absolute; right: 50px; top: 0; height: 100%; display: flex; align-items: center; justify-content: space-between; width: 0; opacity: 0; pointer-events: none; transition: width 0.4s ease, opacity 0.3s; overflow: hidden; background: rgba(20, 25, 30, 0.95); border-radius: 50px;">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm phim..." style="flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 0 20px; font-size: 15px; width: 100%;">
-                    <button id="closeSearch" style="background: transparent; border: none; color: #aaa; cursor: pointer; padding: 5px 20px 5px 10px; font-size: 18px; flex-shrink: 0; transition: 0.3s;">✕</button>
+                <div class="search-overlay" id="searchOverlay">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm phim...">
+                    <button id="closeSearch" class="close-search-btn">✕</button>
                 </div>
-                <button id="searchBtn" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: auto; transition: 0.3s;">
+
+                <button class="search-toggle-btn glass-btn" id="searchBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </div>
@@ -136,7 +133,7 @@
             <div class="header-right"></div>
         </div>
     </header>
-
+    
     <main class="watch-container">
         
         <div class="player-wrapper">
