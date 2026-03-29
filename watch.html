@@ -11,6 +11,18 @@
            CSS BỔ SUNG RIÊNG CHO TRANG XEM PHIM
            ========================================= */
         .watch-container { max-width: 1200px; margin: 0 auto; padding: 100px 20px 50px 20px; width: 100%; }
+        /* Hiệu ứng bật thanh tìm kiếm */
+        .nav-pill-container.search-active { width: 400px !important; }
+        .nav-pill-container.search-active .search-overlay { 
+            width: calc(100% - 40px) !important; 
+            opacity: 1 !important; 
+            pointer-events: auto !important; 
+            transform: translateX(0); 
+        }
+        .nav-pill-container.search-active .nav-links { 
+            opacity: 0 !important; 
+            pointer-events: none !important; 
+        }
         /* Khung Player */
         .player-wrapper { 
             aspect-ratio: 16/9; background: #000; border-radius: 20px; 
@@ -198,18 +210,17 @@
 
 // --- XỬ LÝ THANH TÌM KIẾM BẬT RA ---
         const searchBtn = document.getElementById('searchBtn');
-        const closeSearch = document.getElementById('closeSearch');
+        const closeSearchBtn = document.getElementById('closeSearch');
         const navPillContainer = document.getElementById('navPillContainer');
         const searchInput = document.getElementById('searchInput');
 
-        // ⚡ Bọc khóa an toàn: Chỉ chạy khi đã tìm thấy đủ 4 nút trên Header
-        if (searchBtn && closeSearch && navPillContainer && searchInput) {
+        if (searchBtn && closeSearchBtn && navPillContainer && searchInput) {
             searchBtn.onclick = () => {
                 navPillContainer.classList.add('search-active');
                 searchInput.focus();
             };
 
-            closeSearch.onclick = () => {
+            closeSearchBtn.onclick = () => {
                 navPillContainer.classList.remove('search-active');
                 searchInput.value = '';
             };
@@ -218,13 +229,13 @@
                 if (e.key === 'Enter') {
                     const query = searchInput.value.trim();
                     if (query) {
-                        // Chuyển hướng về trang chủ và "gửi kèm" từ khóa tìm kiếm
+                        // Chuyển về trang chủ kèm từ khóa
                         window.location.href = `index.html?search=${encodeURIComponent(query)}`;
                     }
                 } 
             };
-        }      
-          let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
+        }
+                  let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
         // --- XỬ LÝ TRAILER MODAL ---
         const trailerModal = document.getElementById('trailerModal');
