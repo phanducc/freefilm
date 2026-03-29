@@ -612,6 +612,12 @@ body {
         margin: 0 !important;
     }
 
+    .movie-title {
+        font-size: 8px !important;
+        margin-top: 5px !important; 
+        margin-bottom: 2px !important;
+    }
+
     .controls-bar {
         flex-wrap: nowrap !important;
         gap: 6px !important;
