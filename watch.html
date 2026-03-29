@@ -240,6 +240,17 @@
                 }
             };
         }
+        // --- XỬ LÝ CLICK MENU CHÍNH (Chuyển về trang chủ) ---
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.onclick = () => {
+                // Tắt hiệu ứng sáng của nút hiện tại
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Chuyển hướng người dùng về lại trang chủ
+                window.location.href = 'index.html';
+            };
+        });
         let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
         // --- XỬ LÝ TRAILER MODAL ---
