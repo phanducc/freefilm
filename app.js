@@ -333,14 +333,29 @@ async function displayPage(page) {
 // ============================================================================
 initGenres();
 
-// Kiểm tra xem có lệnh tìm kiếm truyền từ trang Watch sang không
+// Kiểm tra xem có lệnh Tìm kiếm hoặc Danh mục truyền từ trang Watch sang không
 const urlParams = new URLSearchParams(window.location.search);
 const searchQuery = urlParams.get('search');
+const categoryQuery = urlParams.get('category');
+const titleQuery = urlParams.get('title');
 
 if (searchQuery) {
-    // Nếu có, tự động bật kết quả tìm kiếm
+    // 1. Nếu có tìm kiếm -> Bật API tìm kiếm
     setMode('search', searchQuery, `Kết quả tìm kiếm: "${searchQuery}"`);
+} else if (categoryQuery) {
+    // 2. Nếu có danh mục (Phim Bộ, Phim Lẻ...) -> Bật API danh mục
+    
+    // Xóa active cũ và làm sáng đúng cái nút trên thanh Menu
+    document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(item => {
+        if(item.dataset.slug === categoryQuery) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Gọi API tải phim
+    setMode('category', categoryQuery, titleQuery);
 } else {
-    // Nếu không, tải phim mới bình thường
+    // 3. Nếu không có gì (vào thẳng trang chủ) -> Tải phim mới
     setMode('new', '', 'Phim mới cập nhật');
 }
