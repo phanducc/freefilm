@@ -228,6 +228,7 @@ body {
         width: 100% !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
+        padding-top: 170px !important;
     }
 
     /* 2. HEADER: LOGO TO GẤP 4 LẦN & MENU THU NHỎ */
@@ -334,5 +335,21 @@ body {
     }
     .movie-meta {
         font-size: 11px !important; /* Thu nhỏ điểm đánh giá */
+    }
+
+    /* 6. ÉP 4 NÚT ĐIỀU KHIỂN VIDEO THÀNH 1 HÀNG NGANG */
+    .controls-bar {
+        flex-wrap: nowrap !important; /* ⚡ Lệnh cấm rớt dòng */
+        gap: 6px !important; /* Ép khoảng cách các nút sát lại nhau */
+        padding: 10px 5px !important; /* Giảm viền để lấy thêm diện tích */
+        overflow-x: auto !important; /* Cho phép vuốt ngang nếu màn hình quá bé */
+        -webkit-overflow-scrolling: touch;
+    }
+    .control-btn {
+        padding: 6px 4px !important; /* Thu nhỏ viền nút */
+        font-size: 10px !important; /* Giảm size chữ để nhét vừa 4 nút */
+        white-space: nowrap !important; /* Cấm chữ bên trong nút bị rớt dòng */
+        flex: 1 !important; /* Ép 4 nút chia đều không gian màn hình */
+        justify-content: center !important;
     }
 }
