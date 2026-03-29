@@ -98,6 +98,10 @@
             .movie-title-large { font-size: 24px; }
             .close-trailer-btn { right: 0; top: -40px; }
         }
+        /* Lưới 6 phim gợi ý thẳng hàng */
+        .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; }
+        @media (max-width: 1024px) { .related-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 480px) { .related-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
@@ -107,12 +111,23 @@
             <a href="index.html" class="logo">
                 <img src="logo.png" alt="FreeFilm" onerror="this.outerHTML='<span class=\'logo-text\'>FREEFILM</span>'">
             </a>
-            <div class="nav-pill-container" style="cursor: pointer;" onclick="window.location.href='index.html'">
-                <nav class="nav-links">
-                    <span class="nav-item active" style="background: rgba(255,255,255,0.1); color: #fff;">🔙 Về Trang Chủ</span>
+<div class="nav-pill-container" id="navPillContainer">
+                <nav class="nav-links" id="navLinks">
+                    <span class="nav-item" onclick="window.location.href='index.html'">Phim Bộ</span>
+                    <span class="nav-item" onclick="window.location.href='index.html'">Phim Lẻ</span>
+                    <span class="nav-item" onclick="window.location.href='index.html'">Hoạt Hình</span>
+                    <span class="nav-item" onclick="window.location.href='index.html'">TV Shows</span>
                 </nav>
-            </div>
-            <div class="header-right"></div>
+                
+                <div class="search-overlay" id="searchOverlay">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm phim...">
+                    <button id="closeSearch" class="close-search-btn">✕</button>
+                </div>
+
+                <button class="search-toggle-btn glass-btn" id="searchBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>            <div class="header-right"></div>
         </div>
     </header>
 
@@ -158,10 +173,10 @@
 
         <div class="recommended-section" style="margin-top: 40px;">
             <h3 class="section-heading">🔥 Có thể bạn sẽ thích</h3>
-            <div class="movies-grid" id="relatedMoviesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;">
+<div class="related-grid" id="relatedMoviesGrid">
                 <span style="color:#aaa;">Đang tải gợi ý...</span>
             </div>
-        </div>
+                </div>
 
     </main>
 
@@ -179,6 +194,31 @@
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
         const serverListDiv = document.getElementById('serverList');
+        // --- XỬ LÝ THANH TÌM KIẾM BẬT RA ---
+        const searchBtn = document.getElementById('searchBtn');
+        const closeSearch = document.getElementById('closeSearch');
+        const navPillContainer = document.getElementById('navPillContainer');
+        const searchInput = document.getElementById('searchInput');
+
+        searchBtn.onclick = () => {
+            navPillContainer.classList.add('search-active');
+            searchInput.focus();
+        };
+
+        closeSearch.onclick = () => {
+            navPillContainer.classList.remove('search-active');
+            searchInput.value = '';
+        };
+
+        searchInput.onkeypress = (e) => { 
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    // Chuyển hướng về trang chủ và "gửi kèm" từ khóa tìm kiếm
+                    window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+                }
+            } 
+        };
         let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
         // --- XỬ LÝ TRAILER MODAL ---

@@ -62,9 +62,6 @@ document.querySelectorAll('.nav-item').forEach(item => {
 // ==========================================
 // 2. KHỞI TẠO MENU THỂ LOẠI (PILLS)
 // ==========================================
-// ==========================================
-// 2. KHỞI TẠO MENU THỂ LOẠI ĐẦY ĐỦ (PILLS)
-// ==========================================
 const GENRES = [
     { name: '⚔️ Hành Động', slug: 'hanh-dong' },
     { name: '❤️ Tình Cảm', slug: 'tinh-cam' },
@@ -331,6 +328,19 @@ async function displayPage(page) {
     isLoading = false;
 }
 
-// KHỞI CHẠY APP
+// ============================================================================
+// KHỞI CHẠY ỨNG DỤNG (BOOTSTRAP)
+// ============================================================================
 initGenres();
-setMode('new', '', 'Phim mới cập nhật');
+
+// Kiểm tra xem có lệnh tìm kiếm truyền từ trang Watch sang không
+const urlParams = new URLSearchParams(window.location.search);
+const searchQuery = urlParams.get('search');
+
+if (searchQuery) {
+    // Nếu có, tự động bật kết quả tìm kiếm
+    setMode('search', searchQuery, `Kết quả tìm kiếm: "${searchQuery}"`);
+} else {
+    // Nếu không, tải phim mới bình thường
+    setMode('new', '', 'Phim mới cập nhật');
+}
