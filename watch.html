@@ -195,32 +195,36 @@
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
         const serverListDiv = document.getElementById('serverList');
-        // --- XỬ LÝ THANH TÌM KIẾM BẬT RA ---
+
+// --- XỬ LÝ THANH TÌM KIẾM BẬT RA ---
         const searchBtn = document.getElementById('searchBtn');
         const closeSearch = document.getElementById('closeSearch');
         const navPillContainer = document.getElementById('navPillContainer');
         const searchInput = document.getElementById('searchInput');
 
-        searchBtn.onclick = () => {
-            navPillContainer.classList.add('search-active');
-            searchInput.focus();
-        };
+        // ⚡ Bọc khóa an toàn: Chỉ chạy khi đã tìm thấy đủ 4 nút trên Header
+        if (searchBtn && closeSearch && navPillContainer && searchInput) {
+            searchBtn.onclick = () => {
+                navPillContainer.classList.add('search-active');
+                searchInput.focus();
+            };
 
-        closeSearch.onclick = () => {
-            navPillContainer.classList.remove('search-active');
-            searchInput.value = '';
-        };
+            closeSearch.onclick = () => {
+                navPillContainer.classList.remove('search-active');
+                searchInput.value = '';
+            };
 
-        searchInput.onkeypress = (e) => { 
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) {
-                    // Chuyển hướng về trang chủ và "gửi kèm" từ khóa tìm kiếm
-                    window.location.href = `index.html?search=${encodeURIComponent(query)}`;
-                }
-            } 
-        };
-        let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
+            searchInput.onkeypress = (e) => { 
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        // Chuyển hướng về trang chủ và "gửi kèm" từ khóa tìm kiếm
+                        window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+                    }
+                } 
+            };
+        }      
+          let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
         // --- XỬ LÝ TRAILER MODAL ---
         const trailerModal = document.getElementById('trailerModal');
