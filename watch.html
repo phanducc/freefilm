@@ -11,6 +11,7 @@
            CSS BỔ SUNG RIÊNG CHO TRANG XEM PHIM
            ========================================= */
         .watch-container { max-width: 1200px; margin: 0 auto; padding: 100px 20px 50px 20px; width: 100%; }
+        
         /* Hiệu ứng bật thanh tìm kiếm */
         .nav-pill-container.search-active { width: 400px !important; }
         .nav-pill-container.search-active .search-overlay { 
@@ -23,6 +24,7 @@
             opacity: 0 !important; 
             pointer-events: none !important; 
         }
+
         /* Khung Player */
         .player-wrapper { 
             aspect-ratio: 16/9; background: #000; border-radius: 20px; 
@@ -109,8 +111,9 @@
             .movie-title-large { font-size: 24px; }
             .close-trailer-btn { right: 0; top: -40px; }
         }
+
         /* Lưới 6 phim gợi ý thẳng hàng */
-        .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; }
+        .related-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 15px; width: 100%; }
         @media (max-width: 1024px) { .related-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 480px) { .related-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
@@ -123,19 +126,20 @@
                 <img src="logo.png" alt="FreeFilm" onerror="this.outerHTML='<span class=\'logo-text\'>FREEFILM</span>'">
             </a>
 
-            <div class="nav-pill" id="navPill">
+            <div class="nav-pill-container" id="navPillContainer">
                 <nav class="nav-links" id="navLinks">
                     <span class="nav-item" onclick="window.location.href='index.html?category=phim-bo&title=Phim%20Bộ'">Phim Bộ</span>
                     <span class="nav-item" onclick="window.location.href='index.html?category=phim-le&title=Phim%20Lẻ'">Phim Lẻ</span>
                     <span class="nav-item" onclick="window.location.href='index.html?category=hoat-hinh&title=Hoạt%20Hình'">Hoạt Hình</span>
                     <span class="nav-item" onclick="window.location.href='index.html?category=tv-shows&title=TV%20Shows'">TV Shows</span>
                 </nav>                
-                <div class="search-box" id="searchBox">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm phim...">
-                    <button id="closeSearchBtn" class="close-search">✕</button>
+                
+                <div class="search-overlay" id="searchOverlay" style="position: absolute; right: 50px; top: 0; height: 100%; display: flex; align-items: center; justify-content: space-between; width: 0; opacity: 0; pointer-events: none; transition: width 0.4s ease, opacity 0.3s; overflow: hidden; background: rgba(20, 25, 30, 0.95); border-radius: 50px;">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm phim..." style="flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 0 20px; font-size: 15px; width: 100%;">
+                    <button id="closeSearchBtn" class="close-search" style="background: transparent; border: none; color: #aaa; cursor: pointer; padding: 5px 20px 5px 10px; font-size: 18px; flex-shrink: 0; transition: 0.3s;">✕</button>
                 </div>
 
-                <button class="search-toggle-btn" id="searchToggleBtn">
+                <button class="search-toggle-btn glass-btn" id="searchToggleBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </div>
@@ -184,13 +188,14 @@
             </div>
         </div>
 
-<div class="recommended-section" style="margin-top: 40px;">
+        <div class="recommended-section" style="margin-top: 40px;">
             <h3 class="section-heading">🔥 Có thể bạn sẽ thích</h3>
-            <div id="relatedMoviesGrid" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 15px; width: 100%;">
+            <div id="relatedMoviesGrid" class="related-grid">
                 <span style="color:#aaa;">Đang tải gợi ý...</span>
             </div>
         </div>
-        </main>
+        
+    </main>
 
     <div id="trailerModal" class="trailer-modal">
         <div class="trailer-content">
@@ -206,29 +211,30 @@
         const iframePlayer = document.getElementById('iframePlayer');
         const episodeListDiv = document.getElementById('episodeList');
         const serverListDiv = document.getElementById('serverList');
+        
+        let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
-// --- XỬ LÝ THANH TÌM KIẾM (Đã khớp ID với index.html) ---
-        const navPill = document.getElementById('navPill');
+        // --- XỬ LÝ THANH TÌM KIẾM ---
+        const navPill = document.getElementById('navPillContainer');
         const searchToggleBtn = document.getElementById('searchToggleBtn');
         const closeSearchBtn = document.getElementById('closeSearchBtn');
         const searchInput = document.getElementById('searchInput');
 
-        // Bọc vòng if để code không bị sập nếu thiếu ID
         if (searchToggleBtn && closeSearchBtn && navPill && searchInput) {
             
-            // Mở khung tìm kiếm (chèn lên menu)
+            // Mở khung tìm kiếm
             searchToggleBtn.onclick = () => {
-                navPill.classList.add('searching');
+                navPill.classList.add('search-active');
                 searchInput.focus();
             };
 
             // Đóng khung tìm kiếm
             closeSearchBtn.onclick = () => {
-                navPill.classList.remove('searching');
+                navPill.classList.remove('search-active');
                 searchInput.value = '';
             };
 
-            // Thực hiện tìm kiếm khi gõ Enter
+            // Thực hiện tìm kiếm
             searchInput.onkeypress = (e) => {
                 if (e.key === 'Enter') {
                     const query = searchInput.value.trim();
@@ -239,18 +245,7 @@
                 }
             };
         }
-        // --- XỬ LÝ CLICK MENU CHÍNH (Chuyển về trang chủ) ---
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.onclick = () => {
-                // Tắt hiệu ứng sáng của nút hiện tại
-                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-                item.classList.add('active');
-                
-                // Chuyển hướng người dùng về lại trang chủ
-                window.location.href = 'index.html';
-            };
-        });
-        let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
+
 
         // --- XỬ LÝ TRAILER MODAL ---
         const trailerModal = document.getElementById('trailerModal');
@@ -268,10 +263,10 @@
             }
         };
 
-        // Tắt Trailer và DỪNG VIDEO
+        // Tắt Trailer
         document.getElementById('closeTrailerBtn').onclick = () => {
             trailerModal.classList.remove('show');
-            trailerIframe.src = ''; // Ép iframe rỗng để ngừng phát video ngầm
+            trailerIframe.src = ''; 
         };
 
         // --- ĐIỀU KHIỂN VIDEO ---
@@ -292,7 +287,7 @@
         document.getElementById('btnNextEp').onclick = () => { if(currentEpIndex < currentEpList.length - 1) playVideo(currentEpIndex + 1, episodeListDiv.children[currentEpIndex + 1]); };
         document.getElementById('btnReload').onclick = () => { iframePlayer.src = iframePlayer.src; };
 
-// --- FETCH PHIM ĐỀ CỬ (Chuẩn form thẻ phim trang chủ) ---
+        // --- FETCH PHIM ĐỀ CỬ ---
         async function fetchRelatedMovies(catSlug) {
             try {
                 const res = await fetch(`https://ophim1.com/v1/api/the-loai/${catSlug}?page=1`, options).then(r => r.json());
@@ -300,7 +295,6 @@
                 const relatedGrid = document.getElementById('relatedMoviesGrid');
                 relatedGrid.innerHTML = '';
                 
-                // Lọc bỏ phim đang xem, xáo trộn ngẫu nhiên và cắt lấy đúng 6 phim
                 let related = items.filter(m => m.slug !== slug);
                 related = related.sort(() => 0.5 - Math.random()).slice(0, 6);
                 
@@ -308,10 +302,10 @@
                 
                 related.forEach(movie => {
                     const card = document.createElement('div');
-                    // Sử dụng chung class ff-card của trang chủ để hưởng sái CSS
                     card.className = 'ff-card'; 
                     card.style.background = 'transparent';
-                    card.style.padding = '0'; // Tắt padding để ảnh sát lề
+                    card.style.padding = '0'; 
+                    card.style.cursor = 'pointer';
                     card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
 
                     let rawScore = (movie.imdb && movie.imdb.vote_average) ? parseFloat(movie.imdb.vote_average) : ((movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0);
@@ -325,7 +319,6 @@
                         thumb = imgDomain + thumb;
                     }
 
-                    // Áp dụng ép dòng tiêu đề (white-space: nowrap) giống hệt trang chủ
                     card.innerHTML = `
                         <div class="thumb-wrapper" style="overflow: hidden; border-radius: 16px; margin-bottom: 12px; aspect-ratio: 2/3; width: 100%;">
                             <img src="${thumb}" class="movie-thumb" alt="${movie.name}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.4s;">
