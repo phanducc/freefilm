@@ -10,7 +10,7 @@
 body {
     background-color: #fbccdf;
     background-image: radial-gradient(circle at 50% 0%, #ffebf3 0%, #fbccdf 50%, #e0b0c2 100%);
-    color: #222;
+    color: #fff;
     min-height: 100vh;
     overflow-x: hidden;
     padding-bottom: 50px;
