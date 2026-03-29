@@ -228,13 +228,13 @@ body {
         width: 100% !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
-        padding-top: 170px !important;
-        padding-bottom: 80px !important;
+        padding-top: 155px !important;
+        padding-bottom: 50px !important;
     }
 
     /* 2. HEADER: LOGO TO GẤP 4 LẦN & MENU THU NHỎ */
     .glass-header {
-        padding: 5px 0 2px 0 !important; 
+        padding: 5px 0 !important; 
         height: auto !important; 
         width: 100vw !important;
         box-sizing: border-box !important;
