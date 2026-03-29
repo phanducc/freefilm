@@ -575,20 +575,20 @@ body {
     }
 
     .hero-card h2, .banner-item h2, .hero-title { 
-        font-size: 18px !important;
-        margin-bottom: 10px !important;
+        font-size: 12px !important;
+        margin-bottom: 5px !important;
         line-height: 1.2 !important;
     }
 
     .hero-card button, .hero-card .btn-play, .watch-now {
-        padding: 6px 14px !important;
-        font-size: 12px !important;
+        padding: 5px 12px !important;
+        font-size: 8px !important;
         border-radius: 20px !important;
     }
 
     .hero-card button svg, .hero-card button i {
-        width: 14px !important;
-        height: 14px !important;
+        width: 10px !important;
+        height: 10px !important;
     }
 
     .movies-grid, .ff-grid, #moviesGrid, .related-grid {
