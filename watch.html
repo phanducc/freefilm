@@ -208,34 +208,39 @@
         const episodeListDiv = document.getElementById('episodeList');
         const serverListDiv = document.getElementById('serverList');
 
-// --- XỬ LÝ THANH TÌM KIẾM BẬT RA ---
-        const searchBtn = document.getElementById('searchBtn');
-        const closeSearchBtn = document.getElementById('closeSearch');
-        const navPillContainer = document.getElementById('navPillContainer');
+// --- XỬ LÝ THANH TÌM KIẾM (Đã khớp ID với index.html) ---
+        const navPill = document.getElementById('navPill');
+        const searchToggleBtn = document.getElementById('searchToggleBtn');
+        const closeSearchBtn = document.getElementById('closeSearchBtn');
         const searchInput = document.getElementById('searchInput');
 
-        if (searchBtn && closeSearchBtn && navPillContainer && searchInput) {
-            searchBtn.onclick = () => {
-                navPillContainer.classList.add('search-active');
+        // Bọc vòng if để code không bị sập nếu thiếu ID
+        if (searchToggleBtn && closeSearchBtn && navPill && searchInput) {
+            
+            // Mở khung tìm kiếm (chèn lên menu)
+            searchToggleBtn.onclick = () => {
+                navPill.classList.add('searching');
                 searchInput.focus();
             };
 
+            // Đóng khung tìm kiếm
             closeSearchBtn.onclick = () => {
-                navPillContainer.classList.remove('search-active');
+                navPill.classList.remove('searching');
                 searchInput.value = '';
             };
 
-            searchInput.onkeypress = (e) => { 
+            // Thực hiện tìm kiếm khi gõ Enter
+            searchInput.onkeypress = (e) => {
                 if (e.key === 'Enter') {
                     const query = searchInput.value.trim();
                     if (query) {
-                        // Chuyển về trang chủ kèm từ khóa
+                        // Bay thẳng về trang chủ và truyền từ khóa vào thanh URL
                         window.location.href = `index.html?search=${encodeURIComponent(query)}`;
                     }
-                } 
+                }
             };
         }
-                  let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
+        let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
         // --- XỬ LÝ TRAILER MODAL ---
         const trailerModal = document.getElementById('trailerModal');
