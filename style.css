@@ -221,49 +221,76 @@ html, body {
     max-width: 100vw;
 }
 
-@media (max-width: 768px) {
-    /* 2. CĂN CHỈNH LẠI 2 PHIM NỔI BẬT */
-    /* Giả sử class bọc 2 phim này là .hero-grid (nếu bạn dùng tên khác, hãy đổi tên class ở dòng dưới) */
-    .hero-grid { 
+/* =========================================
+   TỐI ƯU GIAO DIỆN CHUẨN ĐIỆN THOẠI (PIXEL 5 / IPHONE)
+   ========================================= */
+html, body {
+    overflow-x: hidden !important; /* Khóa chặt cuộn ngang toàn trang */
+    width: 100%;
+}
+
+@media (max-width: 480px) { 
+    
+    /* 1. BẢO VỆ HEADER KHÔNG BỊ VỠ LAYOUT */
+    .header-container {
+        padding: 0 10px !important;
+        overflow-x: hidden;
+    }
+    .nav-pill {
+        overflow-x: auto; /* Cho phép lấy ngón tay vuốt nhẹ menu sang ngang nếu dài */
+        white-space: nowrap; /* Cấm rớt dòng làm vỡ nút */
+    }
+    .nav-links {
         display: flex !important;
-        flex-direction: column !important; /* Xếp dọc 2 phim thay vì ngang */
+        flex-wrap: nowrap !important;
+    }
+
+    /* 2. CĂN LẠI 2 PHIM NỔI BẬT XẾP DỌC */
+    .hero-grid, .banner-container { /* Tên class bọc 2 phim nổi bật của bạn */
+        display: flex !important;
+        flex-direction: column !important;
         gap: 15px !important;
-        padding: 0 15px !important; /* Cách lề 2 bên 15px */
+        padding: 0 10px !important;
         width: 100% !important;
         box-sizing: border-box;
     }
+    .hero-card, .banner-item {
+        width: 100% !important;
+    }
 
-    /* 3. ÉP LƯỚI THỂ LOẠI (5 CỘT) */
+    /* 3. ÉP LƯỚI THỂ LOẠI (CHUẨN 5 CỘT) */
     #genresScroll {
         display: grid !important;
-        grid-template-columns: repeat(5, 1fr) !important; /* Ép đúng 5 cột/hàng */
+        grid-template-columns: repeat(5, 1fr) !important;
         gap: 6px !important;
-        padding: 0 15px !important;
+        padding: 0 10px !important;
         width: 100% !important;
         box-sizing: border-box;
-        overflow: hidden !important; /* Tắt cuộn ngang ở thanh thể loại */
-        justify-content: center;
+        overflow: hidden !important; /* Tắt cuộn ngang ở khu vực này */
     }
-
-    /* Thu nhỏ nút thể loại để nhét vừa 5 ô trên màn hình nhỏ */
     .genre-pill {
         padding: 6px 2px !important; 
-        font-size: 9px !important;  /* Chữ phải thật nhỏ mới không bị vỡ 5 cột */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        border-radius: 8px !important;
-        white-space: nowrap !important; /* Không cho chữ rớt dòng */
+        font-size: 9.5px !important; /* Ép chữ nhỏ lại để nhét vừa 5 cột trên điện thoại */
+        text-align: center !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+        white-space: nowrap !important; 
         overflow: hidden;
-        text-overflow: ellipsis; /* Nếu chữ dài quá sẽ tự biến thành dấu ... */
+        text-overflow: ellipsis; 
+        margin: 0 !important;
     }
 
-    /* 4. CHỐNG TRÀN CHO LƯỚI PHIM MỚI CẬP NHẬT */
-    .movies-grid, .ff-grid {
-        padding: 0 15px !important;
-        box-sizing: border-box;
+    /* 4. ÉP LƯỚI PHIM BÊN DƯỚI (CHUẨN 2 CỘT) */
+    .movies-grid, .ff-grid, #moviesGrid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* Chia đều 2 thẻ phim 1 hàng */
+        gap: 12px !important;
+        padding: 0 10px !important;
         width: 100% !important;
-        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .movie-card, .ff-card {
+        width: 100% !important;
+        margin: 0 !important;
     }
 }
