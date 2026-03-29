@@ -224,53 +224,75 @@ html, body {
 /* =========================================
    TỐI ƯU GIAO DIỆN CHUẨN ĐIỆN THOẠI (PIXEL 5 / IPHONE)
    ========================================= */
-html, body {
-    overflow-x: hidden !important; /* Khóa chặt cuộn ngang toàn trang */
-    width: 100%;
-}
-
 @media (max-width: 480px) { 
     
-    /* 1. BẢO VỆ HEADER KHÔNG BỊ VỠ LAYOUT */
-    .header-container {
-        padding: 0 10px !important;
-        overflow-x: hidden;
+    /* 1. CHỐNG LỆCH PHẢI VÀ TRÀN VIỀN TẬN GỐC */
+    body, html, .app-layout, main, .watch-container {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important; /* Trảm thanh cuộn ngang */
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
-    .nav-pill {
-        overflow-x: auto; /* Cho phép lấy ngón tay vuốt nhẹ menu sang ngang nếu dài */
-        white-space: nowrap; /* Cấm rớt dòng làm vỡ nút */
+
+    /* 2. THU NHỎ & XẾP LẠI HEADER (LOGO TRÊN, MENU DƯỚI) */
+    .glass-header {
+        padding: 10px 0 !important; 
+        height: auto !important; /* Để header tự động co giãn */
+    }
+    .header-container {
+        flex-direction: column !important; /* Ép Logo lên trên, Menu xuống dưới */
+        gap: 12px !important;
+        padding: 0 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .logo img {
+        height: 25px !important; /* Thu nhỏ logo cho cân đối */
+        margin: 0 auto !important; /* Căn giữa logo */
+    }
+    .nav-pill-container, .nav-pill {
+        width: 100% !important; 
+        max-width: 100% !important;
+        padding: 4px 10px !important;
+        box-sizing: border-box !important;
     }
     .nav-links {
         display: flex !important;
         flex-wrap: nowrap !important;
+        overflow-x: auto !important; /* Cho phép vuốt ngang menu nếu màn hình quá nhỏ */
+        -webkit-overflow-scrolling: touch; /* Vuốt mượt trên iOS */
+    }
+    .nav-item {
+        font-size: 13px !important; /* Thu nhỏ chữ menu */
+        padding: 5px 12px !important;
+        white-space: nowrap !important; /* Chống rớt chữ */
     }
 
-    /* 2. CĂN LẠI 2 PHIM NỔI BẬT XẾP DỌC */
-    .hero-grid, .banner-container { /* Tên class bọc 2 phim nổi bật của bạn */
+    /* 3. LƯỚI 2 PHIM NỔI BẬT XẾP DỌC */
+    .hero-grid, .banner-container { 
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
         padding: 0 10px !important;
         width: 100% !important;
-        box-sizing: border-box;
-    }
-    .hero-card, .banner-item {
-        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    /* 3. ÉP LƯỚI THỂ LOẠI (CHUẨN 5 CỘT) */
+    /* 4. LƯỚI THỂ LOẠI (CHUẨN 5 CỘT) */
     #genresScroll {
         display: grid !important;
         grid-template-columns: repeat(5, 1fr) !important;
         gap: 6px !important;
         padding: 0 10px !important;
         width: 100% !important;
-        box-sizing: border-box;
-        overflow: hidden !important; /* Tắt cuộn ngang ở khu vực này */
+        box-sizing: border-box !important;
     }
     .genre-pill {
         padding: 6px 2px !important; 
-        font-size: 9.5px !important; /* Ép chữ nhỏ lại để nhét vừa 5 cột trên điện thoại */
+        font-size: 9.5px !important; 
         text-align: center !important;
         justify-content: center !important;
         border-radius: 6px !important;
@@ -280,14 +302,14 @@ html, body {
         margin: 0 !important;
     }
 
-    /* 4. ÉP LƯỚI PHIM BÊN DƯỚI (CHUẨN 2 CỘT) */
+    /* 5. LƯỚI PHIM BÊN DƯỚI (CHUẨN 2 CỘT) */
     .movies-grid, .ff-grid, #moviesGrid {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* Chia đều 2 thẻ phim 1 hàng */
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 12px !important;
         padding: 0 10px !important;
         width: 100% !important;
-        box-sizing: border-box;
+        box-sizing: border-box !important;
     }
     .movie-card, .ff-card {
         width: 100% !important;
