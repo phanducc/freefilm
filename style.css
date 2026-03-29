@@ -8,9 +8,9 @@
 }
 
 body {
-    background-color: #7b8a97;
-    background-image: radial-gradient(circle at 50% 0%, #9baab8 0%, #7b8a97 50%, #5c6b78 100%);
-    color: #fff;
+    background-color: #fbccdf;
+    background-image: radial-gradient(circle at 50% 0%, #ffebf3 0%, #fbccdf 50%, #e0b0c2 100%);
+    color: #222;
     min-height: 100vh;
     overflow-x: hidden;
     padding-bottom: 50px;
