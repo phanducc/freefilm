@@ -12,19 +12,6 @@
            ========================================= */
         .watch-container { max-width: 1200px; margin: 0 auto; padding: 100px 20px 50px 20px; width: 100%; }
         
-        /* Hiệu ứng bật thanh tìm kiếm */
-        .nav-pill-container.search-active { width: 400px !important; }
-        .nav-pill-container.search-active .search-overlay { 
-            width: calc(100% - 40px) !important; 
-            opacity: 1 !important; 
-            pointer-events: auto !important; 
-            transform: translateX(0); 
-        }
-        .nav-pill-container.search-active .nav-links { 
-            opacity: 0 !important; 
-            pointer-events: none !important; 
-        }
-
         /* Khung Player */
         .player-wrapper { 
             aspect-ratio: 16/9; background: #000; border-radius: 20px; 
@@ -214,7 +201,7 @@
         
         let currentEpList = [], currentEpIndex = 0, movieTrailerUrl = '';
 
-        // --- XỬ LÝ THANH TÌM KIẾM ---
+// --- XỬ LÝ THANH TÌM KIẾM ---
         const navPill = document.getElementById('navPill');
         const searchToggleBtn = document.getElementById('searchToggleBtn');
         const closeSearchBtn = document.getElementById('closeSearchBtn');
@@ -224,13 +211,13 @@
             
             // Mở khung tìm kiếm
             searchToggleBtn.onclick = () => {
-                navPill.classList.add('search-active');
+                navPill.classList.add('searching'); // Dùng class 'searching' chuẩn
                 searchInput.focus();
             };
 
             // Đóng khung tìm kiếm
             closeSearchBtn.onclick = () => {
-                navPill.classList.remove('search-active');
+                navPill.classList.remove('searching');
                 searchInput.value = '';
             };
 
@@ -245,7 +232,18 @@
                 }
             };
         }
-
+        
+        // --- XỬ LÝ CLICK MENU CHÍNH ---
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.onclick = () => {
+                // Lấy data-slug (phim-bo) và tên (Phim Bộ) từ thẻ HTML
+                const slug = item.dataset.slug;
+                const title = item.innerText;
+                
+                // Đẩy người dùng về index.html kèm theo data
+                window.location.href = `index.html?category=${slug}&title=${encodeURIComponent(title)}`;
+            };
+        });
 
         // --- XỬ LÝ TRAILER MODAL ---
         const trailerModal = document.getElementById('trailerModal');
