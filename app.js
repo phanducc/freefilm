@@ -66,7 +66,6 @@ document.querySelectorAll('.nav-item').forEach(item => {
 // 2. KHỞI TẠO MENU THỂ LOẠI ĐẦY ĐỦ (PILLS)
 // ==========================================
 const GENRES = [
-    { name: '🔥 Trending', slug: 'phim-moi-cap-nhat' },
     { name: '⚔️ Hành Động', slug: 'hanh-dong' },
     { name: '❤️ Tình Cảm', slug: 'tinh-cam' },
     { name: '😂 Hài Hước', slug: 'hai-huoc' },
@@ -90,35 +89,30 @@ const GENRES = [
     { name: '🎩 Kinh Điển', slug: 'kinh-dien' },
     { name: '🔞 Phim 18+', slug: 'phim-18' }
 ];
-
 function initGenres() {
-    genresScroll.innerHTML = '';
-    GENRES.forEach((genre, index) => {
+    const genreContainer = document.getElementById('genresScroll');
+    if (!genreContainer) return;
+    
+    genreContainer.innerHTML = '';
+    
+    GENRES.forEach((genre) => {
         const pill = document.createElement('div');
-        pill.className = `genre-pill ${index === 0 ? 'active' : ''}`;
+        // Đã sửa: Bỏ điều kiện tự động active ô đầu tiên
+        pill.className = 'genre-pill'; 
         pill.innerText = genre.name;
+        
         pill.onclick = () => {
+            if (isLoading) return;
+            // Tắt hiệu ứng sáng ở tất cả các nút
             document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
+            // Làm sáng nút thể loại vừa bấm
             pill.classList.add('active');
-            if (genre.slug === 'phim-moi-cap-nhat') setMode('new', '', 'Phim mới cập nhật');
-            else setMode('genre', genre.slug, `Thể Loại: ${genre.name.replace(/[^a-zA-ZÀ-ỹ\s]/g, '').trim()}`);
+            
+            // Chuyển trang
+            setMode('genre', genre.slug, `Thể Loại: ${genre.name.replace(/[^a-zA-ZÀ-ỹ\s]/g, '').trim()}`);
         };
-        genresScroll.appendChild(pill);
-    });
-}
-function initGenres() {
-    genresScroll.innerHTML = '';
-    GENRES.forEach((genre, index) => {
-        const pill = document.createElement('div');
-        pill.className = `genre-pill ${index === 0 ? 'active' : ''}`;
-        pill.innerText = genre.name;
-        pill.onclick = () => {
-            document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
-            pill.classList.add('active');
-            if (genre.slug === 'phim-moi-cap-nhat') setMode('new', '', 'Phim mới cập nhật');
-            else setMode('genre', genre.slug, `Thể Loại: ${genre.name.replace(/[^a-zA-ZÀ-ỹ\s]/g, '').trim()}`);
-        };
-        genresScroll.appendChild(pill);
+        
+        genreContainer.appendChild(pill);
     });
 }
 
