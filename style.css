@@ -230,6 +230,7 @@ body {
     font-weight: 800; 
     line-height: 1.2; 
     margin-bottom: 15px; 
+    color: #fff;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); 
 }
 
@@ -272,7 +273,7 @@ body {
     background: rgba(255, 255, 255, 0.05); 
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1); 
+    border: 1px solid #555; 
     padding: 10px 5px;
     border-radius: 12px;
     font-size: 13px;
@@ -291,6 +292,7 @@ body {
 .genre-pill.active { 
     background: #ff75a0; 
     color: #fff; 
+    border-color: #ff75a0;
     box-shadow: 0 5px 15px rgba(255, 117, 160, 0.3);
 }
 
@@ -407,7 +409,7 @@ body {
 
 .page-btn {
     background: rgba(255, 255, 255, 0.1); 
-    border: none; 
+    border: 1px solid #555; 
     color: #333; 
     padding: 10px 15px;
     border-radius: 12px; 
@@ -423,6 +425,7 @@ body {
 .page-btn.active { 
     background: #ff75a0; 
     color: #fff; 
+    border-color: #ff75a0;
 }
 
 .page-btn:disabled { 
