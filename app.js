@@ -368,22 +368,3 @@ searchInput.onkeypress = (e) => {
 // Khởi chạy App: Khởi tạo Menu và tải trang mặc định (Phim mới nhất)
 initMenus();
 setMode('new', '', 'Phim Mới Cập Nhật');
-// ==========================================
-// HIỆU ỨNG MENU TRƯỢT (CHỈ DÀNH CHO MOBILE)
-// ==========================================
-const btnTogglePanel = document.getElementById('toggleRightPanel');
-const rightPanelMenu = document.querySelector('.right-panel, .watch-right-panel');
-
-if (btnTogglePanel && rightPanelMenu) {
-    btnTogglePanel.onclick = () => {
-        // Kiểm tra kích thước màn hình
-        if (window.innerWidth <= 1024) {
-            // 📱 CHẾ ĐỘ MOBILE: Kéo menu bảng phụ ra/vào
-            rightPanelMenu.classList.toggle('show-panel');
-            btnTogglePanel.classList.toggle('active');
-        } else {
-            // 💻 CHẾ ĐỘ PC: Nút ngôi sao đóng vai trò là "Yêu Thích"
-            alert("Tính năng Lưu Phim Yêu Thích đang được phát triển!");
-        }
-    };
-}

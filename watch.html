@@ -16,11 +16,10 @@
                 <img src="logo.png" alt="FreeFilm" class="logo-img" onerror="this.outerHTML='<h2 class=\'logo-text\'>FREEFILM</h2>'">
             </a>
             
-  <aside class="left-dock">
+            <aside class="left-dock">
                 <div class="dock-menu">
                     <div class="dock-btn" onclick="window.location.href='index.html'" title="Trang Chủ">🏠</div>
                     <div class="dock-btn active" title="Đang Xem">▶️</div>
-                    <div class="dock-btn" id="toggleRightPanel" title="Mở Bảng Phụ">⭐</div>
                 </div>
             </aside>
         </div>
@@ -493,25 +492,6 @@
         
         // Kích hoạt hàm Lõi để kéo dữ liệu
         fetchDetail();
-        // ==========================================
-// HIỆU ỨNG MENU TRƯỢT (CHỈ DÀNH CHO MOBILE)
-// ==========================================
-const btnTogglePanel = document.getElementById('toggleRightPanel');
-const rightPanelMenu = document.querySelector('.right-panel, .watch-right-panel');
-
-if (btnTogglePanel && rightPanelMenu) {
-    btnTogglePanel.onclick = () => {
-        // Kiểm tra kích thước màn hình
-        if (window.innerWidth <= 1024) {
-            // 📱 CHẾ ĐỘ MOBILE: Kéo menu bảng phụ ra/vào
-            rightPanelMenu.classList.toggle('show-panel');
-            btnTogglePanel.classList.toggle('active');
-        } else {
-            // 💻 CHẾ ĐỘ PC: Nút ngôi sao đóng vai trò là "Yêu Thích"
-            alert("Tính năng Lưu Phim Yêu Thích đang được phát triển!");
-        }
-    };
-}
     </script>
 </body>
 </html>
