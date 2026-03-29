@@ -444,18 +444,16 @@ body {
     letter-spacing: 2px;
 }
 
-/* --- FOOTER DESIGN --- */
 .main-footer {
     width: 100%;
     padding: 30px 0;
     margin-top: 50px;
     text-align: center;
-    /* Tạo một đường kẻ mờ ngăn cách phía trên */
     border-top: 1px solid rgba(0, 0, 0, 0.05); 
 }
 
 .footer-content p {
-    color: #555; /* Màu xám đậm cho dễ đọc trên nền hồng */
+    color: #555; 
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 1px;

@@ -304,7 +304,7 @@
 
         <div class="glass-panel">
             <h1 id="movieTitle" class="movie-title-large">Đang tải thông tin...</h1>
-            <p id="movieTmdbScore" style="color: #d49a00; font-weight: 700; font-size: 16px;"></p>
+            <p id="movieTmdbScore" style="color: #f5c518; font-weight: 700; font-size: 16px;"></p>
             
             <div class="movie-meta-info" id="movieMetaInfo"></div>
             <div id="movieDesc" class="movie-desc"></div>
@@ -438,7 +438,7 @@
                 
                 related.forEach(movie => {
                     const card = document.createElement('div');
-                    card.className = 'ff-card'; 
+                    card.className = 'movie-card'; 
                     card.style.background = 'transparent';
                     card.style.padding = '0'; 
                     card.style.cursor = 'pointer';
@@ -461,7 +461,7 @@
                         </div>
                         <h3 class="movie-title" style="font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px;">${movie.name}</h3>
                         <div class="movie-meta" style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #d0d8e0; font-weight: 600;">
-                            <span class="movie-score" style="color: #f5c518;">★ ${displayScore}</span>
+                            <span class="movie-score">★ ${displayScore}</span>
                             <span class="movie-type-badge" style="background: rgba(255, 255, 255, 0.1); padding: 2px 8px; border-radius: 6px; font-size: 11px; color: #fff;">${typeText}</span>
                         </div>
                     `;
