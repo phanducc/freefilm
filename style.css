@@ -108,6 +108,7 @@ body::after {
     padding: 6px 6px 6px 20px;
     transition: all 0.4s ease;
     height: 50px;
+    width: 500px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
@@ -200,7 +201,7 @@ body::after {
 
 .nav-pill.searching .search-box { 
     display: flex; 
-    width: 380px; 
+    width: 500px; 
     opacity: 1; 
 }
 
