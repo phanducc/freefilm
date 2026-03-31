@@ -108,26 +108,31 @@
             gap: 10px; 
         }
         .ep-btn { 
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            color: #ccc; 
+            background: rgba(255, 255, 255, 0.45) !important; 
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.8) !important; 
+            color: #444 !important;
             padding: 10px; 
             border-radius: 12px; 
             cursor: pointer; 
             text-align: center; 
-            font-weight: 600; 
+            font-weight: 700 !important;
             transition: 0.3s; 
             font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
         }
+        
         .ep-btn:hover { 
-            background: rgba(255,255,255,0.2); 
-            color: #fff; 
+            background: rgba(255, 255, 255, 0.8) !important; 
+            color: #111 !important; 
         }
+        
         .ep-btn.active { 
-            background: #fff; 
-            color: #111; 
-            border-color: #fff; 
-            box-shadow: 0 0 10px rgba(255,255,255,0.4); 
+            background: #ff75a0 !important; 
+            color: #fff !important; 
+            border-color: #ff75a0 !important; 
+            box-shadow: 0 5px 15px rgba(255, 117, 160, 0.4) !important; 
         }
 
         .movie-title-large { 
@@ -302,10 +307,10 @@
         <div class="glass-panel">
             <h3 class="section-heading">▶️ Danh Sách Tập</h3>
             <div class="episodes-section" id="serverSection" style="display: none; margin-bottom: 15px;">
-                <div id="serverList" style="color: #555;border: 1px solid #555; display: flex; gap: 10px; margin-bottom: 15px;"></div>
+                <div id="serverList" style="display: flex; gap: 10px; margin-bottom: 15px;"></div>
             </div>
             <div id="episodeList" class="episodes-grid">
-                <span style="color:#555; border: 1px solid #555; padding: 5px;">Đang tải danh sách tập...</span>
+                <span style="color:#aaa;">Đang tải danh sách tập...</span>
             </div>
         </div>
 
