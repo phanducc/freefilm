@@ -216,7 +216,7 @@ body::after {
 .main-container { 
     max-width: 1400px; 
     margin: 0 auto; 
-    padding: 100px 40px 0 40px; 
+    padding: 105px 40px 0 40px; 
 }
 
 .hero-section { 
@@ -418,6 +418,7 @@ body::after {
     padding: 2px 8px !important;
     border-radius: 6px !important;
     color: #ffcc36 !important;
+    text-shadow: #111 0px 0px 2px !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
@@ -431,6 +432,7 @@ body::after {
     border-radius: 6px !important;
     font-size: 11px !important;
     color: #333 !important;
+    text-shadow: #111 0px 0px 2px !important;
     letter-spacing: 0.5px !important;
     white-space: nowrap !important;
     flex-shrink: 0 !important;
