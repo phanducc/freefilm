@@ -412,7 +412,7 @@ body::after {
 }
 
 .movie-score {
-    background: rgba(250, 125, 255, 0.7) !important; 
+    background: rgba(234, 157, 255, 0.7) !important; 
     backdrop-filter: blur(2px) !important; 
     -webkit-backdrop-filter: blur(2px) !important;
     padding: 2px 8px !important;
@@ -424,7 +424,7 @@ body::after {
 }
 
 .movie-type-badge {
-    background: rgba(255, 155, 125, 0.7) !important;
+    background: rgba(209, 191, 240, 0.7) !important;
     backdrop-filter: blur(2px) !important; 
     -webkit-backdrop-filter: blur(2px) !important;
     padding: 2px 8px !important;
