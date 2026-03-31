@@ -412,27 +412,25 @@ body::after {
 }
 
 .movie-score {
-    background: rgba(255, 255, 255, 0.7) !important; 
+    background: rgba(250, 125, 255, 0.7) !important; 
     backdrop-filter: blur(2px) !important; 
     -webkit-backdrop-filter: blur(2px) !important;
     padding: 2px 8px !important;
     border-radius: 6px !important;
     color: #ffcc36 !important;
-    text-shadow: #111 0px 0px 2px !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
 }
 
 .movie-type-badge {
-    background: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(255, 155, 125, 0.7) !important;
     backdrop-filter: blur(2px) !important; 
     -webkit-backdrop-filter: blur(2px) !important;
     padding: 2px 8px !important;
     border-radius: 6px !important;
     font-size: 11px !important;
     color: #333 !important;
-    text-shadow: #111 0px 0px 2px !important;
     letter-spacing: 0.5px !important;
     white-space: nowrap !important;
     flex-shrink: 0 !important;
