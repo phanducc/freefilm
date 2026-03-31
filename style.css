@@ -110,18 +110,22 @@ body::after {
     height: 50px;
     width: 500px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .nav-links { 
     display: flex; 
+    flex: 1;
+    justify-content: space-between;
     gap: 5px; 
     align-items: center; 
     transition: opacity 0.3s; 
 }
 
 .nav-item {
-    padding: 8px 16px; 
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 8px 10px; 
     border-radius: 30px; 
     font-size: 14px; 
     font-weight: 600;
