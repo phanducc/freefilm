@@ -91,6 +91,42 @@ function initGenres() {
     });
 }
 
+const COUNTRIES = [
+    { name: '🇨🇳 Trung Quốc', slug: 'trung-quoc' },
+    { name: '🇰🇷 Hàn Quốc', slug: 'han-quoc' },
+    { name: '🇯🇵 Nhật Bản', slug: 'nhat-ban' },
+    { name: '🇹🇭 Thái Lan', slug: 'thai-lan' },
+    { name: '🇺🇸 Âu Mỹ', slug: 'au-my' },
+    { name: '🇹🇼 Đài Loan', slug: 'dai-loan' },
+    { name: '🇭🇰 Hồng Kông', slug: 'hong-kong' },
+    { name: '🇮🇳 Ấn Độ', slug: 'an-do' },
+    { name: '🇬🇧 Anh', slug: 'anh' },
+    { name: '🇮🇩 Indonesia', slug: 'indonesia' },
+    { name: '🇻🇳 Việt Nam', slug: 'viet-nam' }
+];
+
+function initCountries() {
+    const countryContainer = document.getElementById('countriesScroll');
+    if (!countryContainer) return;
+    
+    countryContainer.innerHTML = '';
+    
+    COUNTRIES.forEach((country) => {
+        const pill = document.createElement('div');
+        pill.className = 'genre-pill';
+        pill.innerText = country.name;
+        
+        pill.onclick = () => {
+            if (isLoading) return;
+            document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
+            pill.classList.add('active');
+            setMode('country', country.slug, `Quốc Gia: ${country.name.replace(/[^a-zA-ZÀ-ỹ\s]/g, '').trim()}`);
+        };
+        
+        countryContainer.appendChild(pill);
+    });
+}
+
 function setMode(mode, query, title) {
     if (isLoading) return;
     currentMode = mode;
@@ -147,9 +183,9 @@ function renderMoviesGrid(movies) {
         }
         let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
 
-        let typeText = 'Phim Lẻ';
-        if (movie.type === 'series') {
-            typeText = 'Phim Bộ';
+        let typeText = 'Phim Bộ';
+        if (movie.type === 'single') {
+            typeText = 'Phim Lẻ';
         }
 
         card.innerHTML = `
@@ -227,6 +263,7 @@ async function displayPage(page) {
         if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${page}`;
         else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${page}`;
         else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${page}`;
+        else if (currentMode === 'country') apiUrl = `${API_BASE}/quoc-gia/${currentQuery}?page=${page}`;
         else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${page}`;
 
         const res = await fetch(apiUrl, fetchOptions);
@@ -281,6 +318,7 @@ async function displayPage(page) {
 }
 
 initGenres();
+initCountries();
 
 const urlParams = new URLSearchParams(window.location.search);
 const searchQuery = urlParams.get('search');
