@@ -439,7 +439,7 @@ body::after {
 .movie-title {
     margin-top: 8px !important;
     margin-bottom: 5px !important;
-    color: #e0e0e0 !important;
+    color: #ffffff !important;
     text-shadow: #000000 0px 2px 4px !important;
 }
 
@@ -518,7 +518,7 @@ body::after {
 }
 
 .footer-content p {
-    color: #555; 
+    color: #ffffff; 
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -546,6 +546,15 @@ body::after {
         overflow-x: hidden !important; 
         margin: 0 !important;
         padding: 0 !important;
+    }
+
+    body {
+        animation: none !important; /* Tắt chuyển động */
+        background-size: 100% 100% !important; /* Đưa nền về kích thước tĩnh cho nhẹ máy */
+    }
+
+    body::before, body::after {
+        display: none !important; 
     }
 
     .app-layout, main, .watch-container {
