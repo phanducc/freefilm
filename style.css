@@ -30,7 +30,7 @@ body::before, body::after {
     position: fixed;
     border-radius: 50%;
     filter: blur(90px);
-    z-index: -1;
+    z-index: 0; /* QUAN TRỌNG: Đổi thành 0 để nổi LÊN TRÊN lớp nền background-image */
     animation: liquidFloat 15s infinite alternate ease-in-out;
     pointer-events: none;
 }
