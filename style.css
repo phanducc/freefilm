@@ -440,6 +440,7 @@ body::after {
     margin-top: 8px !important;
     margin-bottom: 5px !important;
     color: #ffddff !important;
+    text-shadow: #000000 0px 2px 4px !important;
 }
 
 .loader-container { 
