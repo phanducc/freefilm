@@ -439,9 +439,7 @@ body::after {
 .movie-title {
     margin-top: 8px !important;
     margin-bottom: 5px !important;
-    color: #ffddff !important;
-    font-weight: 900 !important;
-    -webkit-text-stroke: 2px #000 !important;
+    color: #e0e0e0 !important;
     text-shadow: #000000 0px 2px 4px !important;
 }
 
