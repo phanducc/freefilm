@@ -440,7 +440,8 @@ body::after {
     margin-top: 8px !important;
     margin-bottom: 5px !important;
     color: #ffddff !important;
-    -webkit-text-stroke: 1px #000 !important;
+    font-weight: 900 !important;
+    -webkit-text-stroke: 2px #000 !important;
     text-shadow: #000000 0px 2px 4px !important;
 }
 
