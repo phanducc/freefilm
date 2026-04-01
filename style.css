@@ -489,7 +489,7 @@ body::after {
 
 .page-btn.active { 
     background: #ff75a0; 
-    color: rgb(125, 245, 125); 
+    color: rgb(0, 0, 0); 
     border-color: #ff75a0;
 }
 
