@@ -415,9 +415,9 @@
             currentEpIndex = index;
             iframePlayer.src = currentEpList[index].link_embed;
             
-            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            episodeListDiv.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
             if(buttonEl) buttonEl.classList.add('active');
-            
+
             localStorage.setItem(`ff_history_${slug}`, currentEpList[index].link_embed);
 
             document.getElementById('btnPrevEp').disabled = (index === 0);
@@ -539,9 +539,12 @@
                             btn.className = 'ep-btn'; 
                             btn.innerText = server.server_name || `Server ${i + 1}`;
                             btn.onclick = () => {
-                                serverListDiv.querySelectorAll('button').forEach(b => b.style.background = 'rgba(255,255,255,0.05)');
-                                btn.style.background = '#fff'; 
-                                btn.style.color = '#111';
+                                serverListDiv.querySelectorAll('button').forEach(b => {
+                                    b.classList.remove('active');
+                                    b.style.background = ''; 
+                                    b.style.color = '';
+                                });
+                                btn.classList.add('active');
                                 renderEpisodes(i);
                             };
                             serverListDiv.appendChild(btn);
