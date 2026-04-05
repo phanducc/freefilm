@@ -348,33 +348,53 @@ async function displayPage(page) {
     document.getElementById('pagination').innerHTML = '';
 
     try {
-        let apiUrl = '';
-        if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${page}`;
-        else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${page}`;
-        else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${page}`;
-        else if (currentMode === 'country') apiUrl = `${API_BASE}/quoc-gia/${currentQuery}?page=${page}`;
-        else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${page}`;
-
-        const res = await fetch(apiUrl, fetchOptions);
-        const json = await res.json();
-        const dataObj = json.data || json;
-        const items = dataObj.items || json.items || [];
-        
+        let finalItems = [];
         let totalPages = 1;
-        if (dataObj.params && dataObj.params.pagination) {
-            const p = dataObj.params.pagination;
-            totalPages = p.totalPages || Math.ceil(p.totalItems / p.totalItemsPerPage) || 1;
-        } else if (dataObj.pagination) {
-            totalPages = dataObj.pagination.totalPages || 1;
-        }
-        
-        if (totalPages === 1 && items.length >= 24) {
-            totalPages = page + 2;
-        }
 
-        if (items.length > 0) {
+        // 1. Nhận diện chế độ Lọc nhiều tiêu chí
+        const isMultiFiltering = window.selectedFilters && (
+            (window.selectedFilters.type && currentMode !== 'category') ||
+            (window.selectedFilters.country && currentMode !== 'country') ||
+            (window.selectedFilters.genre && currentMode !== 'genre')
+        );
+
+        // 2. Thuật toán "Skip & Take" (Quét cạn API để lấy đủ 24 phim)
+        let itemsPerPage = 24;
+        let skipItems = (page - 1) * itemsPerPage; 
+        let collectedItems = []; 
+        let totalMatchingFound = 0; 
+        
+        let maxApiPagesToScan = isMultiFiltering ? 20 : 1; 
+        let apiPageToFetch = isMultiFiltering ? 1 : page; 
+
+        // 3. Vòng lặp quét API
+        for (let scan = 0; scan < maxApiPagesToScan; scan++) {
+            let apiUrl = '';
+            if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPageToFetch}`;
+            else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPageToFetch}`;
+            else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPageToFetch}`;
+            else if (currentMode === 'country') apiUrl = `${API_BASE}/quoc-gia/${currentQuery}?page=${apiPageToFetch}`;
+            else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${apiPageToFetch}`;
+
+            const res = await fetch(apiUrl, fetchOptions);
+            const json = await res.json();
+            const dataObj = json.data || json;
+            const items = dataObj.items || json.items || [];
+            
+            // Tính tổng số trang (chỉ tính nếu khách xem bình thường không lọc)
+            if (scan === 0 && !isMultiFiltering) {
+                if (dataObj.params && dataObj.params.pagination) {
+                    totalPages = dataObj.params.pagination.totalPages || Math.ceil(dataObj.params.pagination.totalItems / dataObj.params.pagination.totalItemsPerPage) || 1;
+                } else if (dataObj.pagination) {
+                    totalPages = dataObj.pagination.totalPages || 1;
+                }
+                if (totalPages === 1 && items.length >= 24) totalPages = page + 2;
+            }
+
+            if (items.length === 0) break; // Cạn kiệt phim thì thoát
+
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
-            const processedItems = items.map(m => {
+            let tempFiltered = items.map(m => {
                 let thumb = m.thumb_url || m.poster_url || '';
                 if (!thumb.startsWith('http')) {
                     if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
@@ -384,9 +404,8 @@ async function displayPage(page) {
                 return m;
             });
 
-            let finalItems = processedItems;
-            
-            if (window.selectedFilters) {
+            // Màng lọc thông minh (Lớp 2)
+            if (isMultiFiltering) {
                 if (window.selectedFilters.type && currentMode !== 'category') {
                     const tSlug = window.selectedFilters.type.slug;
                     let apiType = '';
@@ -394,21 +413,39 @@ async function displayPage(page) {
                     else if (tSlug === 'phim-bo') apiType = 'series';
                     else if (tSlug === 'hoat-hinh') apiType = 'hoathinh';
                     else if (tSlug === 'tv-shows') apiType = 'tvshows';
-                    
-                    if (apiType) {
-                        finalItems = finalItems.filter(m => m.type === apiType);
-                    }
+                    if (apiType) tempFiltered = tempFiltered.filter(m => m.type === apiType);
                 }
-                
                 if (window.selectedFilters.country && currentMode !== 'country') {
-                    finalItems = finalItems.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
+                    tempFiltered = tempFiltered.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
                 }
-                
                 if (window.selectedFilters.genre && currentMode !== 'genre') {
-                    finalItems = finalItems.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
+                    tempFiltered = tempFiltered.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
                 }
             }
 
+            // GẮP PHIM VÀO RỔ CHO ĐỦ 24 BỘ
+            for (let movie of tempFiltered) {
+                totalMatchingFound++; 
+                if (totalMatchingFound > skipItems) {
+                    collectedItems.push(movie);
+                }
+                if (collectedItems.length === itemsPerPage) break; // Đủ 24 phim thì nghỉ
+            }
+
+            if (collectedItems.length === itemsPerPage) break; 
+
+            apiPageToFetch++; 
+        } 
+
+        finalItems = collectedItems; 
+        
+        // Cập nhật lại số phân trang sau khi lọc
+        if (isMultiFiltering) {
+            totalPages = finalItems.length === itemsPerPage ? page + 1 : page; 
+        }
+
+        // 4. In ra màn hình
+        if (finalItems.length > 0) {
             if (currentMode === 'new' && page === 1 && !isHeroRendered) {
                 renderHero(finalItems); 
                 isHeroRendered = true;
@@ -423,6 +460,7 @@ async function displayPage(page) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             renderMoviesGrid([]);
+            renderPagination(page, totalPages);
         }
     } catch (error) { 
         console.error(error); 
