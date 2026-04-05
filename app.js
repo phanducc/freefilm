@@ -349,7 +349,7 @@ async function displayPage(page) {
 
     try {
         const ITEMS_PER_PAGE = 24;
-        const CHUNK_SIZE = 5; // Mỗi lần kéo gọi 5 trang API
+        const CHUNK_SIZE = 6; // Mỗi lần kéo gọi 5 trang API
 
         // 1. Tạo "Căn cước" bộ lọc để quản lý Rổ Cache
         let filterHash = currentMode + '_' + currentQuery;
@@ -374,13 +374,13 @@ async function displayPage(page) {
         }
 
         // 3. THUẬT TOÁN LOAD TRƯỚC 5 TRANG GIAO DIỆN (120 PHIM)
-        const LOOKAHEAD_PAGES = 5;
+        const LOOKAHEAD_PAGES = 6;
         // Tính toán: Phải gom đủ phim cho trang hiện tại + 4 trang dự phòng
         const requiredItems = (page + LOOKAHEAD_PAGES - 1) * ITEMS_PER_PAGE; 
         
         let loops = 0;
         // Chạy đi gom phim cho đến khi Rổ chứa đủ 120 phim (hoặc API báo cạn sạch)
-        while (window.ffCache.items.length < requiredItems && !window.ffCache.isApiExhausted && loops < 4) { 
+        while (window.ffCache.items.length < requiredItems && !window.ffCache.isApiExhausted && loops < 10) { 
             // loops < 4 nghĩa là giới hạn quét tối đa 20 trang API mỗi lần click để tránh treo máy
             loops++;
             let chunkItems = [];
