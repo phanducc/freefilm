@@ -348,64 +348,73 @@ async function displayPage(page) {
     document.getElementById('pagination').innerHTML = '';
 
     try {
-        let finalItems = [];
-        let totalPages = 1;
-
-        // 1. Nhận diện chế độ Lọc nhiều tiêu chí
-        const isMultiFiltering = window.selectedFilters && (
-            (window.selectedFilters.type && currentMode !== 'category') ||
-            (window.selectedFilters.country && currentMode !== 'country') ||
-            (window.selectedFilters.genre && currentMode !== 'genre')
-        );
-
-        // 2. Thuật toán "Skip & Take" (Quét cạn API để lấy đủ 24 phim)
-        let itemsPerPage = 24;
-        let skipItems = (page - 1) * itemsPerPage; 
-        let collectedItems = []; 
-        let totalMatchingFound = 0; 
+        // 1. Cấu hình "Tải ngầm 5 trang"
+        const CHUNK_SIZE = 5; 
+        const ITEMS_PER_PAGE = 24;
+        let apiPageStart = Math.floor((page - 1) / CHUNK_SIZE) * CHUNK_SIZE + 1; // Tính toán xem đang ở cụm 5 trang nào
         
-        let maxApiPagesToScan = isMultiFiltering ? 20 : 1; 
-        let apiPageToFetch = isMultiFiltering ? 1 : page; 
+        // 2. Tạo "căn cước" cho bộ lọc hiện tại để biết khi nào khách đổi ý
+        let filterHash = currentMode + '_' + currentQuery;
+        if (window.selectedFilters) {
+            if (window.selectedFilters.type) filterHash += '_' + window.selectedFilters.type.slug;
+            if (window.selectedFilters.country) filterHash += '_' + window.selectedFilters.country.slug;
+            if (window.selectedFilters.genre) filterHash += '_' + window.selectedFilters.genre.slug;
+        }
 
-        // 3. Vòng lặp quét API
-        for (let scan = 0; scan < maxApiPagesToScan; scan++) {
-            let apiUrl = '';
-            if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPageToFetch}`;
-            else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPageToFetch}`;
-            else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPageToFetch}`;
-            else if (currentMode === 'country') apiUrl = `${API_BASE}/quoc-gia/${currentQuery}?page=${apiPageToFetch}`;
-            else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${apiPageToFetch}`;
+        // Khởi tạo bộ nhớ tạm (Cache) trên trình duyệt nếu chưa có
+        if (!window.ffCache) window.ffCache = { apiPageStart: -1, filterHash: '', items: [], totalPages: 1 };
 
-            const res = await fetch(apiUrl, fetchOptions);
-            const json = await res.json();
-            const dataObj = json.data || json;
-            const items = dataObj.items || json.items || [];
-            
-            // Tính tổng số trang (chỉ tính nếu khách xem bình thường không lọc)
-            if (scan === 0 && !isMultiFiltering) {
-                if (dataObj.params && dataObj.params.pagination) {
-                    totalPages = dataObj.params.pagination.totalPages || Math.ceil(dataObj.params.pagination.totalItems / dataObj.params.pagination.totalItemsPerPage) || 1;
-                } else if (dataObj.pagination) {
-                    totalPages = dataObj.pagination.totalPages || 1;
+        // 3. Kiểm tra xem có cần Tải API không hay dùng hàng có sẵn trong Cache
+        let isCacheValid = (window.ffCache.apiPageStart === apiPageStart) && (window.ffCache.filterHash === filterHash);
+
+        if (!isCacheValid) {
+            // MẤT CACHE (Khách sang cụm 5 trang mới hoặc vừa đổi bộ lọc) -> Tải 5 trang API
+            let collectedItems = [];
+            let apiTotalPages = 1;
+
+            for (let i = 0; i < CHUNK_SIZE; i++) {
+                let apiPageToFetch = apiPageStart + i;
+                let apiUrl = '';
+                
+                if (currentMode === 'new') apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPageToFetch}`;
+                else if (currentMode === 'category') apiUrl = `${API_BASE}/danh-sach/${currentQuery}?page=${apiPageToFetch}`;
+                else if (currentMode === 'genre') apiUrl = `${API_BASE}/the-loai/${currentQuery}?page=${apiPageToFetch}`;
+                else if (currentMode === 'country') apiUrl = `${API_BASE}/quoc-gia/${currentQuery}?page=${apiPageToFetch}`;
+                else if (currentMode === 'search') apiUrl = `${API_BASE}/tim-kiem?keyword=${encodeURIComponent(currentQuery)}&page=${apiPageToFetch}`;
+
+                const res = await fetch(apiUrl, fetchOptions);
+                const json = await res.json();
+                const dataObj = json.data || json;
+                const items = dataObj.items || json.items || [];
+
+                // Lấy tổng số phân trang từ API
+                if (i === 0) {
+                    if (dataObj.params && dataObj.params.pagination) {
+                        apiTotalPages = dataObj.params.pagination.totalPages || Math.ceil(dataObj.params.pagination.totalItems / dataObj.params.pagination.totalItemsPerPage) || 1;
+                    } else if (dataObj.pagination) {
+                        apiTotalPages = dataObj.pagination.totalPages || 1;
+                    }
+                    if (apiTotalPages === 1 && items.length >= ITEMS_PER_PAGE) apiTotalPages = page + 5;
                 }
-                if (totalPages === 1 && items.length >= 24) totalPages = page + 2;
+
+                if (items.length === 0) break; // Cạn kiệt phim
+
+                let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
+                let mappedItems = items.map(m => {
+                    let thumb = m.thumb_url || m.poster_url || '';
+                    if (!thumb.startsWith('http')) {
+                        if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
+                        else if (!thumb.startsWith('/')) thumb = '/' + thumb;
+                        m.full_thumb = imgDomain + thumb;
+                    } else m.full_thumb = thumb;
+                    return m;
+                });
+                
+                collectedItems = collectedItems.concat(mappedItems);
             }
 
-            if (items.length === 0) break; // Cạn kiệt phim thì thoát
-
-            let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
-            let tempFiltered = items.map(m => {
-                let thumb = m.thumb_url || m.poster_url || '';
-                if (!thumb.startsWith('http')) {
-                    if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
-                    else if (!thumb.startsWith('/')) thumb = '/' + thumb;
-                    m.full_thumb = imgDomain + thumb;
-                } else m.full_thumb = thumb;
-                return m;
-            });
-
-            // Màng lọc thông minh (Lớp 2)
-            if (isMultiFiltering) {
+            // 4. Quét qua Màng Lọc Lớp 2 cho toàn bộ 120 phim vừa kéo về
+            if (window.selectedFilters) {
                 if (window.selectedFilters.type && currentMode !== 'category') {
                     const tSlug = window.selectedFilters.type.slug;
                     let apiType = '';
@@ -413,38 +422,30 @@ async function displayPage(page) {
                     else if (tSlug === 'phim-bo') apiType = 'series';
                     else if (tSlug === 'hoat-hinh') apiType = 'hoathinh';
                     else if (tSlug === 'tv-shows') apiType = 'tvshows';
-                    if (apiType) tempFiltered = tempFiltered.filter(m => m.type === apiType);
+                    if (apiType) collectedItems = collectedItems.filter(m => m.type === apiType);
                 }
                 if (window.selectedFilters.country && currentMode !== 'country') {
-                    tempFiltered = tempFiltered.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
+                    collectedItems = collectedItems.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
                 }
                 if (window.selectedFilters.genre && currentMode !== 'genre') {
-                    tempFiltered = tempFiltered.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
+                    collectedItems = collectedItems.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
                 }
             }
 
-            // GẮP PHIM VÀO RỔ CHO ĐỦ 24 BỘ
-            for (let movie of tempFiltered) {
-                totalMatchingFound++; 
-                if (totalMatchingFound > skipItems) {
-                    collectedItems.push(movie);
-                }
-                if (collectedItems.length === itemsPerPage) break; // Đủ 24 phim thì nghỉ
-            }
-
-            if (collectedItems.length === itemsPerPage) break; 
-
-            apiPageToFetch++; 
-        } 
-
-        finalItems = collectedItems; 
-        
-        // Cập nhật lại số phân trang sau khi lọc
-        if (isMultiFiltering) {
-            totalPages = finalItems.length === itemsPerPage ? page + 1 : page; 
+            // 5. Nạp đạn (Lưu) toàn bộ kết quả vào Cache
+            window.ffCache = {
+                apiPageStart: apiPageStart,
+                filterHash: filterHash,
+                items: collectedItems,
+                totalPages: apiTotalPages
+            };
         }
 
-        // 4. In ra màn hình
+        // 6. Cắt đúng 24 phim từ Cache để hiển thị cho Trang web hiện tại (Siêu tốc)
+        let localIndex = (page - 1) % CHUNK_SIZE; // Giá trị từ 0 đến 4
+        let finalItems = window.ffCache.items.slice(localIndex * ITEMS_PER_PAGE, (localIndex + 1) * ITEMS_PER_PAGE);
+
+        // 7. In ra màn hình
         if (finalItems.length > 0) {
             if (currentMode === 'new' && page === 1 && !isHeroRendered) {
                 renderHero(finalItems); 
@@ -456,12 +457,13 @@ async function displayPage(page) {
             }
 
             renderMoviesGrid(finalItems); 
-            renderPagination(page, totalPages);
+            renderPagination(page, window.ffCache.totalPages);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             renderMoviesGrid([]);
-            renderPagination(page, totalPages);
+            renderPagination(page, window.ffCache.totalPages); 
         }
+
     } catch (error) { 
         console.error(error); 
         renderMoviesGrid([]); 
