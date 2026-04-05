@@ -451,9 +451,13 @@ body::after {
 .section-header h2 { 
     font-size: 22px; 
     font-weight: 700; 
-    margin-bottom: 20px;
+    margin-bottom: 0;
     color: #222;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.section-header {
+    margin-bottom: 20px; 
 }
 
 .movies-grid {
