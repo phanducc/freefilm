@@ -208,13 +208,16 @@ function initFilterModal() {
 
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 
-            setMode(callMode, callSlug, `Lọc: ${titleParts.join(' - ')}`);
+            setMode(callMode, callSlug, `Lọc: ${titleParts.join(' - ')}`, true);
         };
     }
 }
 
-function setMode(mode, query, title) {
+function setMode(mode, query, title, isMultiFilter = false) {
     if (isLoading) return;
+    if (!isMultiFilter) {
+        window.selectedFilters = null;
+    }
     currentMode = mode;
     currentQuery = query;
     if (title) sectionTitle.innerText = title;
@@ -380,6 +383,42 @@ async function displayPage(page) {
                 } else m.full_thumb = thumb;
                 return m;
             });
+
+            let finalItems = processedItems;
+            
+            if (window.selectedFilters) {
+                if (window.selectedFilters.type && currentMode !== 'category') {
+                    const tSlug = window.selectedFilters.type.slug;
+                    let apiType = '';
+                    if (tSlug === 'phim-le') apiType = 'single';
+                    else if (tSlug === 'phim-bo') apiType = 'series';
+                    else if (tSlug === 'hoat-hinh') apiType = 'hoathinh';
+                    else if (tSlug === 'tv-shows') apiType = 'tvshows';
+                    
+                    if (apiType) {
+                        finalItems = finalItems.filter(m => m.type === apiType);
+                    }
+                }
+                
+                if (window.selectedFilters.country && currentMode !== 'country') {
+                    finalItems = finalItems.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
+                }
+                
+                if (window.selectedFilters.genre && currentMode !== 'genre') {
+                    finalItems = finalItems.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
+                }
+            }
+
+            if (currentMode === 'new' && page === 1 && !isHeroRendered) {
+                renderHero(finalItems); 
+                isHeroRendered = true;
+            } else if (currentMode !== 'new') {
+                document.querySelector('.hero-section').style.display = 'none';
+            } else {
+                document.querySelector('.hero-section').style.display = 'block';
+            }
+
+            renderMoviesGrid(finalItems); 
 
             if (currentMode === 'new' && page === 1 && !isHeroRendered) {
                 renderHero(processedItems);
