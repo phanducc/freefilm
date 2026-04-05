@@ -426,6 +426,13 @@ body::after {
     gap: 10px;
 }
 
+.genre-pill.selected {
+    background: #ff75a0;
+    color: #fff;
+    border-color: #ff75a0;
+    box-shadow: 0 5px 15px rgba(255, 117, 160, 0.4);
+}
+
 .filter-modal-content::-webkit-scrollbar { width: 6px; }
 .filter-modal-content::-webkit-scrollbar-thumb { background: #ff75a0; border-radius: 10px; }
 

@@ -127,7 +127,6 @@ function initCountries() {
     });
 }
 
-// Danh sách 4 Định dạng chính
 const TYPES = [
     { name: '🎬 Phim Bộ', slug: 'phim-bo', mode: 'category' },
     { name: '🎞️ Phim Lẻ', slug: 'phim-le', mode: 'category' },
@@ -139,13 +138,17 @@ function initFilterModal() {
     const modal = document.getElementById('filterModal');
     const btnOpen = document.getElementById('openFilterBtn');
     const btnClose = document.getElementById('closeFilterBtn');
+    const btnExecute = document.getElementById('btnExecuteFilter');
 
     if (!modal || !btnOpen) return;
 
     btnOpen.onclick = () => modal.classList.add('show');
     btnClose.onclick = () => modal.classList.remove('show');
     modal.onclick = (e) => { if(e.target === modal) modal.classList.remove('show'); }; 
-    function createPills(dataArray, containerId, modeField) {
+
+    window.selectedFilters = { type: null, genre: null, country: null };
+
+    function createPills(dataArray, containerId, filterKey) {
         const container = document.getElementById(containerId);
         if (!container) return;
         container.innerHTML = '';
@@ -154,25 +157,60 @@ function initFilterModal() {
             const pill = document.createElement('div');
             pill.className = 'genre-pill';
             pill.innerText = item.name;
-            
-            pill.onclick = () => {
-                modal.classList.remove('show'); 
-                document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
-                
-                const cleanTitle = item.name.replace(/[^a-zA-ZÀ-ỹ0-9\s+]/g, '').trim();
-                
-                let callMode = modeField === 'dynamic' ? 'genre' : item.mode;
-                if (containerId === 'modalCountries') callMode = 'country';
 
-                setMode(callMode, item.slug, `Lọc: ${cleanTitle}`);
+            pill.onclick = () => {
+                container.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('selected'));
+                
+                if (window.selectedFilters[filterKey] && window.selectedFilters[filterKey].slug === item.slug) {
+                    window.selectedFilters[filterKey] = null;
+                } else {
+                    pill.classList.add('selected');
+                    window.selectedFilters[filterKey] = {
+                        slug: item.slug,
+                        mode: item.mode || (filterKey === 'genre' ? 'genre' : 'country'),
+                        name: item.name.replace(/[^a-zA-ZÀ-ỹ0-9\s+]/g, '').trim()
+                    };
+                }
             };
             container.appendChild(pill);
         });
     }
 
-    createPills(TYPES, 'modalTypes', 'dynamic');
-    createPills(GENRES, 'modalGenres', 'dynamic');
-    createPills(COUNTRIES, 'modalCountries', 'dynamic');
+    createPills(TYPES, 'modalTypes', 'type');
+    createPills(GENRES, 'modalGenres', 'genre');
+    createPills(COUNTRIES, 'modalCountries', 'country');
+
+    if(btnExecute) {
+        btnExecute.onclick = () => {
+            modal.classList.remove('show'); 
+            
+            let callMode = 'new';
+            let callSlug = '';
+            let titleParts = [];
+
+            if (window.selectedFilters.genre) {
+                callMode = 'genre';
+                callSlug = window.selectedFilters.genre.slug;
+            } else if (window.selectedFilters.country) {
+                callMode = 'country';
+                callSlug = window.selectedFilters.country.slug;
+            } else if (window.selectedFilters.type) {
+                callMode = 'category';
+                callSlug = window.selectedFilters.type.slug;
+            } else {
+                setMode('new', '', 'Phim mới cập nhật');
+                return;
+            }
+
+            if(window.selectedFilters.type) titleParts.push(window.selectedFilters.type.name);
+            if(window.selectedFilters.genre) titleParts.push(window.selectedFilters.genre.name);
+            if(window.selectedFilters.country) titleParts.push(window.selectedFilters.country.name);
+
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+
+            setMode(callMode, callSlug, `Lọc: ${titleParts.join(' - ')}`);
+        };
+    }
 }
 
 function setMode(mode, query, title) {
