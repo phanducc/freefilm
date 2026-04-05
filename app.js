@@ -127,6 +127,54 @@ function initCountries() {
     });
 }
 
+// Danh sách 4 Định dạng chính
+const TYPES = [
+    { name: '🎬 Phim Bộ', slug: 'phim-bo', mode: 'category' },
+    { name: '🎞️ Phim Lẻ', slug: 'phim-le', mode: 'category' },
+    { name: '🧸 Hoạt Hình', slug: 'hoat-hinh', mode: 'category' },
+    { name: '📺 TV Shows', slug: 'tv-shows', mode: 'category' }
+];
+
+function initFilterModal() {
+    const modal = document.getElementById('filterModal');
+    const btnOpen = document.getElementById('openFilterBtn');
+    const btnClose = document.getElementById('closeFilterBtn');
+
+    if (!modal || !btnOpen) return;
+
+    btnOpen.onclick = () => modal.classList.add('show');
+    btnClose.onclick = () => modal.classList.remove('show');
+    modal.onclick = (e) => { if(e.target === modal) modal.classList.remove('show'); }; 
+    function createPills(dataArray, containerId, modeField) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+
+        dataArray.forEach(item => {
+            const pill = document.createElement('div');
+            pill.className = 'genre-pill';
+            pill.innerText = item.name;
+            
+            pill.onclick = () => {
+                modal.classList.remove('show'); 
+                document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
+                
+                const cleanTitle = item.name.replace(/[^a-zA-ZÀ-ỹ0-9\s+]/g, '').trim();
+                
+                let callMode = modeField === 'dynamic' ? 'genre' : item.mode;
+                if (containerId === 'modalCountries') callMode = 'country';
+
+                setMode(callMode, item.slug, `Lọc: ${cleanTitle}`);
+            };
+            container.appendChild(pill);
+        });
+    }
+
+    createPills(TYPES, 'modalTypes', 'dynamic');
+    createPills(GENRES, 'modalGenres', 'dynamic');
+    createPills(COUNTRIES, 'modalCountries', 'dynamic');
+}
+
 function setMode(mode, query, title) {
     if (isLoading) return;
     currentMode = mode;
@@ -319,6 +367,7 @@ async function displayPage(page) {
 
 initGenres();
 initCountries();
+initFilterModal();
 
 const urlParams = new URLSearchParams(window.location.search);
 const searchQuery = urlParams.get('search');

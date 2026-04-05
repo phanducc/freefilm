@@ -348,6 +348,87 @@ body::after {
     box-shadow: 0 5px 15px rgba(255, 117, 160, 0.3);
 }
 
+.filter-modal {
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6); 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 9999; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    opacity: 0; 
+    pointer-events: none; 
+    transition: 0.3s ease;
+}
+
+.filter-modal.show { 
+    opacity: 1; 
+    pointer-events: auto; 
+}
+
+.filter-modal-content {
+    background: rgba(255, 255, 255, 0.65); 
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 60px rgba(31, 38, 135, 0.15);
+    border-radius: 24px; 
+    padding: 30px;
+    width: 90%; 
+    max-width: 700px; 
+    max-height: 85vh; 
+    overflow-y: auto; 
+    position: relative;
+    transform: scale(0.9);
+    transition: 0.3s ease;
+}
+
+.filter-modal.show .filter-modal-content {
+    transform: scale(1);
+}
+
+.close-modal-btn {
+    position: absolute; 
+    top: 20px; right: 20px; 
+    background: rgba(255,255,255,0.5);
+    border: none; 
+    color: #333; 
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    font-size: 16px; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-modal-btn:hover {
+    background: #ff75a0;
+    color: #fff;
+}
+
+.filter-group { margin-bottom: 25px; }
+
+.filter-group-title {
+    color: #ff75a0;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.filter-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-modal-content::-webkit-scrollbar { width: 6px; }
+.filter-modal-content::-webkit-scrollbar-thumb { background: #ff75a0; border-radius: 10px; }
+
 @media (max-width: 1024px) {
     .genres-scroll {
         display: flex !important;
