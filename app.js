@@ -216,7 +216,7 @@ function initFilterModal() {
 function setMode(mode, query, title, isMultiFilter = false) {
     if (isLoading) return;
     if (!isMultiFilter) {
-        window.selectedFilters = null;
+        window.selectedFilters = { type: null, genre: null, country: null };
     }
     currentMode = mode;
     currentQuery = query;
@@ -419,17 +419,6 @@ async function displayPage(page) {
             }
 
             renderMoviesGrid(finalItems); 
-
-            if (currentMode === 'new' && page === 1 && !isHeroRendered) {
-                renderHero(processedItems);
-                isHeroRendered = true;
-            } else if (currentMode !== 'new') {
-                document.querySelector('.hero-section').style.display = 'none';
-            } else {
-                document.querySelector('.hero-section').style.display = 'block';
-            }
-
-            renderMoviesGrid(processedItems);
             renderPagination(page, totalPages);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
