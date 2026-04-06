@@ -1,3 +1,39 @@
+// ==========================================
+// ĐIỀU KHIỂN MÀN HÌNH INTRO (VIDEO)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const intro = document.getElementById('siteIntro');
+    const introVid = document.getElementById('introVideo');
+
+    if (intro) {
+        if (!sessionStorage.getItem('introPlayed')) {
+            
+            // Hàm ẩn Intro
+            const hideIntro = () => {
+                intro.classList.add('hidden');
+                sessionStorage.setItem('introPlayed', 'true');
+                setTimeout(() => intro.remove(), 800); 
+            };
+
+            if (introVid) {
+                // Kịch bản A: Đợi video chạy xong đến giây cuối cùng thì tự ẩn
+                introVid.onended = hideIntro;
+                
+                // Kịch bản B (Bảo vệ): Lỡ mạng khách lag, video lỗi không tải được, 
+                // thì sau 4 giây vẫn bắt buộc phải ẩn Intro đi để khách còn xem web
+                setTimeout(hideIntro, 4000); 
+            } else {
+                setTimeout(hideIntro, 2000);
+            }
+
+        } else {
+            // Đã xem rồi thì giấu biệt tích luôn
+            intro.style.display = 'none';
+            intro.remove();
+        }
+    }
+});
+
 const API_BASE = 'https://ophim1.com/v1/api';
 const fetchOptions = { method: 'GET', headers: { accept: 'application/json' } };
 
