@@ -476,7 +476,7 @@ body {
     border-radius: 16px; 
     margin-bottom: 12px; 
     aspect-ratio: 2/3;
-    border: 1px solid #fbcbdf;
+    border: 2px solid #fbcbdf;
     transition: 0.4s;
 }
 
