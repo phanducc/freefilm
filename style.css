@@ -144,7 +144,7 @@ body {
     background: transparent; 
     border: none; 
     outline: none; 
-    color: #fbcbdf; 
+    color: #000000; 
     font-size: 15px;
     width: 100%; 
     padding: 0 10px; 
@@ -152,13 +152,13 @@ body {
 }
 
 .search-box input::placeholder { 
-    color: #888; 
+    color: #000000; 
 }
 
 .close-search { 
     background: transparent; 
     border: none; 
-    color: #aaa; 
+    color: #000000; 
     cursor: pointer; 
     font-size: 16px; 
     padding: 0 10px; 
@@ -166,8 +166,8 @@ body {
 
 .search-toggle-btn {
     background: #fbcbdf80; 
-    border: none; 
-    color: #fbcbdf; 
+    border: 1px solid #000000; 
+    color: #000000; 
     width: 38px; 
     height: 38px;
     border-radius: 50%; 
