@@ -366,8 +366,8 @@ body {
     border-radius: 24px; 
     padding: 30px;
     width: 90%; 
-    max-width: 700px; 
-    max-height: 85vh; 
+    max-width: 900px; 
+    max-height: 95vh; 
     overflow-y: auto; 
     position: relative;
     transform: scale(0.9);
@@ -397,7 +397,7 @@ body {
     color: #fbcbdf;
 }
 
-.filter-group { margin-bottom: 25px; }
+.filter-group { margin-bottom: 20px; }
 
 .filter-group-title {
     color: #ff75a0;
@@ -628,15 +628,6 @@ body {
         overflow-x: hidden !important; 
         margin: 0 !important;
         padding: 0 !important;
-    }
-
-    body {
-        animation: none !important;
-        background-size: 100% 100% !important;
-    }
-
-    body::before, body::after {
-        display: none !important; 
     }
 
     .app-layout, main, .watch-container {
