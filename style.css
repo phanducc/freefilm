@@ -578,7 +578,7 @@ body {
 .page-btn:hover:not(:disabled) { 
     background: #000000; 
     color: #fbcbdf;
-    border-color: #000000;
+    border-color: #fbcbdf;
 }
 
 .page-btn.active { 
