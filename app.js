@@ -1,6 +1,3 @@
-// ==========================================
-// ĐIỀU KHIỂN MÀN HÌNH INTRO (VIDEO)
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const intro = document.getElementById('siteIntro');
     const introVid = document.getElementById('introVideo');
@@ -8,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (intro) {
         if (!sessionStorage.getItem('introPlayed')) {
             
-            // Hàm ẩn Intro
             const hideIntro = () => {
                 intro.classList.add('hidden');
                 sessionStorage.setItem('introPlayed', 'true');
@@ -16,18 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (introVid) {
-                // Kịch bản A: Đợi video chạy xong đến giây cuối cùng thì tự ẩn
                 introVid.onended = hideIntro;
-                
-                // Kịch bản B (Bảo vệ): Lỡ mạng khách lag, video lỗi không tải được, 
-                // thì sau 4 giây vẫn bắt buộc phải ẩn Intro đi để khách còn xem web
                 setTimeout(hideIntro, 4000); 
             } else {
                 setTimeout(hideIntro, 2000);
             }
 
         } else {
-            // Đã xem rồi thì giấu biệt tích luôn
             intro.style.display = 'none';
             intro.remove();
         }
@@ -385,9 +376,8 @@ async function displayPage(page) {
 
     try {
         const ITEMS_PER_PAGE = 24;
-        const CHUNK_SIZE = 6; // Mỗi lần kéo gọi 5 trang API
+        const CHUNK_SIZE = 6;
 
-        // 1. Tạo "Căn cước" bộ lọc để quản lý Rổ Cache
         let filterHash = currentMode + '_' + currentQuery;
         let isMultiFiltering = false;
         
@@ -398,7 +388,6 @@ async function displayPage(page) {
             if (window.selectedFilters.genre) filterHash += '_g_' + window.selectedFilters.genre.slug;
         }
 
-        // 2. Mua Rổ mới nếu đổi bộ lọc
         if (!window.ffCache || window.ffCache.filterHash !== filterHash) {
             window.ffCache = {
                 filterHash: filterHash,
@@ -409,15 +398,11 @@ async function displayPage(page) {
             };
         }
 
-        // 3. THUẬT TOÁN LOAD TRƯỚC 5 TRANG GIAO DIỆN (120 PHIM)
         const LOOKAHEAD_PAGES = 6;
-        // Tính toán: Phải gom đủ phim cho trang hiện tại + 4 trang dự phòng
         const requiredItems = (page + LOOKAHEAD_PAGES - 1) * ITEMS_PER_PAGE; 
         
         let loops = 0;
-        // Chạy đi gom phim cho đến khi Rổ chứa đủ 120 phim (hoặc API báo cạn sạch)
-        while (window.ffCache.items.length < requiredItems && !window.ffCache.isApiExhausted && loops < 10) { 
-            // loops < 4 nghĩa là giới hạn quét tối đa 20 trang API mỗi lần click để tránh treo máy
+        while (window.ffCache.items.length < requiredItems && !window.ffCache.isApiExhausted && loops < 5) { 
             loops++;
             let chunkItems = [];
 
@@ -436,7 +421,6 @@ async function displayPage(page) {
                 const dataObj = json.data || json;
                 const items = dataObj.items || json.items || [];
 
-                // Lưu tổng số trang gốc của API
                 if (window.ffCache.lastApiPage === 0) {
                     if (dataObj.params && dataObj.params.pagination) {
                         window.ffCache.apiTotalPages = dataObj.params.pagination.totalPages || Math.ceil(dataObj.params.pagination.totalItems / dataObj.params.pagination.totalItemsPerPage) || 1;
@@ -447,7 +431,7 @@ async function displayPage(page) {
                 }
 
                 if (items.length === 0) {
-                    window.ffCache.isApiExhausted = true; // Cạn kiệt API
+                    window.ffCache.isApiExhausted = true;
                     break;
                 }
 
@@ -462,7 +446,6 @@ async function displayPage(page) {
                     return m;
                 });
 
-                // CHẠY QUA MÀNG LỌC LỚP 2
                 if (isMultiFiltering) {
                     if (window.selectedFilters.type && currentMode !== 'category') {
                         const tSlug = window.selectedFilters.type.slug;
@@ -485,25 +468,20 @@ async function displayPage(page) {
                 window.ffCache.lastApiPage = apiPageToFetch; 
             }
             
-            // Đổ đạn vào Rổ
             window.ffCache.items = window.ffCache.items.concat(chunkItems);
         }
 
-        // 4. Múc đúng 24 phim từ Rổ ra đĩa
         const startIndex = (page - 1) * ITEMS_PER_PAGE;
         const finalItems = window.ffCache.items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-        // 5. Cập nhật thanh Phân trang TRUNG THỰC dựa trên phim ĐÃ TÌM ĐƯỢC
         let displayTotalPages = 1;
         if (!isMultiFiltering) {
             displayTotalPages = window.ffCache.apiTotalPages;
         } else {
-            // Đếm tổng số phim trong rổ chia cho 24. Nếu rổ gom được đủ 120 phim -> ra đúng 5 trang!
             displayTotalPages = Math.ceil(window.ffCache.items.length / ITEMS_PER_PAGE);
         }
         if(displayTotalPages < 1) displayTotalPages = 1;
 
-        // 6. In kết quả
         if (finalItems.length > 0) {
             if (currentMode === 'new' && page === 1 && !isHeroRendered) {
                 renderHero(finalItems); 
