@@ -80,7 +80,7 @@ body {
 }
 
 .header-right { 
-    width: 100px; 
+    display: none; 
 }
 
 .nav-pill {
