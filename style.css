@@ -576,13 +576,15 @@ body {
 }
 
 .page-btn:hover:not(:disabled) { 
-    background: #fbcbdf; 
+    background: #000000; 
+    color: #fbcbdf;
+    border-color: #000000;
 }
 
 .page-btn.active { 
     background: #ff75a0; 
     color: #000000; 
-    border-color: #ff75a0;
+    border-color: #fbcbdf;
 }
 
 .page-btn:disabled { 
