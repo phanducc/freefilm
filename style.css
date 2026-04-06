@@ -576,7 +576,7 @@ body {
 }
 
 .page-btn:hover:not(:disabled) { 
-    background: #ff75a0; 
+    background: #fbcbdf; 
 }
 
 .page-btn.active { 
