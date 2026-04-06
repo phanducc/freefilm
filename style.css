@@ -462,9 +462,14 @@ body {
     position: relative !important;
 }
 
-.movie-card:hover .movie-thumb { 
+.movie-card:hover .thumb-wrapper { 
     border-color: #ff75a0;
-    box-shadow: 0 0 20px rgba(255, 117, 160, 0.4);}
+    box-shadow: 0 0 20px rgba(255, 117, 160, 0.4);
+}
+
+.movie-card:hover .movie-thumb { 
+    transform: scale(1.05);
+}
 
 .thumb-wrapper { 
     overflow: hidden; 
