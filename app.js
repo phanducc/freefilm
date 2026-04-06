@@ -366,8 +366,7 @@ async function displayPage(page) {
     if (isLoading) return;
     isLoading = true;
     
-    movieGrid.innerHTML = '<div class="loader-container"><div class="spinner"></div></div>';
-    document.getElementById('pagination').innerHTML = '';
+    movieGrid.innerHTML = '<div class="loader-container"><div class="spinner"></div><div class="loader-text">Hơi lâu, chờ xíu 🤭</div></div>';    document.getElementById('pagination').innerHTML = '';
 
     try {
         const ITEMS_PER_PAGE = 24;
