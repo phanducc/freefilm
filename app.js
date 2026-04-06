@@ -11,12 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => intro.remove(), 800); 
             };
 
-            if (introVid) {
-                introVid.onended = hideIntro;
-                setTimeout(hideIntro, 4000); 
-            } else {
-                setTimeout(hideIntro, 2000);
-            }
+            setTimeout(hideIntro, 3000);
 
         } else {
             intro.style.display = 'none';

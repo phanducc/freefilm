@@ -406,12 +406,14 @@ body {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-align: center;
 }
 
 .filter-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    justify-content: center;
 }
 
 .genre-pill.selected {
@@ -421,9 +423,11 @@ body {
     box-shadow: 0 5px 15px rgba(255, 117, 160, 0.4);
 }
 
-.filter-modal-content::-webkit-scrollbar { width: 6px; }
-.filter-modal-content::-webkit-scrollbar-thumb { background: #ff75a0; border-radius: 10px; }
-
+.filter-modal-content::-webkit-scrollbar { display: none; }
+.filter-modal-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 @media (max-width: 1024px) {
     .genres-scroll {
         display: flex !important;
@@ -699,10 +703,6 @@ body {
         white-space: nowrap !important; 
     }
 
-    .hero-section { 
-        order: 1 !important;
-    }
-
     .hero-grid, .banner-container { 
         display: flex !important;
         flex-direction: column !important;
@@ -754,10 +754,6 @@ body {
         height: 10px !important;
     }
 
-    .movies-section { 
-        order: 2 !important;
-    }
-
     .movies-grid, .ff-grid, #moviesGrid, .related-grid {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
@@ -791,10 +787,10 @@ body {
     }
 
     .genres-section { 
-        order: 3 !important;
         border-top: 1px solid #fbcbdf80;
         margin-top: 20px !important;
         margin-bottom: 20px !important;
+        padding-top: 20px !important;
     }
 
     .main-footer {
