@@ -220,7 +220,7 @@ function initFilterModal() {
                 callMode = 'category';
                 callSlug = window.selectedFilters.type.slug;
             } else {
-                setMode('new', '', 'Hôm nay nhà tớ có');
+                setMode('new', '', 'Tớ vừa chôm về');
                 return;
             }
 
@@ -521,5 +521,5 @@ if (searchQuery) {
     });
     setMode('category', categoryQuery, titleQuery);
 } else {
-    setMode('new', '', 'Hôm nay nhà tớ có');
+    setMode('new', '', 'Tớ vừa chôm về');
 }
