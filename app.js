@@ -220,7 +220,7 @@ function initFilterModal() {
                 callMode = 'category';
                 callSlug = window.selectedFilters.type.slug;
             } else {
-                setMode('new', '', 'Phim mới cập nhật');
+                setMode('new', '', 'Hôm nay nhà tớ có');
                 return;
             }
 
@@ -230,7 +230,7 @@ function initFilterModal() {
 
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 
-            setMode(callMode, callSlug, `Lọc: ${titleParts.join(' - ')}`, true);
+            setMode(callMode, callSlug, `Mấy phim mà: ${titleParts.join(' - ')} nè!`, true);
         };
     }
 }
@@ -521,5 +521,5 @@ if (searchQuery) {
     });
     setMode('category', categoryQuery, titleQuery);
 } else {
-    setMode('new', '', 'Phim mới cập nhật');
+    setMode('new', '', 'Hôm nay nhà tớ có');
 }
