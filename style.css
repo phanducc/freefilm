@@ -77,7 +77,7 @@ body::after {
 .intro-video {
     width: 100vw;
     height: 100vh;
-    object-fit: contain;
+    object-fit: cover;
     pointer-events: none;
 }
 
