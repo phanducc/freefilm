@@ -68,7 +68,7 @@ body {
 .logo-text { 
     font-size: 24px; 
     font-weight: 800; 
-    color: #fbcbdf#; 
+    color: #fbcbdf; 
     letter-spacing: 1px; 
     text-decoration: none; 
 }
@@ -463,15 +463,16 @@ body {
 }
 
 .movie-card:hover .movie-thumb { 
-    transform: scale(1.03); 
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); 
-}
+    border-color: #ff75a0;
+    box-shadow: 0 0 20px rgba(255, 117, 160, 0.4);}
 
 .thumb-wrapper { 
     overflow: hidden; 
     border-radius: 16px; 
     margin-bottom: 12px; 
-    aspect-ratio: 2/3; 
+    aspect-ratio: 2/3;
+    border: 1px solid #fbcbdf;
+    transition: 0.4s;
 }
 
 .movie-thumb { 
@@ -677,6 +678,10 @@ body {
         max-width: 100% !important;
         padding: 4px !important;
         box-sizing: border-box !important;
+    }
+
+    .nav-pill.searching .search-box { 
+        width: 100% !important; 
     }
 
     .nav-links {

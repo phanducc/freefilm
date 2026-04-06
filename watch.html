@@ -425,11 +425,13 @@
         }
 
         document.getElementById('btnPrevEp').onclick = () => { 
-            if(currentEpIndex > 0) playVideo(currentEpIndex - 1, episodeListDiv.children[currentEpIndex - 1]); 
+            if(currentEpIndex > 0) playVideo(currentEpIndex - 1, episodeListDiv.children[currentEpIndex - 1]);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         
         document.getElementById('btnNextEp').onclick = () => { 
             if(currentEpIndex < currentEpList.length - 1) playVideo(currentEpIndex + 1, episodeListDiv.children[currentEpIndex + 1]); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         
         document.getElementById('btnReload').onclick = () => { 
