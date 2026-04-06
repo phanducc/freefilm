@@ -4,7 +4,7 @@
 
 **FreeFilm** là một dự án giao diện web xem phim trực tuyến mã nguồn mở. Dự án tập trung vào trải nghiệm người dùng (UX/UI) với phong cách thiết kế hiện đại **Glassmorphism**, mang lại cảm giác "Cinematic" sang trọng và tối ưu hóa tuyệt đối cho thiết bị di động. Nguồn phim luôn được tự động cập nhật liên tục các bộ phim mới nhất, phim bộ, phim lẻ, hoạt hình và TV shows.
 
-🌍 **Live Demo:** [https://freefilm.phanduc-2915.workers.dev](https://freefilm.phanduc-2915.workers.dev)
+🌍 **Live Demo:** [https://freefilm.pp.ua](https://freefilm.pp.ua)
 
 ## ✨ Tính năng nổi bật
 
