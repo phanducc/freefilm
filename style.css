@@ -116,7 +116,7 @@ body {
     border-radius: 30px; 
     font-size: 14px; 
     font-weight: 600;
-    color: #fbcbdf; 
+    color: #000000; 
     cursor: pointer; 
     transition: 0.3s; 
     white-space: nowrap;
@@ -291,6 +291,7 @@ body {
 
 .genres-section { 
     margin-bottom: 40px; 
+    margin-top: 40px;
 }
 
 .genres-scroll {
