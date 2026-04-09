@@ -447,6 +447,8 @@ async function displayPage(page) {
                         m.full_thumb = rawUrl;
                     }
 
+                    return m;
+
                 });
 
                 if (window.selectedFilters.type && currentMode !== 'category') {
@@ -464,7 +466,6 @@ async function displayPage(page) {
                     if (window.selectedFilters.genre && currentMode !== 'genre') {
                         tempFiltered = tempFiltered.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
                     }
-                }
 
                 chunkItems = chunkItems.concat(tempFiltered);
                 window.ffCache.lastApiPage = apiPageToFetch; 
