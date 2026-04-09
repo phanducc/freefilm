@@ -301,7 +301,7 @@ function renderMoviesGrid(movies) {
 
         card.innerHTML = `
             <div class="thumb-wrapper">
-                <img src="${movie.full_thumb}" class="movie-thumb" alt="${movie.name}">
+                <img src="${movie.full_thumb}" class="movie-thumb" alt="${movie.name}" loading="lazy">
             </div>
             <h3 class="movie-title">${movie.name}</h3>
             <div class="movie-meta">
