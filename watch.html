@@ -563,7 +563,6 @@
                     document.getElementById('movieDesc').innerHTML = movie.content || "Chưa có mô tả chi tiết.";
 
                     let episodesArray = movie.episodes || resPhim.episodes;
-                    let episodesArray = movie.episodes || resPhim.episodes;
                     
                     if (episodesArray && episodesArray.length > 0) {
                         let newServers = [];
@@ -609,8 +608,12 @@
                                 btn.onclick = () => { playVideo(i, btn); window.scrollTo({ top: 0, behavior: 'smooth' }); };
                                 episodeListDiv.appendChild(btn);
 
-                                if (savedEp && tap.link_embed === savedEp || !savedEp && i === 0) {
-                                    if(!hasPlayed) { playVideo(i, btn); hasPlayed = true; }
+                                let isMatchHistory = savedEp && (tap.link_embed === savedEp || tap.link_m3u8 === savedEp);
+                                if (isMatchHistory || (!savedEp && i === 0)) {
+                                    if(!hasPlayed) { 
+                                        playVideo(i, btn); 
+                                        hasPlayed = true; 
+                                    }
                                 }
                             });
                         }
