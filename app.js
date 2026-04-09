@@ -430,18 +430,26 @@ async function displayPage(page) {
                 }
 
                 let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, ''); 
+                let isMobile = window.innerWidth <= 480;
                 let tempFiltered = items.map(m => {
                     let thumb = m.thumb_url || m.poster_url || '';
+                    let rawUrl = '';
                     if (!thumb.startsWith('http')) {
                         if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
                         else if (!thumb.startsWith('/')) thumb = '/' + thumb;
-                        m.full_thumb = imgDomain + thumb;
-                    } else m.full_thumb = thumb;
-                    return m;
+                        rawUrl = imgDomain + thumb;
+                    } else {
+                        rawUrl = thumb;
+                    }
+                    if (isMobile) {
+                        m.full_thumb = `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&w=250&q=65&output=webp`;
+                    } else {
+                        m.full_thumb = rawUrl;
+                    }
+
                 });
 
-                if (isMultiFiltering) {
-                    if (window.selectedFilters.type && currentMode !== 'category') {
+                if (window.selectedFilters.type && currentMode !== 'category') {
                         const tSlug = window.selectedFilters.type.slug;
                         let apiType = '';
                         if (tSlug === 'phim-le') apiType = 'single';

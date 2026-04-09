@@ -471,6 +471,9 @@
                         else if (!thumb.startsWith('/')) thumb = '/' + thumb;
                         thumb = imgDomain + thumb;
                     }
+                    if (window.innerWidth <= 480) {
+                        thumb = `https://wsrv.nl/?url=${encodeURIComponent(thumb)}&w=200&q=65&output=webp`;
+                    }
 
                     card.innerHTML = `
                         <div class="thumb-wrapper">
