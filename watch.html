@@ -7,11 +7,9 @@
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://img.ophim.live">
-    
+    <link rel="preconnect" href="https://img.ophim.live">    
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <link rel="stylesheet" href="style.css">
     <style>
         .watch-container { 
@@ -51,6 +49,11 @@
             z-index: 1;
         }
         
+        :root {
+            --plyr-color-main: #ff75a0;
+            --plyr-video-background: #000000;
+        }
+
         .controls-bar { 
             display: flex; 
             gap: 15px; 
@@ -293,9 +296,15 @@
         </div>
     </header>
 
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+
     <main class="watch-container">
         
         <div class="player-wrapper">
+            <video id="myPlayer" controls crossorigin playsinline style="width: 100%; height: 100%; display: none;"></video>
+            
             <div class="iframe-fallback">Đang kết nối tới máy chủ Video...</div>
             <iframe id="iframePlayer" allowfullscreen scrolling="no"></iframe>
         </div>
@@ -414,19 +423,54 @@
             trailerIframe.src = ''; 
         };
 
+        const videoElement = document.getElementById('myPlayer');
+        const player = new Plyr(videoElement, {
+            i18n: { speed: 'Tốc độ', quality: 'Chất lượng', normal: 'Bình thường' }
+        });
+        let hls = null;
+
         function playVideo(index, buttonEl) {
             currentEpIndex = index;
-            iframePlayer.src = currentEpList[index].link_embed;
+            const epData = currentEpList[index];
+            const fallback = document.querySelector('.iframe-fallback');
+
+            if (epData.link_m3u8) {
+                iframePlayer.style.display = 'none';
+                fallback.style.display = 'none';
+                videoElement.style.display = 'block';
+                iframePlayer.src = '';
+
+                if (Hls.isSupported()) {
+                    if (hls) hls.destroy();
+                    hls = new Hls();
+                    hls.loadSource(epData.link_m3u8);
+                    hls.attachMedia(videoElement);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        videoElement.play().catch(() => {});
+                    });
+                } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    videoElement.src = epData.link_m3u8;
+                    videoElement.play();
+                }
+                localStorage.setItem(`ff_history_${slug}`, epData.link_m3u8);
+            } 
+            else {
+                player.pause();
+                videoElement.style.display = 'none';
+                iframePlayer.style.display = 'block';
+                fallback.style.display = 'flex';
+                
+                iframePlayer.src = epData.link_embed;
+                iframePlayer.onload = () => { fallback.style.display = 'none'; };
+                localStorage.setItem(`ff_history_${slug}`, epData.link_embed);
+            }
             
             episodeListDiv.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
             if(buttonEl) buttonEl.classList.add('active');
 
-            localStorage.setItem(`ff_history_${slug}`, currentEpList[index].link_embed);
-
             document.getElementById('btnPrevEp').disabled = (index === 0);
             document.getElementById('btnNextEp').disabled = (index === currentEpList.length - 1);
         }
-
         document.getElementById('btnPrevEp').onclick = () => { 
             if(currentEpIndex > 0) playVideo(currentEpIndex - 1, episodeListDiv.children[currentEpIndex - 1]);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -519,24 +563,35 @@
                     document.getElementById('movieDesc').innerHTML = movie.content || "Chưa có mô tả chi tiết.";
 
                     let episodesArray = movie.episodes || resPhim.episodes;
+                    let episodesArray = movie.episodes || resPhim.episodes;
+                    
                     if (episodesArray && episodesArray.length > 0) {
-                        let baseData = episodesArray[0].server_data;
-                        episodesArray = [
-                            {
-                                server_name: "Server Embed",
-                                server_data: baseData.map(ep => ({
-                                    name: ep.name, 
-                                    link_embed: ep.link_embed 
+                        let newServers = [];
+                        
+                        episodesArray.forEach(server => {
+                            let sName = server.server_name || "";
+                            let typeName = sName.toLowerCase().includes('thuyết minh') ? 'Thuyết Minh' : 'Vietsub';
+                            
+                            newServers.push({
+                                server_name: `SV1 ${typeName}`,
+                                server_data: server.server_data.map(ep => ({
+                                    name: ep.name,
+                                    link_embed: ep.link_embed,
+                                    link_m3u8: "" 
                                 }))
-                            },
-                            {
-                                server_name: "Server M3U8",
-                                server_data: baseData.map(ep => ({
-                                    name: ep.name, 
-                                    link_embed: `https://player.phimapi.com/v1/?url=${ep.link_m3u8}` 
+                            });
+                            
+                            newServers.push({
+                                server_name: `SV2 ${typeName}`,
+                                server_data: server.server_data.map(ep => ({
+                                    name: ep.name,
+                                    link_embed: "", 
+                                    link_m3u8: ep.link_m3u8 
                                 }))
-                            }
-                        ];
+                            });
+                        });
+                        
+                        episodesArray = newServers; 
                     }
                     if (!episodesArray || episodesArray.length === 0) { 
                         episodeListDiv.innerHTML = '<p>Chưa cập nhật link xem.</p>'; 
