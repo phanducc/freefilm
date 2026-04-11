@@ -179,6 +179,28 @@
             font-size: 15px; 
         }
 
+        .info-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .info-poster {
+            flex-shrink: 0;
+            width: 250px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #fbcbdf80;
+        }
+        .info-poster img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .info-text {
+            flex: 1;
+        }
+
         .actors-list { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
@@ -270,7 +292,19 @@
         @media (max-width: 1024px) { 
             .related-grid { grid-template-columns: repeat(3, 1fr); } 
         }
-        @media (max-width: 480px) { 
+        @media (max-width: 480px) {
+            .info-layout {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .info-poster {
+                width: 200px;
+                margin-bottom: 10px;
+            }
+            .movie-meta-info, .movie-desc {
+                text-align: left;
+            } 
             .related-grid { grid-template-columns: repeat(2, 1fr); } 
         }
     </style>
@@ -335,12 +369,17 @@
             </div>
         </div>
 
-        <div class="glass-panel">
-            <h1 id="movieTitle" class="movie-title-large">Đang tải thông tin...</h1>
-            <p id="movieTmdbScore" style="color: #f5c518; font-weight: 700; font-size: 16px;"></p>
+        <div class="glass-panel info-layout">
+            <div class="info-poster">
+                <img id="movieDetailThumb" src="" alt="Poster Phim">
+            </div>
             
-            <div class="movie-meta-info" id="movieMetaInfo"></div>
-            <div id="movieDesc" class="movie-desc"></div>
+            <div class="info-text">
+                <h1 id="movieTitle" class="movie-title-large">Đang tải thông tin...</h1>
+                <p id="movieTmdbScore" style="color: #f5c518; font-weight: 700; font-size: 16px;"></p>
+                <div class="movie-meta-info" id="movieMetaInfo"></div>
+                <div id="movieDesc" class="movie-desc"></div>
+            </div>
         </div>
 
         <div class="glass-panel">
@@ -596,6 +635,7 @@
                 if (movie) {
                     document.title = `Đang xem: ${movie.name}`;
                     document.getElementById('movieTitle').innerText = movie.name;
+                    document.getElementById('movieDetailThumb').src = movie.thumb_url || movie.poster_url || '';
                     movieTrailerUrl = movie.trailer_url || '';
 
                     let rawScore = (movie.imdb && movie.imdb.vote_average) ? parseFloat(movie.imdb.vote_average) : ((movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0);
