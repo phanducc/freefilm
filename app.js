@@ -294,8 +294,15 @@ function renderMoviesGrid(movies) {
         }
         let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
 
-        let typeText = 'Phim Bộ';
-        if (movie.type === 'single' || movie.type === 'chieurap') {
+        let typeText = 'Phim Bộ'; 
+        if (movie.tmdb && movie.tmdb.type) {
+            if (movie.tmdb.type === 'movie') {
+                typeText = 'Phim Lẻ';
+            } else if (movie.tmdb.type === 'tv') {
+                typeText = 'Phim Bộ';
+            }
+        } 
+        else if (movie.type === 'single') {
             typeText = 'Phim Lẻ';
         }
 
