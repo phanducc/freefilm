@@ -588,8 +588,8 @@
                                 server_name: `SV1 ${typeName}`,
                                 server_data: server.server_data.map(ep => ({
                                     name: ep.name,
-                                    link_embed: ep.link_embed,
-                                    link_m3u8: "" 
+                                    link_embed: "", 
+                                    link_m3u8: ep.link_m3u8 
                                 }))
                             });
                             
@@ -597,8 +597,8 @@
                                 server_name: `SV2 ${typeName}`,
                                 server_data: server.server_data.map(ep => ({
                                     name: ep.name,
-                                    link_embed: "", 
-                                    link_m3u8: ep.link_m3u8 
+                                    link_embed: ep.link_embed,
+                                    link_m3u8: "" 
                                 }))
                             });
                         });
@@ -612,7 +612,6 @@
                             episodeListDiv.innerHTML = '';
                             currentEpList = episodesArray[serverIndex].server_data || [];
                             const savedEp = localStorage.getItem(`ff_history_${slug}`);
-                            let hasPlayed = false;
 
                             currentEpList.forEach((tap, i) => {
                                 const btn = document.createElement('button');
@@ -620,15 +619,16 @@
                                 btn.innerText = tap.name || `Tập ${i + 1}`;
                                 btn.onclick = () => { playVideo(i, btn); window.scrollTo({ top: 0, behavior: 'smooth' }); };
                                 episodeListDiv.appendChild(btn);
-
-                                let isMatchHistory = savedEp && (tap.link_embed === savedEp || tap.link_m3u8 === savedEp);
-                                if (isMatchHistory || (!savedEp && i === 0)) {
-                                    if(!hasPlayed) { 
-                                        playVideo(i, btn); 
-                                        hasPlayed = true; 
-                                    }
-                                }
                             });
+                            let targetIndex = currentEpIndex;
+                            let historyIndex = currentEpList.findIndex(tap => savedEp && (tap.link_embed === savedEp || tap.link_m3u8 === savedEp));
+                            if (historyIndex !== -1) {
+                                targetIndex = historyIndex;
+                            }
+                            const targetBtn = episodeListDiv.children[targetIndex];
+                            if (targetBtn) {
+                                playVideo(targetIndex, targetBtn);
+                            }
                         }
 
                         document.getElementById('serverSection').style.display = 'block';

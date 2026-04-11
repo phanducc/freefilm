@@ -51,7 +51,6 @@ body {
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(25px) saturate(150%);
     -webkit-backdrop-filter: blur(25px) saturate(150%);
-    border-bottom: 1px solid #fbcbdf80;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);}
 
 .header-container {
