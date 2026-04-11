@@ -595,8 +595,12 @@
 
                     let rawScore = (movie.imdb && movie.imdb.vote_average) ? parseFloat(movie.imdb.vote_average) : ((movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0);
                     let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
-                    let typeText = movie.type === 'series' ? 'Phim Bộ' : 'Phim Lẻ';
-
+                    let typeText = 'Phim Bộ';
+                    if (movie.tmdb && movie.tmdb.type) {
+                        typeText = movie.tmdb.type === 'movie' ? 'Phim Lẻ' : 'Phim Bộ';
+                    } else if (movie.type === 'single' || movie.type === 'chieurap') {
+                        typeText = 'Phim Lẻ';
+                    }
                     let thumb = movie.thumb_url || movie.poster_url || '';
                     if (!thumb.startsWith('http')) {
                         if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
@@ -709,6 +713,9 @@
                                 episodeListDiv.appendChild(btn);
                             });
                             let targetIndex = currentEpIndex;
+                            if (targetIndex >= currentEpList.length) {
+                                targetIndex = 0;
+                            }
                             let historyIndex = currentEpList.findIndex(tap => savedEp && (tap.link_embed === savedEp || tap.link_m3u8 === savedEp));
                             if (historyIndex !== -1) {
                                 targetIndex = historyIndex;
@@ -746,17 +753,26 @@
                     const actorsList = document.getElementById('actorsList');
                     actorsList.innerHTML = '';
                     if (resPeoples?.data?.peoples?.length > 0) {
-                        resPeoples.data.peoples.slice(0, 12).forEach(actor => {
-                            actorsList.innerHTML += `
+                        let actorsHtml = '';
+                        resPeoples.data.peoples.slice(0, 27).forEach(actor => {
+                            actorsHtml += `
                                 <div class="actor-card">
                                     ${actor.profile_path ? `<img src="https://image.tmdb.org/t/p/w185${actor.profile_path}" class="actor-img">` : `<div class="actor-img" style="display:flex; align-items:center; justify-content:center; font-size: 45px; background:#fbcbdf;">🤹</div>`}
                                     <div class="actor-name">${actor.name}</div>
                                 </div>
                             `;
                         });
+                        actorsList.innerHTML = actorsHtml;
                     } else { 
                         actorsList.innerHTML = '<span style="color:#aaa;">Đang cập nhật...</span>'; 
                     }
+                }
+                else {
+                    document.title = "Không tìm thấy phim";
+                    document.getElementById('movieTitle').innerText = "Phim không tồn tại hoặc đã bị xóa 🥲";
+                    document.getElementById('movieDesc').innerHTML = "Vui lòng quay lại trang chủ và chọn phim khác nhé!";
+                    document.getElementById('serverSection').style.display = 'none';
+                    document.querySelector('.player-wrapper').style.display = 'none';
                 }
             } catch (error) { 
                 console.error(error); 
