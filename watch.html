@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FreeFilm - Huyền Thoại Phim Lậu. Xem phim online miễn phí chất lượng cao. Cập nhật phim mới nhanh chóng. Không quảng cáo phiền phức. Trải nghiệm xem phim mượt mà trên mọi thiết bị.">
     <title>FreeFilm - Đang Xem Phim</title>
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -570,7 +571,10 @@
         };
         
         document.getElementById('btnReload').onclick = () => { 
-            iframePlayer.src = iframePlayer.src; 
+            const targetBtn = episodeListDiv.children[currentEpIndex];
+            if (targetBtn) {
+                playVideo(currentEpIndex, targetBtn);
+            }
         };
 
         async function fetchRelatedMovies(catSlug) {

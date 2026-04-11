@@ -286,12 +286,7 @@ function renderMoviesGrid(movies) {
         card.className = 'movie-card';
         card.onclick = () => window.location.href = `watch.html?slug=${movie.slug}`;
 
-        let rawScore = 0;
-        if (movie.imdb && movie.imdb.vote_average) {
-            rawScore = parseFloat(movie.imdb.vote_average);
-        } else if (movie.tmdb && movie.tmdb.vote_average) {
-            rawScore = parseFloat(movie.tmdb.vote_average);
-        }
+        let rawScore = parseFloat(movie.imdb?.vote_average || movie.tmdb?.vote_average || 0);
         let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
 
         let typeText = 'Phim Bộ'; 
