@@ -295,7 +295,7 @@ function renderMoviesGrid(movies) {
         let displayScore = (rawScore > 0) ? rawScore.toFixed(1) : 'N/A';
 
         let typeText = 'Phim Bộ';
-        if (movie.type === 'single') {
+        if (movie.type === 'single' || movie.type === 'chieurap') {
             typeText = 'Phim Lẻ';
         }
 
