@@ -635,7 +635,19 @@
                 if (movie) {
                     document.title = `Đang xem: ${movie.name}`;
                     document.getElementById('movieTitle').innerText = movie.name;
-                    document.getElementById('movieDetailThumb').src = movie.thumb_url || movie.poster_url || '';
+
+                    let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, '');
+                    let detailThumb = movie.thumb_url || movie.poster_url || '';
+                    if (!detailThumb.startsWith('http')) {
+                        if (!detailThumb.includes('uploads/movies/')) detailThumb = '/uploads/movies/' + detailThumb.replace(/^\//, '');
+                        else if (!detailThumb.startsWith('/')) detailThumb = '/' + detailThumb;
+                        detailThumb = imgDomain + detailThumb;
+                    }
+                    if (window.innerWidth <= 768 && detailThumb !== '') {
+                        detailThumb = `https://wsrv.nl/?url=${encodeURIComponent(detailThumb)}&w=300&q=70&output=webp`;
+                    }
+                    document.getElementById('movieDetailThumb').src = detailThumb;
+                    
                     movieTrailerUrl = movie.trailer_url || '';
 
                     let rawScore = (movie.imdb && movie.imdb.vote_average) ? parseFloat(movie.imdb.vote_average) : ((movie.tmdb && movie.tmdb.vote_average) ? parseFloat(movie.tmdb.vote_average) : 0);
