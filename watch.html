@@ -504,6 +504,19 @@
         });
         let hls = null;
 
+        player.on('ready', () => {
+            const plyrContainer = document.querySelector('.plyr');
+            if (plyrContainer && !document.querySelector('.plyr-logo')) {
+                const logoImg = document.createElement('img');
+                
+                logoImg.src = 'logo.png'; 
+                logoImg.alt = 'FreeFilm Watermark';
+                logoImg.className = 'plyr-logo';
+                
+                plyrContainer.appendChild(logoImg);
+            }
+        });
+
         function playVideo(index, buttonEl) {
             currentEpIndex = index;
             const epData = currentEpList[index];
