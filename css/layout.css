@@ -20,6 +20,10 @@
 
 .logo img { height: 50px; width: auto; object-fit: contain; }
 
+.header-right { 
+    display: none; 
+}
+
 /* === NỘI DUNG CHÍNH (MAIN) === */
 .main-container { 
     max-width: 1400px; margin: 0 auto; 

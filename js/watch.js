@@ -170,7 +170,8 @@ async function fetchRelatedMovies(catSlug) {
         related = related.map(m => {
             let thumb = m.thumb_url || m.poster_url || '';
             if (!thumb.startsWith('http')) {
-                thumb = thumb.includes('uploads/movies/') ? '/uploads/movies/' + thumb.replace(/^\//, '') : '/' + thumb;
+                if (!thumb.includes('uploads/movies/')) thumb = '/uploads/movies/' + thumb.replace(/^\//, '');
+                else if (!thumb.startsWith('/')) thumb = '/' + thumb;
                 thumb = imgDomain + thumb;
             }
             m.full_thumb = window.innerWidth <= 480 ? `https://wsrv.nl/?url=${encodeURIComponent(thumb)}&w=200&q=65&output=webp` : thumb;
@@ -200,7 +201,8 @@ async function fetchDetail() {
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, '');
             let detailThumb = movie.thumb_url || movie.poster_url || '';
             if (!detailThumb.startsWith('http')) {
-                detailThumb = detailThumb.includes('uploads/movies/') ? '/uploads/movies/' + detailThumb.replace(/^\//, '') : '/' + detailThumb;
+                if (!detailThumb.includes('uploads/movies/')) detailThumb = '/uploads/movies/' + detailThumb.replace(/^\//, '');
+                else if (!detailThumb.startsWith('/')) detailThumb = '/' + detailThumb;
                 detailThumb = imgDomain + detailThumb;
             }
             if (window.innerWidth <= 768 && detailThumb !== '') detailThumb = `https://wsrv.nl/?url=${encodeURIComponent(detailThumb)}&w=300&q=70&output=webp`;

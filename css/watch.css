@@ -219,7 +219,7 @@
     border-radius: 50%; 
     object-fit: cover; 
     border: 2px solid #fbcbdf80; 
-    margin-bottom: 8px; 
+    margin: 0 auto 8px auto;
 }
 
 .actor-name { 
