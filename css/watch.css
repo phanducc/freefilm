@@ -135,9 +135,9 @@
 }
 
 .ep-btn:hover { 
-    background: #000000 !important; 
-    color: #fbcbdf !important; 
-    border-color: #fbcbdf !important;
+    background: #fbcbdf; 
+    color: #111; 
+    box-shadow: 0 0 15px #fbcbdf80; 
 }
 
 .ep-btn.active { 
