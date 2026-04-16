@@ -1,8 +1,3 @@
-/**
- * css/watch.css
- * Định dạng giao diện riêng cho trang xem phim
- */
-
 .watch-container { 
     max-width: 1200px; 
     margin: 0 auto; 
@@ -294,7 +289,6 @@
     width: 100%; 
 }
 
-/* Kích thước Responsive cho điện thoại / Tablet */
 @media (max-width: 1024px) { 
     .related-grid { grid-template-columns: repeat(3, 1fr); } 
 }

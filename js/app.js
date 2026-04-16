@@ -1,14 +1,7 @@
-/**
- * js/app.js
- * File logic chính cho trang chủ (index.html)
- */
-
-// 1. Nhập (Import) dữ liệu tĩnh, hàm vẽ giao diện và hàm gọi API
 import { GENRES, COUNTRIES, TYPES } from './constants.js';
 import { renderMoviesGrid, renderHero, renderPagination } from './ui.js';
-import { fetchMoviesFromApi } from './api.js'; // <-- Đã gọi api.js vào đây!
+import { fetchMoviesFromApi } from './api.js';
 
-// 2. Logic Intro Video
 document.addEventListener('DOMContentLoaded', () => {
     const intro = document.getElementById('siteIntro');
     if (intro) {
@@ -18,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('introPlayed', 'true');
                 setTimeout(() => intro.remove(), 800); 
             };
-            setTimeout(hideIntro, 3000);
+            setTimeout(hideIntro, 2000);
         } else {
             intro.style.display = 'none';
             intro.remove();
@@ -26,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 3. Khai báo DOM và State (Trạng thái)
 const sectionTitle = document.getElementById('sectionTitle');
 const navPill = document.getElementById('navPill');
 const searchToggleBtn = document.getElementById('searchToggleBtn');
@@ -38,7 +30,6 @@ let currentQuery = '';
 let isLoading = false;
 let isHeroRendered = false;
 
-// 4. Xử lý sự kiện Tìm kiếm và Menu
 searchToggleBtn.onclick = () => {
     navPill.classList.add('searching');
     searchInput.focus();
@@ -67,7 +58,6 @@ document.querySelectorAll('.nav-item').forEach(item => {
     };
 });
 
-// 5. Khởi tạo Giao diện Thể loại, Quốc gia, Bộ lọc
 function initGenres() {
     const genreContainer = document.getElementById('genresScroll');
     if (!genreContainer) return;
@@ -182,7 +172,6 @@ function initFilterModal() {
     }
 }
 
-// 6. Logic chuyển chế độ và gọi API tải phim
 function setMode(mode, query, title, isMultiFilter = false) {
     if (isLoading) return;
     if (!isMultiFilter) {
@@ -199,7 +188,7 @@ async function displayPage(page) {
     isLoading = true;
     
     const movieGridEl = document.getElementById('movieGrid');
-    movieGridEl.innerHTML = '<div class="loader-container"><div class="spinner"></div><div class="loader-text">Hơi lâu, chờ xíu 🤭</div></div>';    
+    movieGridEl.innerHTML = '<div class="loader-container"><div class="spinner"></div><div class="loader-text">Hơi lâu, chờ xíu nha 🤭</div></div>';    
     document.getElementById('pagination').innerHTML = '';
 
     try {
@@ -231,7 +220,6 @@ async function displayPage(page) {
             for (let i = 1; i <= CHUNK_SIZE; i++) {
                 let apiPageToFetch = window.ffCache.lastApiPage + 1;
                 
-                // === SỬ DỤNG HÀM TỪ api.js TẠI ĐÂY ===
                 const { items, totalPages } = await fetchMoviesFromApi(currentMode, currentQuery, apiPageToFetch);
 
                 if (window.ffCache.lastApiPage === 0) {
@@ -245,7 +233,6 @@ async function displayPage(page) {
 
                 let tempFiltered = items;
 
-                // Xử lý bộ lọc nâng cao
                 if (window.selectedFilters.type && currentMode !== 'category') {
                     const tSlug = window.selectedFilters.type.slug;
                     let apiType = '';
@@ -289,7 +276,6 @@ async function displayPage(page) {
                 document.querySelector('.hero-section').style.display = 'block';
             }
 
-            // Gọi các hàm từ ui.js để vẽ
             renderMoviesGrid(finalItems, 'movieGrid'); 
             renderPagination(page, displayTotalPages, 'pagination', displayPage); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -305,7 +291,6 @@ async function displayPage(page) {
     isLoading = false;
 }
 
-// 7. Chạy khởi tạo ban đầu
 initGenres();
 initCountries();
 initFilterModal();

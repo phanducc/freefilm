@@ -1,8 +1,3 @@
-/**
- * js/watch.js
- * Logic chính cho trang xem phim (watch.html)
- */
-
 import { API_BASE, fetchOptions } from './constants.js';
 import { renderMoviesGrid } from './ui.js';
 
@@ -15,7 +10,6 @@ let currentEpList = [];
 let currentEpIndex = 0;
 let movieTrailerUrl = '';
 
-// 1. Xử lý sự kiện Tìm kiếm trên thanh điều hướng
 const navPill = document.getElementById('navPill');
 const searchToggleBtn = document.getElementById('searchToggleBtn');
 const closeSearchBtn = document.getElementById('closeSearchBtn');
@@ -50,7 +44,6 @@ document.querySelectorAll('.nav-item').forEach(item => {
     };
 });
 
-// 2. Xử lý Trailer Phim
 const trailerModal = document.getElementById('trailerModal');
 const trailerIframe = document.getElementById('trailerIframe');
 
@@ -71,7 +64,6 @@ document.getElementById('closeTrailerBtn').onclick = () => {
     trailerIframe.src = ''; 
 };
 
-// 3. Khởi tạo Trình phát Video (Plyr)
 const videoElement = document.getElementById('myPlayer');
 const player = new Plyr(videoElement, {
     controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'settings', 'pip', 'airplay', 'fullscreen'],
@@ -95,7 +87,6 @@ player.on('ready', () => {
     }
 });
 
-// 4. Hàm phát video
 function playVideo(index, buttonEl) {
     currentEpIndex = index;
     const epData = currentEpList[index];
@@ -157,14 +148,13 @@ document.getElementById('btnReload').onclick = () => {
     if (targetBtn) playVideo(currentEpIndex, targetBtn);
 };
 
-// 5. Lấy phim gợi ý (Dùng chung module ui.js)
 async function fetchRelatedMovies(catSlug) {
     try {
         const res = await fetch(`${API_BASE}/the-loai/${catSlug}?page=1`, fetchOptions).then(r => r.json());
         let items = res.data?.items || res.items || [];
         
         let related = items.filter(m => m.slug !== slug);
-        related = related.sort(() => 0.5 - Math.random()).slice(0, 6); // Lấy ngẫu nhiên 6 phim
+        related = related.sort(() => 0.5 - Math.random()).slice(0, 6);
         
         let imgDomain = (res.data?.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, '');
         related = related.map(m => {
@@ -178,12 +168,10 @@ async function fetchRelatedMovies(catSlug) {
             return m;
         });
 
-        // Gọi họa sĩ vẽ phim ra!
         renderMoviesGrid(related, 'relatedMoviesGrid');
     } catch(e) { console.error(e); }
 }
 
-// 6. Tải thông tin chi tiết phim
 async function fetchDetail() {
     if (!slug) { 
         document.getElementById('movieTitle').innerText = "Lỗi đường dẫn!"; 

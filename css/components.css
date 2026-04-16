@@ -1,9 +1,3 @@
-/**
- * css/components.css
- * Định dạng cho các thành phần giao diện (Nút bấm, Input, Modal, Loader...)
- */
-
-/* === THANH ĐIỀU HƯỚNG (NAV PILL) === */
 .nav-pill {
     background: #fbcbdf;
     border: 1px solid #fbcbdf80;
@@ -46,7 +40,6 @@
     color: #fbcbdf; 
 }
 
-/* === THANH TÌM KIẾM === */
 .search-box {
     display: none; 
     align-items: center; 
@@ -89,7 +82,6 @@
 .nav-pill.searching .search-box { display: flex; width: 500px; opacity: 1; }
 .nav-pill.searching .search-toggle-btn { display: none; }
 
-/* === NÚT XEM NGAY TẠI BANNER === */
 .btn-play {
     background: #fbcbdf; color: #111; 
     border: none; padding: 10px 20px; 
@@ -101,7 +93,6 @@
 
 .btn-play:hover { background: #fbcbdf; transform: scale(1.05); }
 
-/* === THẺ THỂ LOẠI (GENRE PILL) === */
 .genre-pill {
     background: rgba(55, 55, 55, 0.45);
     border: 1px solid #fbcbdf80;
@@ -120,7 +111,6 @@
     box-shadow: 0 5px 15px rgba(255, 117, 160, 0.3);
 }
 
-/* === MODAL BỘ LỌC PHIM === */
 .filter-modal {
     position: fixed; top: 0; left: 0; 
     width: 100vw; height: 100vh;
@@ -161,7 +151,6 @@
 }
 .filter-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
-/* === LOADER (HIỆU ỨNG TẢI TRANG) === */
 .loader-container { 
     display: flex; flex-direction: column; 
     align-items: center; justify-content: center; 
@@ -184,7 +173,6 @@
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* === THANH PHÂN TRANG === */
 .pagination { 
     display: flex; justify-content: center; gap: 8px; margin-top: 50px; 
 }
@@ -192,13 +180,13 @@
 .page-btn {
     background: #fbcbdf80; border: 1px solid #fbcbdf80;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
-    color: #000000; padding: 10px 15px;
+    color: #fbcbdf; padding: 10px 15px;
     border-radius: 12px; cursor: pointer; 
     font-weight: 600; transition: 0.3s;
 }
 
 .page-btn:hover:not(:disabled) {background: #fbcbdf; color: #111; box-shadow: 0 0 15px #fbcbdf80; }
-.page-btn.active { background: #ff75a0; color: #000000; border-color: #fbcbdf; }
+.page-btn.active { background: #ff75a0; color: #fbcbdf; border-color: #fbcbdf; }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .page-dots { 

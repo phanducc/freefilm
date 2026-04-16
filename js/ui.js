@@ -1,22 +1,14 @@
-/**
- * js/ui.js
- * File này đóng vai trò như "họa sĩ", chuyên nhận dữ liệu và vẽ HTML ra màn hình.
- */
-
-// Hàm vẽ danh sách phim (Grid)
 export function renderMoviesGrid(movies, containerId) {
     const movieGrid = document.getElementById(containerId);
-    if (!movieGrid) return; // Nếu không tìm thấy vùng chứa trên HTML thì dừng lại
+    if (!movieGrid) return;
     
     movieGrid.innerHTML = '';
     
-    // Nếu không có phim nào, hiển thị câu thông báo
     if (!movies || movies.length === 0) {
-        movieGrid.innerHTML = '<p style="color:#aaa; text-align:center; grid-column:1/-1;">Không tìm thấy dữ liệu.</p>';
+        movieGrid.innerHTML = '<p style="color:#aaa; text-align:center; grid-column:1/-1;">oh noo, lỗi rồi 🤭</p>';
         return;
     }
 
-    // Duyệt qua từng phim và tạo thẻ HTML
     movies.forEach(movie => {
         const card = document.createElement('div');
         card.className = 'movie-card';
@@ -46,7 +38,6 @@ export function renderMoviesGrid(movies, containerId) {
     });
 }
 
-// Hàm vẽ 2 phim nổi bật ở khu vực Hero (Banner)
 export function renderHero(movies, containerId) {
     const heroGrid = document.getElementById(containerId);
     if (!heroGrid) return;
@@ -61,7 +52,6 @@ export function renderHero(movies, containerId) {
     
     if (heroSection) heroSection.style.display = 'block';
 
-    // Trộn ngẫu nhiên phim và lấy 2 phim đầu tiên
     const shuffled = [...movies].sort(() => 0.5 - Math.random());
     const top2 = shuffled.slice(0, 2);
 
@@ -82,7 +72,6 @@ export function renderHero(movies, containerId) {
     });
 }
 
-// Hàm vẽ thanh phân trang (1, 2, 3... Next)
 export function renderPagination(currentPage, totalPages, containerId, onPageClick) {
     const pagDiv = document.getElementById(containerId);
     if (!pagDiv) return;
@@ -90,15 +79,13 @@ export function renderPagination(currentPage, totalPages, containerId, onPageCli
     pagDiv.innerHTML = '';
     if (totalPages <= 1) return;
 
-    // Nút lùi lại
     const prevBtn = document.createElement('button');
     prevBtn.className = 'page-btn';
     prevBtn.innerText = '◀️';
     prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => onPageClick(currentPage - 1); // Gọi hàm được truyền vào
+    prevBtn.onclick = () => onPageClick(currentPage - 1);
     pagDiv.appendChild(prevBtn);
 
-    // Tính toán số trang cần hiển thị (thêm dấu 3 chấm nếu nhiều trang)
     let pages = [];
     if (totalPages <= 5) {
         for (let i = 1; i <= totalPages; i++) pages.push(i);
@@ -112,7 +99,6 @@ export function renderPagination(currentPage, totalPages, containerId, onPageCli
         }
     }
 
-    // Vẽ các nút số trang
     pages.forEach(p => {
         if (p === '...') {
             const dots = document.createElement('span');
@@ -123,16 +109,15 @@ export function renderPagination(currentPage, totalPages, containerId, onPageCli
             const btn = document.createElement('button');
             btn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
             btn.innerText = p;
-            btn.onclick = () => { if (p !== currentPage) onPageClick(p); }; // Gọi hàm được truyền vào
+            btn.onclick = () => { if (p !== currentPage) onPageClick(p); };
             pagDiv.appendChild(btn);
         }
     });
 
-    // Nút tiến lên
     const nextBtn = document.createElement('button');
     nextBtn.className = 'page-btn';
     nextBtn.innerText = '▶️';
     nextBtn.disabled = currentPage >= totalPages;
-    nextBtn.onclick = () => onPageClick(currentPage + 1); // Gọi hàm được truyền vào
+    nextBtn.onclick = () => onPageClick(currentPage + 1);
     pagDiv.appendChild(nextBtn);
 }
