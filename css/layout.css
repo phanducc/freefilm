@@ -1,0 +1,123 @@
+/**
+ * css/layout.css
+ * Định dạng các khung sườn chính (Header, Hero, Movie Grid) và Responsive
+ */
+
+/* === HEADER (THANH ĐẦU TRANG) === */
+.glass-header {
+    position: fixed; top: 0; left: 0; width: 100%;
+    padding: 20px 0; z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(25px) saturate(150%);
+    -webkit-backdrop-filter: blur(25px) saturate(150%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+.header-container {
+    max-width: 1400px; margin: 0 auto; padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.logo img { height: 50px; width: auto; object-fit: contain; }
+
+/* === NỘI DUNG CHÍNH (MAIN) === */
+.main-container { 
+    max-width: 1400px; margin: 0 auto; 
+    padding: 115px 40px 0 40px; 
+}
+
+/* === BANNER HERO (NỔI BẬT) === */
+.hero-section { margin-bottom: 30px; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.hero-card {
+    position: relative; border-radius: 24px; overflow: hidden; 
+    aspect-ratio: 21/9; display: flex; align-items: flex-end; 
+    padding: 30px; cursor: pointer; transition: 0.3s;
+}
+
+.hero-card:hover { transform: translateY(-5px); }
+.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.hero-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+    background: linear-gradient(to right, rgba(20, 30, 48, 0.9) 0%, rgba(20, 30, 48, 0.4) 50%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 3; width: 60%; }
+.hero-title { 
+    font-size: 28px; font-weight: 800; line-height: 1.2; 
+    margin-bottom: 15px; color: #fbcbdf;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); 
+}
+
+/* === DANH SÁCH PHIM (MOVIE GRID) === */
+.movies-grid {
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+    gap: 20px;
+}
+
+.movie-card { position: relative !important; }
+
+.thumb-wrapper { 
+    overflow: hidden; border-radius: 16px; margin-bottom: 12px; 
+    aspect-ratio: 2/3; border: 2px solid #fbcbdf; transition: 0.4s;
+}
+
+.movie-thumb { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+.movie-card:hover .thumb-wrapper { border-color: #ff75a0; box-shadow: 0 0 20px rgba(255, 117, 160, 0.4); }
+.movie-card:hover .movie-thumb { transform: scale(1.05); }
+
+.movie-meta {
+    position: absolute !important; top: 8px; left: 8px; right: 8px; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.movie-score, .movie-type-badge {
+    background: #00000080 !important; padding: 2px 8px; border-radius: 6px; font-size: 11px;
+}
+.movie-score { color: #ffcc36 !important; }
+.movie-title { margin-top: 8px; color: #fbcbdf !important; text-shadow: #000 0px 2px 4px; }
+
+/* === KHU VỰC THỂ LOẠI === */
+.genres-section { border-top: 1px solid #fbcbdf80; padding-top: 40px; margin: 40px 0; }
+.genres-scroll { display: grid; grid-template-columns: repeat(11, 1fr); gap: 12px; width: 100%; }
+
+/* === RESPONSIVE (TỐI ƯU DI ĐỘNG) === */
+@media (max-width: 1024px) {
+    .genres-scroll {
+        display: flex !important;
+        overflow-x: auto !important;
+        padding-bottom: 10px;
+    }
+    .genre-pill { 
+        padding: 8px 16px !important; 
+        border-radius: 30px !important; 
+    }
+}
+
+@media (max-width: 480px) { 
+    html body { width: 100vw; max-width: 100vw; overflow-x: hidden; margin: 0; padding: 0; }
+    html body .app-layout, html body main, html body .watch-container { width: 100%; box-sizing: border-box; overflow-x: hidden; padding-top: 150px; padding-bottom: 45px; }
+    html body header.glass-header { padding: 5px 0; height: auto; width: 100vw; box-sizing: border-box; }
+    html body .header-container { flex-direction: column; gap: 5px; padding: 0 10px; width: 100%; box-sizing: border-box; align-items: center; }
+    html body a.logo { display: flex; justify-content: center; width: 100%; }
+    html body a.logo img { height: 45px; width: auto; max-width: 100%; object-fit: contain; }
+    html body main.main-container { display: flex; flex-direction: column; }
+    html body .nav-pill-container, html body div.nav-pill { width: 100%; max-width: 100%; padding: 4px; box-sizing: border-box; }
+    html body div.nav-pill.searching .search-box { width: 100%; }
+    html body nav.nav-links { display: flex; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; gap: 5px; }
+    html body nav.nav-links .nav-item { font-size: 11.5px; padding: 6px 10px; white-space: nowrap; }
+    html body .hero-section .hero-grid, html body .banner-container { display: flex; flex-direction: column; gap: 15px; padding: 0 10px; width: 100%; box-sizing: border-box; margin-top: 10px; }
+    html body #genresScroll, html body #countriesScroll { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 0 10px; width: 100%; box-sizing: border-box; margin: 15px 0 25px 0; }
+    html body .genres-scroll .genre-pill { flex: 0 0 auto; padding: 6px 10px; font-size: 9px; text-align: center; justify-content: center; border-radius: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+    html body .hero-card h2, html body .banner-item h2, html body .hero-title { font-size: 12px; margin-bottom: 5px; line-height: 1.2; }
+    html body .hero-card button, html body .hero-card .btn-play, html body .watch-now { padding: 5px 12px; font-size: 8px; border-radius: 20px; }
+    html body .hero-card button svg, html body .hero-card button i { width: 10px; height: 10px; }
+    html body .movies-grid, html body .ff-grid, html body #moviesGrid, html body .related-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 0 10px; width: 100%; box-sizing: border-box; margin: 0; }
+    html body .movie-card .movie-title { font-size: 10px; margin-top: 2px; margin-bottom: 2px; }
+    html body .controls-bar { flex-wrap: nowrap; gap: 6px; padding: 10px 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    html body .controls-bar .control-btn { padding: 6px 4px; font-size: 10px; white-space: nowrap; flex: 1; justify-content: center; }
+    html body section.genres-section { border-top: 1px solid #fbcbdf80; margin-top: 20px; margin-bottom: 20px; padding-top: 20px; }
+    html body footer.main-footer { padding: 20px 0; margin-top: 30px; }
+    html body footer.main-footer .footer-content p { font-size: 12px; }
+}

@@ -1,0 +1,207 @@
+/**
+ * css/components.css
+ * Định dạng cho các thành phần giao diện (Nút bấm, Input, Modal, Loader...)
+ */
+
+/* === THANH ĐIỀU HƯỚNG (NAV PILL) === */
+.nav-pill {
+    background: #fbcbdf;
+    border: 1px solid #fbcbdf80;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    border-radius: 50px;
+    display: flex; 
+    align-items: center;
+    padding: 6px 6px 6px 20px;
+    transition: all 0.4s ease;
+    height: 50px;
+    width: 500px;
+    overflow: hidden;
+}
+
+.nav-links { 
+    display: flex; 
+    flex: 1;
+    justify-content: space-between;
+    gap: 5px; 
+    align-items: center; 
+    transition: opacity 0.3s; 
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 8px 10px; 
+    border-radius: 30px; 
+    font-size: 14px; 
+    font-weight: 600;
+    color: #000000; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    white-space: nowrap;
+}
+
+.nav-item:hover, .nav-item.active { 
+    background: #ff75a0;
+    color: #fbcbdf; 
+}
+
+/* === THANH TÌM KIẾM === */
+.search-box {
+    display: none; 
+    align-items: center; 
+    width: 0; 
+    opacity: 0; 
+    transition: all 0.4s ease;
+}
+
+.search-box input {
+    background: transparent; 
+    border: none; 
+    outline: none; 
+    color: #000000; 
+    font-size: 15px;
+    width: 100%; 
+    padding: 0 10px; 
+    font-family: 'Nunito', sans-serif;
+}
+
+.search-box input::placeholder { color: #000000; }
+
+.close-search { 
+    background: transparent; border: none; 
+    color: #000000; cursor: pointer; 
+    font-size: 16px; padding: 0 10px; 
+}
+
+.search-toggle-btn {
+    background: #fbcbdf80; 
+    border: 1px solid #000000; color: #000000; 
+    width: 38px; height: 38px; border-radius: 50%; 
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: 0.3s; 
+    margin-left: 10px; flex-shrink: 0;
+}
+
+.search-toggle-btn:hover { background: rgba(0, 0, 0, 0.1); }
+
+.nav-pill.searching .nav-links { opacity: 0; visibility: hidden; position: absolute; }
+.nav-pill.searching .search-box { display: flex; width: 500px; opacity: 1; }
+.nav-pill.searching .search-toggle-btn { display: none; }
+
+/* === NÚT XEM NGAY TẠI BANNER === */
+.btn-play {
+    background: #fbcbdf; color: #111; 
+    border: none; padding: 10px 20px; 
+    border-radius: 30px; font-size: 14px; 
+    font-weight: 700; cursor: pointer; 
+    display: inline-flex; align-items: center; 
+    gap: 8px; transition: 0.3s;
+}
+
+.btn-play:hover { background: #fbcbdf; transform: scale(1.05); }
+
+/* === THẺ THỂ LOẠI (GENRE PILL) === */
+.genre-pill {
+    background: rgba(55, 55, 55, 0.45);
+    border: 1px solid #fbcbdf80;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    padding: 10px 5px;
+    border-radius: 12px;
+    font-size: 13px; font-weight: 600; 
+    cursor: pointer; transition: 0.3s; 
+    white-space: nowrap; color: #fbcbdf;
+    display: flex; justify-content: center;
+    align-items: center; text-align: center;
+}
+
+.genre-pill:hover, .genre-pill.active, .genre-pill.selected { 
+    background: #ff75a0; color: #fbcbdf; border-color: #ff75a0;
+    box-shadow: 0 5px 15px rgba(255, 117, 160, 0.3);
+}
+
+/* === MODAL BỘ LỌC PHIM === */
+.filter-modal {
+    position: fixed; top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6); z-index: 9999; 
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: 0.3s ease;
+}
+
+.filter-modal.show { opacity: 1; pointer-events: auto; }
+
+.filter-modal-content {
+    background: rgba(15, 15, 15, 0.55); 
+    border: 1px solid #fbcbdf80;
+    box-shadow: 0 20px 60px rgba(31, 38, 135, 0.15);
+    border-radius: 24px; padding: 30px;
+    width: 90%; max-width: 900px; max-height: 95vh; 
+    overflow-y: auto; position: relative;
+    transform: scale(0.9); transition: 0.3s ease;
+    -ms-overflow-style: none; scrollbar-width: none;
+}
+.filter-modal-content::-webkit-scrollbar { display: none; }
+.filter-modal.show .filter-modal-content { transform: scale(1); }
+
+.close-modal-btn {
+    position: absolute; top: 20px; right: 20px; 
+    background: #fbcbdf80; border: none; color: #fbcbdf; 
+    width: 35px; height: 35px; border-radius: 50%;
+    font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+
+.close-modal-btn:hover { background: #ff75a0; color: #fbcbdf; }
+
+.filter-group { margin-bottom: 20px; }
+.filter-group-title {
+    color: #ff75a0; margin-bottom: 12px; font-size: 16px;
+    font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; text-align: center;
+}
+.filter-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+/* === LOADER (HIỆU ỨNG TẢI TRANG) === */
+.loader-container { 
+    display: flex; flex-direction: column; 
+    align-items: center; justify-content: center; 
+    padding: 50px; grid-column: 1/-1; gap: 15px;
+}
+
+.loader-text {
+    color: #fbcbdf; font-size: 14px; font-weight: 600;
+    letter-spacing: 0.5px;
+    animation: pulseText 1.5s infinite ease-in-out; 
+}
+
+@keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.spinner { 
+    width: 40px; height: 40px; 
+    border: 4px solid #fbcbdf80; border-top-color: #ff75a0; 
+    border-radius: 50%; animation: spin 1s infinite linear; 
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* === THANH PHÂN TRANG === */
+.pagination { 
+    display: flex; justify-content: center; gap: 8px; margin-top: 50px; 
+}
+
+.page-btn {
+    background: #fbcbdf; border: 1px solid #fbcbdf80;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    color: #000000; padding: 10px 15px;
+    border-radius: 12px; cursor: pointer; 
+    font-weight: 600; transition: 0.3s;
+}
+
+.page-btn:hover:not(:disabled) { background: #000000; color: #fbcbdf; border-color: #fbcbdf; }
+.page-btn.active { background: #ff75a0; color: #000000; border-color: #fbcbdf; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.page-dots { 
+    color: #fbcbdf; font-weight: 800; font-size: 18px; 
+    display: flex; align-items: flex-end; padding-bottom: 5px; letter-spacing: 2px;
+}

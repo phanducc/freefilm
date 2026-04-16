@@ -1,0 +1,4 @@
+/* style.css - File tổng kết nối các module */
+@import url('css/base.css');
+@import url('css/components.css');
+@import url('css/layout.css');
