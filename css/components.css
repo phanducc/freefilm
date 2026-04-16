@@ -190,7 +190,7 @@
 }
 
 .page-btn {
-    background: #fbcbdf; border: 1px solid #fbcbdf80;
+    background: #fbcbdf80; border: 1px solid #fbcbdf80;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
     color: #000000; padding: 10px 15px;
     border-radius: 12px; cursor: pointer; 
