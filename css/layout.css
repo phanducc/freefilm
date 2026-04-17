@@ -75,6 +75,7 @@
 
 .genres-section { border-top: 1px solid #fbcbdf80; padding-top: 40px; margin: 40px 0; }
 .genres-scroll { display: grid; grid-template-columns: repeat(11, 1fr); gap: 12px; width: 100%; }
+#countriesScroll {margin-bottom: 15px; }
 
 @media (max-width: 1024px) {
     .genres-scroll {
