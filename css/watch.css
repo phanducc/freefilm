@@ -318,6 +318,7 @@
 }
 
 @media (max-width: 480px) {
+    .plyr-logo { width: 100px; }
     .info-layout {
         flex-direction: column;
         align-items: center;
@@ -331,5 +332,4 @@
         text-align: left;
     } 
     .related-grid { grid-template-columns: repeat(2, 1fr); } 
-    .plyr-logo { width: 100px; }
 }
