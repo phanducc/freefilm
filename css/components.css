@@ -102,7 +102,7 @@
     box-sizing: border-box;
 }
 
-.cw-banner:hover {background: #fbcbdf; color: #111; box-shadow: 0 0 15px #fbcbdf80; }
+.cw-banner:hover {background: #fbcbdf; box-shadow: 0 0 15px #fbcbdf80; }
 
 .cw-info-wrapper {
     display: flex;
@@ -137,6 +137,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.cw-title:hover { color: #111; }
 
 .cw-ep {
     font-size: 12px;
