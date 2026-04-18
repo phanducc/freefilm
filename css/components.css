@@ -95,7 +95,7 @@
     height: 80px;
     background: #fbcbdf80;
     border: 1px solid #fbcbdf80;
-    border-radius: 12px;
+    border-radius: 50%;
     padding: 10px;
     cursor: pointer;
     transition: background 0.3s ease;
