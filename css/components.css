@@ -119,6 +119,8 @@
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #fbcbdf80;
+    position: relative;
+    z-index: 1;
 }
 
 .cw-banner:hover .cw-thumb {
