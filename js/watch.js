@@ -93,7 +93,7 @@ player.on('ready', () => {
 });
 
 let lastSaveTime = 0;
-function updateHistoryList(time) {
+function updateHistoryList() {
     if (!currentMovieName) return;
     
     const history = [{
@@ -101,21 +101,10 @@ function updateHistoryList(time) {
         name: currentMovieName,
         thumb: currentMovieThumb,
         epName: currentEpList[currentEpIndex]?.name || '',
-        time: time
     }];
     
     localStorage.setItem('ff_history_list', JSON.stringify(history));
 }
-
-player.on('timeupdate', () => {
-    if (player.currentTime > 5) {
-        localStorage.setItem(`ff_time_${slug}`, player.currentTime);
-        if (Math.abs(player.currentTime - lastSaveTime) > 5) {
-            updateHistoryList(player.currentTime);
-            lastSaveTime = player.currentTime;
-        }
-    }
-});
 
 function playVideo(index, buttonEl) {
     currentEpIndex = index;
@@ -156,7 +145,7 @@ function playVideo(index, buttonEl) {
         localStorage.setItem(`ff_history_${slug}`, epData.link_embed);
     }
     
-    updateHistoryList(0);
+    updateHistoryList();
 
     episodeListDiv.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
     if(buttonEl) buttonEl.classList.add('active');

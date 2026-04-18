@@ -101,8 +101,6 @@ export function renderContinueWatching() {
     if (!block) {
         block = document.createElement('div');
         block.id = 'continueWatchingBlock';
-        block.style.margin = '20px 0 10px 0';
-        block.style.padding = '0 10px';
         
         const heroSection = document.querySelector('.hero-section');
         if (heroSection) {
@@ -111,23 +109,17 @@ export function renderContinueWatching() {
     }
 
     block.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 80px; background: rgba(255, 117, 160, 0.15); border: 1px solid #ff75a080; border-radius: 16px; padding: 10px; cursor: pointer; transition: 0.3s; box-sizing: border-box;" 
-             onclick="window.location.href='watch.html?slug=${item.slug}'"
-             onmouseover="this.style.background='rgba(255, 117, 160, 0.3)'"
-             onmouseout="this.style.background='rgba(255, 117, 160, 0.15)'">
-            
-            <div style="display: flex; align-items: center; gap: 15px; height: 100%; overflow: hidden; flex: 1;">
-                <img src="${item.thumb}" style="height: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; border: 1px solid #fbcbdf50;">
-                <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
-                    <h3 style="font-size: 15px; font-weight: 800; color: #fbcbdf; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</h3>
-                    <span style="font-size: 12px; color: #ff75a0; font-weight: 600; margin-top: 4px;">⏱️ Đang xem dở: ${item.epName}</span>
+        <div class="cw-banner" onclick="window.location.href='watch.html?slug=${item.slug}'">
+            <div class="cw-info-wrapper">
+                <img src="${item.thumb}" class="cw-thumb" alt="${item.name}">
+                <div class="cw-text">
+                    <h3 class="cw-title">${item.name}</h3>
+                    <span class="cw-ep">⏱️ Xem dở nè: ${item.epName}</span>
                 </div>
             </div>
 
-            <div style="margin-left: 10px; flex-shrink: 0;">
-                <button style="background: #ff75a0; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                    ▶ Phát tiếp
-                </button>
+            <div class="cw-btn-wrapper">
+                <button class="cw-btn">▶ Phát tiếp</button>
             </div>
         </div>
     `;
