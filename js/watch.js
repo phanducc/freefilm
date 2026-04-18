@@ -217,8 +217,6 @@ async function fetchDetail() {
         if (movie) {
             document.title = `Đang xem: ${movie.name}`;
             document.getElementById('movieTitle').innerText = movie.name;
-            currentMovieName = movie.name; 
-            currentMovieThumb = detailThumb; 
 
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, '');
             let detailThumb = movie.thumb_url || movie.poster_url || '';
@@ -229,6 +227,9 @@ async function fetchDetail() {
             }
             if (window.innerWidth <= 768 && detailThumb !== '') detailThumb = `https://wsrv.nl/?url=${encodeURIComponent(detailThumb)}&w=300&q=70&output=webp`;
             document.getElementById('movieDetailThumb').src = detailThumb;
+
+            currentMovieName = movie.name; 
+            currentMovieThumb = detailThumb;             
             
             movieTrailerUrl = movie.trailer_url || '';
 

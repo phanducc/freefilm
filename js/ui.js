@@ -95,11 +95,14 @@ export function renderContinueWatching() {
     const history = JSON.parse(localStorage.getItem('ff_history_list') || '[]');
     if (history.length === 0) return;
 
+    const item = history[0]; 
+
     let block = document.getElementById('continueWatchingBlock');
     if (!block) {
         block = document.createElement('div');
         block.id = 'continueWatchingBlock';
         block.style.margin = '20px 0 10px 0';
+        block.style.padding = '0 10px';
         
         const heroSection = document.querySelector('.hero-section');
         if (heroSection) {
@@ -108,19 +111,24 @@ export function renderContinueWatching() {
     }
 
     block.innerHTML = `
-        <div class="section-header" style="padding: 0 10px; margin-bottom: 10px;">
-            <h2 style="font-size: 18px; color: #ff75a0;">⏱️ Đang Xem Dở</h2>
-        </div>
-        <div class="nav-links" style="padding: 0 10px; gap: 10px; overflow-x: auto; display: flex;">
-            ${history.map(item => `
-                <div class="movie-card" style="flex: 0 0 160px; margin: 0; cursor: pointer;" onclick="window.location.href='watch.html?slug=${item.slug}'">
-                    <div class="thumb-wrapper" style="aspect-ratio: 16/9; margin-bottom: 5px; border: 1px solid #ff75a080;">
-                        <img src="${item.thumb}" class="movie-thumb" style="object-fit: cover;">
-                    </div>
-                    <h3 class="movie-title" style="font-size: 11.5px; margin-top: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">${item.name}</h3>
-                    <div style="font-size: 10px; color: #fbcbdf; margin-top: 2px;">Tập: ${item.epName}</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 80px; background: rgba(255, 117, 160, 0.15); border: 1px solid #ff75a080; border-radius: 16px; padding: 10px; cursor: pointer; transition: 0.3s; box-sizing: border-box;" 
+             onclick="window.location.href='watch.html?slug=${item.slug}'"
+             onmouseover="this.style.background='rgba(255, 117, 160, 0.3)'"
+             onmouseout="this.style.background='rgba(255, 117, 160, 0.15)'">
+            
+            <div style="display: flex; align-items: center; gap: 15px; height: 100%; overflow: hidden; flex: 1;">
+                <img src="${item.thumb}" style="height: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; border: 1px solid #fbcbdf50;">
+                <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
+                    <h3 style="font-size: 15px; font-weight: 800; color: #fbcbdf; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</h3>
+                    <span style="font-size: 12px; color: #ff75a0; font-weight: 600; margin-top: 4px;">⏱️ Đang xem dở: ${item.epName}</span>
                 </div>
-            `).join('')}
+            </div>
+
+            <div style="margin-left: 10px; flex-shrink: 0;">
+                <button style="background: #ff75a0; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                    ▶ Phát tiếp
+                </button>
+            </div>
         </div>
     `;
 }
