@@ -121,6 +121,12 @@
     border: 1px solid rgba(253, 203, 223, 0.3);
 }
 
+.cw-banner:hover .cw-thumb {
+    transform: scale(1.05);
+    border-color: #ff75a0;
+    transition: 0.4s;
+}
+
 .cw-text {
     display: flex;
     flex-direction: column;
@@ -138,13 +144,16 @@
     text-overflow: ellipsis;
 }
 
-.cw-title:hover { color: #111; }
-
 .cw-ep {
     font-size: 12px;
     color: #ff75a0;
     font-weight: 600;
     margin-top: 4px;
+}
+
+.cw-banner:hover .cw-title .cw-ep {
+    color: #111;
+    transition: 0.3s;
 }
 
 .cw-btn-wrapper {
