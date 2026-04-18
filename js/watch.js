@@ -93,17 +93,17 @@ player.on('ready', () => {
 });
 
 let lastSaveTime = 0;
-function updateHistoryList() {
+function saveLastWatched() {
     if (!currentMovieName) return;
     
-    const history = [{
+    const lastWatched = {
         slug: slug,
         name: currentMovieName,
         thumb: currentMovieThumb,
-        epName: currentEpList[currentEpIndex]?.name || '',
-    }];
+        epName: currentEpList[currentEpIndex]?.name || ''
+    };
     
-    localStorage.setItem('ff_history_list', JSON.stringify(history));
+    localStorage.setItem('ff_last_watched', JSON.stringify(lastWatched));
 }
 
 function playVideo(index, buttonEl) {
@@ -145,7 +145,7 @@ function playVideo(index, buttonEl) {
         localStorage.setItem(`ff_history_${slug}`, epData.link_embed);
     }
     
-    updateHistoryList();
+    saveLastWatched();
 
     episodeListDiv.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
     if(buttonEl) buttonEl.classList.add('active');

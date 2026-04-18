@@ -92,10 +92,9 @@ export function renderHero(movies, containerId) {
 }
 
 export function renderContinueWatching() {
-    const history = JSON.parse(localStorage.getItem('ff_history_list') || '[]');
-    if (history.length === 0) return;
-
-    const item = history[0]; 
+    const item = JSON.parse(localStorage.getItem('ff_last_watched'));
+    
+    if (!item) return;
 
     let block = document.getElementById('continueWatchingBlock');
     if (!block) {
