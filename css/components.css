@@ -109,7 +109,6 @@
     align-items: center;
     gap: 15px;
     height: 100%;
-    overflow: hidden;
     flex: 1;
 }
 
