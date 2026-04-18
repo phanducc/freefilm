@@ -292,6 +292,7 @@
 @media (max-width: 480px) {
     #continueWatchingBlock {
         margin: 10px 0 5px 0;
+        padding: 0 10px;
     }
 
     .cw-banner {
