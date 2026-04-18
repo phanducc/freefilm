@@ -95,7 +95,7 @@
     height: 80px;
     background: #fbcbdf80;
     border: 1px solid #fbcbdf80;
-    border-radius: 50%;
+    border-radius: 12px;
     padding: 10px;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -151,7 +151,7 @@
     margin-top: 4px;
 }
 
-.cw-banner:hover .cw-title .cw-ep {
+.cw-banner:hover .cw-title{
     color: #111;
     transition: 0.3s;
 }
