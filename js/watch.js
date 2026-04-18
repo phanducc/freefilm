@@ -11,6 +11,8 @@ const serverListDiv = document.getElementById('serverList');
 let currentEpList = [];
 let currentEpIndex = 0;
 let movieTrailerUrl = '';
+let currentMovieName = '';
+let currentMovieThumb = '';
 
 const navPill = document.getElementById('navPill');
 const searchToggleBtn = document.getElementById('searchToggleBtn');
@@ -76,15 +78,7 @@ const player = new Plyr(videoElement, {
         play: 'Phát', pause: 'Tạm dừng'
     }
 });
-player.on('ready', () => {
-    const plyrContainer = document.querySelector('.plyr');
-    if (!document.querySelector('.plyr-logo')) {
-        const logoImg = document.createElement('img');
-        logoImg.src = 'logo.png';
-        logoImg.className = 'plyr-logo';
-        plyrContainer.appendChild(logoImg);
-    }
-});
+
 let hls = null;
 
 player.on('ready', () => {
@@ -95,6 +89,31 @@ player.on('ready', () => {
         logoImg.alt = 'FreeFilm Watermark';
         logoImg.className = 'plyr-logo';
         plyrContainer.appendChild(logoImg);
+    }
+});
+
+let lastSaveTime = 0;
+function updateHistoryList(time) {
+    if (!currentMovieName) return;
+    
+    const history = [{
+        slug: slug,
+        name: currentMovieName,
+        thumb: currentMovieThumb,
+        epName: currentEpList[currentEpIndex]?.name || '',
+        time: time
+    }];
+    
+    localStorage.setItem('ff_history_list', JSON.stringify(history));
+}
+
+player.on('timeupdate', () => {
+    if (player.currentTime > 5) {
+        localStorage.setItem(`ff_time_${slug}`, player.currentTime);
+        if (Math.abs(player.currentTime - lastSaveTime) > 5) {
+            updateHistoryList(player.currentTime);
+            lastSaveTime = player.currentTime;
+        }
     }
 });
 
@@ -137,6 +156,8 @@ function playVideo(index, buttonEl) {
         localStorage.setItem(`ff_history_${slug}`, epData.link_embed);
     }
     
+    updateHistoryList(0);
+
     episodeListDiv.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
     if(buttonEl) buttonEl.classList.add('active');
 
@@ -196,6 +217,8 @@ async function fetchDetail() {
         if (movie) {
             document.title = `Đang xem: ${movie.name}`;
             document.getElementById('movieTitle').innerText = movie.name;
+            currentMovieName = movie.name; 
+            currentMovieThumb = detailThumb; 
 
             let imgDomain = (dataObj.APP_DOMAIN_CDN_IMAGE || 'https://img.ophim.live').replace(/\/$/, '');
             let detailThumb = movie.thumb_url || movie.poster_url || '';

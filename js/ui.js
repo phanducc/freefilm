@@ -91,6 +91,40 @@ export function renderHero(movies, containerId) {
     });
 }
 
+export function renderContinueWatching() {
+    const history = JSON.parse(localStorage.getItem('ff_history_list') || '[]');
+    if (history.length === 0) return;
+
+    let block = document.getElementById('continueWatchingBlock');
+    if (!block) {
+        block = document.createElement('div');
+        block.id = 'continueWatchingBlock';
+        block.style.margin = '20px 0 10px 0';
+        
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            heroSection.parentNode.insertBefore(block, heroSection.nextSibling);
+        }
+    }
+
+    block.innerHTML = `
+        <div class="section-header" style="padding: 0 10px; margin-bottom: 10px;">
+            <h2 style="font-size: 18px; color: #ff75a0;">⏱️ Đang Xem Dở</h2>
+        </div>
+        <div class="nav-links" style="padding: 0 10px; gap: 10px; overflow-x: auto; display: flex;">
+            ${history.map(item => `
+                <div class="movie-card" style="flex: 0 0 160px; margin: 0; cursor: pointer;" onclick="window.location.href='watch.html?slug=${item.slug}'">
+                    <div class="thumb-wrapper" style="aspect-ratio: 16/9; margin-bottom: 5px; border: 1px solid #ff75a080;">
+                        <img src="${item.thumb}" class="movie-thumb" style="object-fit: cover;">
+                    </div>
+                    <h3 class="movie-title" style="font-size: 11.5px; margin-top: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">${item.name}</h3>
+                    <div style="font-size: 10px; color: #fbcbdf; margin-top: 2px;">Tập: ${item.epName}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
 export function renderPagination(currentPage, totalPages, containerId, onPageClick) {
     const pagDiv = document.getElementById(containerId);
     if (!pagDiv) return;
