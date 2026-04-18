@@ -303,18 +303,29 @@
 
     .cw-info-wrapper {
         gap: 10px;
+        min-width: 0;
+    }
+
+    .cw-text {
+        flex: 1;
     }
 
     .cw-title {
         font-size: 13px;
+        max-width: 100%;
     }
 
     .cw-ep {
         font-size: 10px;
     }
 
+    .cw-btn-wrapper {
+        flex-shrink: 0;
+    }
+
     .cw-btn {
         padding: 6px 12px;
         font-size: 10px;
+        white-space: nowrap;
     }
 }
