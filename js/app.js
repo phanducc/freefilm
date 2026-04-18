@@ -1,8 +1,9 @@
 import { GENRES, COUNTRIES, TYPES } from './constants.js';
-import { renderMoviesGrid, renderHero, renderPagination } from './ui.js';
+import { renderMoviesGrid, renderHero, renderPagination, initSmartHeader } from './ui.js';
 import { fetchMoviesFromApi } from './api.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    initSmartHeader();
     const intro = document.getElementById('siteIntro');
     if (intro) {
         if (!sessionStorage.getItem('introPlayed')) {

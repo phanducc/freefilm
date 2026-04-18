@@ -74,6 +74,15 @@ const player = new Plyr(videoElement, {
         play: 'Phát', pause: 'Tạm dừng'
     }
 });
+player.on('ready', () => {
+    const plyrContainer = document.querySelector('.plyr');
+    if (!document.querySelector('.plyr-logo')) {
+        const logoImg = document.createElement('img');
+        logoImg.src = 'logo.png';
+        logoImg.className = 'plyr-logo';
+        plyrContainer.appendChild(logoImg);
+    }
+});
 let hls = null;
 
 player.on('ready', () => {

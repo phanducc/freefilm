@@ -1,3 +1,22 @@
+export function initSmartHeader() {
+    let lastScrollTop = 0;
+    const header = document.querySelector('.glass-header');
+
+    if (!header) return;
+
+    window.addEventListener('scroll', () => {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 80) {
+            header.classList.add('hide');
+        } else {
+            header.classList.remove('hide');
+        }
+        
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+    }, { passive: true });
+}
+
 export function renderMoviesGrid(movies, containerId) {
     const movieGrid = document.getElementById(containerId);
     if (!movieGrid) return;
