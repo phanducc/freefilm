@@ -1,5 +1,7 @@
 import { API_BASE, fetchOptions } from './constants.js';
-import { renderMoviesGrid } from './ui.js';
+import { renderMoviesGrid, initSmartHeader } from './ui.js';
+
+initSmartHeader();
 
 const slug = new URLSearchParams(window.location.search).get('slug');
 const iframePlayer = document.getElementById('iframePlayer');
