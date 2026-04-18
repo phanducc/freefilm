@@ -118,7 +118,7 @@
     aspect-ratio: 16/9;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid rgba(253, 203, 223, 0.3);
+    border: 1px solid #fbcbdf80;
 }
 
 .cw-banner:hover .cw-thumb {
