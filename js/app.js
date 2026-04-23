@@ -7,6 +7,8 @@ window.selectedFilters = { type: null, genre: null, country: null };
 document.addEventListener('DOMContentLoaded', () => {
     initSmartHeader();
     renderContinueWatching();
+    loadWibuSection();
+
     const intro = document.getElementById('siteIntro');
     if (intro) {
         if (!sessionStorage.getItem('introPlayed')) {
@@ -299,6 +301,50 @@ async function displayPage(page) {
         renderMoviesGrid([], 'movieGrid'); 
     }
     isLoading = false;
+}
+
+let wibuItems = [];
+const WIBU_ITEMS_PER_PAGE = 12;
+
+async function loadWibuSection() {
+    const gridId = 'wibuMovieGrid';
+    const container = document.getElementById(gridId);
+    if (!container) return;
+
+    container.innerHTML = '<div class="loader-container"><div class="spinner"></div></div>';
+
+    try {
+        wibuItems = [];
+        for (let i = 1; i <= 5; i++) {
+            const { items } = await fetchMoviesFromApi('category', 'hoat-hinh', i);
+            
+            const filtered = items.filter(m => 
+                m.country && 
+                m.country.some(c => c.slug === 'nhat-ban') && 
+                m.type === 'single'
+            );
+            wibuItems = wibuItems.concat(filtered);
+        }
+
+        if (wibuItems.length > 0) {
+            displayWibuPage(1);
+        } else {
+            container.innerHTML = '<p style="color:#aaa; text-align:center; grid-column:1/-1;">Đang cập nhật phim... 🤭</p>';
+        }
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = '';
+    }
+}
+
+function displayWibuPage(page) {
+    const totalPages = Math.ceil(wibuItems.length / WIBU_ITEMS_PER_PAGE);
+    
+    const startIndex = (page - 1) * WIBU_ITEMS_PER_PAGE;
+    const currentItems = wibuItems.slice(startIndex, startIndex + WIBU_ITEMS_PER_PAGE);
+
+    renderMoviesGrid(currentItems, 'wibuMovieGrid');
+    renderPagination(page, totalPages, 'wibuPagination', displayWibuPage);
 }
 
 initGenres();

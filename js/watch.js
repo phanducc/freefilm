@@ -111,6 +111,7 @@ const videoElement = document.getElementById('myPlayer');
 const player = new Plyr(videoElement, {
     controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'settings', 'pip', 'airplay', 'fullscreen'],
     seekTime: 10,
+    fullscreen: { iosNative: true },
     i18n: { 
         speed: 'Tốc độ', quality: 'Chất lượng', normal: 'Bình thường', rewind: 'Tua lại 10s', fastForward: 'Tua tới 10s',
         settings: 'Cài đặt', pip: 'Hình trong hình', enterFullscreen: 'Toàn màn hình', exitFullscreen: 'Thoát toàn màn hình',

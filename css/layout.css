@@ -101,7 +101,7 @@
     html body .header-container { flex-direction: column; gap: 5px; padding: 0 10px; width: 100%; box-sizing: border-box; align-items: center; }
     html body a.logo { display: flex; justify-content: center; width: 100%; }
     html body a.logo img { height: 45px; width: auto; max-width: 100%; object-fit: contain; }
-    html body main.main-container { display: flex; flex-direction: column; }
+    html body main.main-container { display: flex; flex-direction: column; padding-left: 0; padding-right: 0; }
     html body .nav-pill-container, html body div.nav-pill { width: 100%; max-width: 100%; padding: 4px; box-sizing: border-box; }
     html body div.nav-pill.searching .search-box { width: 100%; }
     html body nav.nav-links { display: flex; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; gap: 5px; }

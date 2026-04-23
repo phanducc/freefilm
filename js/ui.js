@@ -113,7 +113,7 @@ export function renderContinueWatching() {
                 <img src="${item.thumb}" class="cw-thumb" alt="${item.name}">
                 <div class="cw-text">
                     <h3 class="cw-title">${item.name}</h3>
-                    <span class="cw-ep">⏱️ Xem dở nè: ${item.epName}</span>
+                    <span class="cw-ep">⏱️ Xem tiếp... ${item.epName}</span>
                 </div>
             </div>
 
