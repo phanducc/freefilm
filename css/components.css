@@ -281,7 +281,7 @@
 }
 
 .page-btn:hover:not(:disabled) {background: #fbcbdf; color: #111; box-shadow: 0 0 15px #fbcbdf80; }
-.page-btn.active { background: #ff75a0; color: #fbcbdf; border-color: #fbcbdf; pointer-events: none; }
+.page-btn.active { background: #ff75a0; color: #fbcbdf; border-color: #fbcbdf; }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .page-dots { 
