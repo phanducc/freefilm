@@ -317,11 +317,10 @@ async function loadWibuSection() {
         wibuItems = [];
         
         for (let i = 1; i <= 10; i++) {
-            const { items } = await fetchMoviesFromApi('category', 'phim-le', i);
+            const { items } = await fetchMoviesFromApi('category', 'hoat-hinh', i);
             
             const filtered = items.filter(m => 
-                m.country && m.country.some(c => c.slug === 'nhat-ban') && 
-                m.category && m.category.some(c => c.slug === 'hoat-hinh')
+                m.country && m.country.some(c => c.slug === 'nhat-ban')
             );
             wibuItems = wibuItems.concat(filtered);
         }
