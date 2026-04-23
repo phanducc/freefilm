@@ -51,22 +51,61 @@ document.querySelectorAll('.nav-item').forEach(item => {
 const trailerModal = document.getElementById('trailerModal');
 const trailerIframe = document.getElementById('trailerIframe');
 
-document.getElementById('btnTrailer').onclick = () => {
-    if (movieTrailerUrl) {
-        let embedUrl = movieTrailerUrl;
-        if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/');
-        embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
-        trailerIframe.src = embedUrl;
-        trailerModal.classList.add('show');
-    } else {
-        alert('Phim này chưa có Trailer!');
-    }
-};
+const btnTrailer = document.getElementById('btnTrailer');
+const closeTrailerBtn = document.getElementById('closeTrailerBtn');
+const btnPrevEp = document.getElementById('btnPrevEp');
+const btnNextEp = document.getElementById('btnNextEp');
+const btnReload = document.getElementById('btnReload');
 
-document.getElementById('closeTrailerBtn').onclick = () => {
-    trailerModal.classList.remove('show');
-    trailerIframe.src = ''; 
-};
+if (btnTrailer) {
+    btnTrailer.onclick = () => {
+        if (movieTrailerUrl) {
+            let embedUrl = movieTrailerUrl;
+            
+            const ytMatch = embedUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            
+            if (ytMatch && ytMatch[1]) {
+                embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+            } else {
+                if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+            
+            trailerIframe.src = embedUrl;
+            trailerModal.classList.add('show');
+        } else {
+            alert('Phim này chưa có Trailer!');
+        }
+    };
+}
+
+if (closeTrailerBtn) {
+    closeTrailerBtn.onclick = () => {
+        trailerModal.classList.remove('show');
+        trailerIframe.src = '';
+    };
+}
+
+if (btnPrevEp) {
+    btnPrevEp.onclick = () => { 
+        if(currentEpIndex > 0) playVideo(currentEpIndex - 1, episodeListDiv.children[currentEpIndex - 1]);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+}
+
+if (btnNextEp) {
+    btnNextEp.onclick = () => { 
+        if(currentEpIndex < currentEpList.length - 1) playVideo(currentEpIndex + 1, episodeListDiv.children[currentEpIndex + 1]); 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+}
+
+if (btnReload) {
+    btnReload.onclick = () => { 
+        const targetBtn = episodeListDiv.children[currentEpIndex];
+        if (targetBtn) playVideo(currentEpIndex, targetBtn);
+    };
+}
 
 const videoElement = document.getElementById('myPlayer');
 const player = new Plyr(videoElement, {
@@ -153,21 +192,6 @@ function playVideo(index, buttonEl) {
     document.getElementById('btnPrevEp').disabled = (index === 0);
     document.getElementById('btnNextEp').disabled = (index === currentEpList.length - 1);
 }
-
-document.getElementById('btnPrevEp').onclick = () => { 
-    if(currentEpIndex > 0) playVideo(currentEpIndex - 1, episodeListDiv.children[currentEpIndex - 1]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-document.getElementById('btnNextEp').onclick = () => { 
-    if(currentEpIndex < currentEpList.length - 1) playVideo(currentEpIndex + 1, episodeListDiv.children[currentEpIndex + 1]); 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-document.getElementById('btnReload').onclick = () => { 
-    const targetBtn = episodeListDiv.children[currentEpIndex];
-    if (targetBtn) playVideo(currentEpIndex, targetBtn);
-};
 
 async function fetchRelatedMovies(catSlug) {
     try {

@@ -2,6 +2,8 @@ import { GENRES, COUNTRIES, TYPES } from './constants.js';
 import { renderMoviesGrid, renderHero, renderPagination, initSmartHeader, renderContinueWatching } from './ui.js';
 import { fetchMoviesFromApi } from './api.js';
 
+window.selectedFilters = { type: null, genre: null, country: null };
+
 document.addEventListener('DOMContentLoaded', () => {
     initSmartHeader();
     renderContinueWatching();
@@ -217,6 +219,12 @@ async function displayPage(page) {
         let loops = 0;
         while (window.ffCache.items.length < requiredItems && !window.ffCache.isApiExhausted && loops < 5) { 
             loops++;
+            
+            if (window.ffCache.lastApiPage >= window.ffCache.apiTotalPages) {
+                window.ffCache.isApiExhausted = true;
+                break;
+            }
+
             let chunkItems = [];
 
             for (let i = 1; i <= CHUNK_SIZE; i++) {
