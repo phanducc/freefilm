@@ -52,7 +52,7 @@ searchInput.onkeypress = (e) => {
         const query = searchInput.value.trim();
         if (query) {
             document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
-            setMode('search', query, `Kết quả tìm kiếm: "${query}"`);
+            setMode('search', query, `Phim có "${query}" nè 😉`);
             searchInput.blur();
         }
     }
