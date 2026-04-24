@@ -34,6 +34,7 @@ if (searchToggleBtn && closeSearchBtn && navPill && searchInput) {
         if (e.key === 'Enter') {
             const query = searchInput.value.trim();
             if (query) {
+                searchInput.blur();
                 window.location.href = `index.html?search=${encodeURIComponent(query)}`;
             }
         }

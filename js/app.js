@@ -44,6 +44,7 @@ searchToggleBtn.onclick = () => {
 closeSearchBtn.onclick = () => {
     navPill.classList.remove('searching');
     searchInput.value = '';
+    searchInput.blur();
 };
 
 searchInput.onkeypress = (e) => {
@@ -52,6 +53,7 @@ searchInput.onkeypress = (e) => {
         if (query) {
             document.querySelectorAll('.nav-item, .genre-pill').forEach(b => b.classList.remove('active'));
             setMode('search', query, `Kết quả tìm kiếm: "${query}"`);
+            searchInput.blur();
         }
     }
 };
