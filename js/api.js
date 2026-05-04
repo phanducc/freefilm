@@ -4,7 +4,7 @@ export async function fetchMoviesFromApi(mode, query, apiPageToFetch) {
     let apiUrl = '';
     
     if (mode === 'new') {
-        apiUrl = `${API_BASE}/danh-sach/phim-moi-cap-nhat?page=${apiPageToFetch}`;
+        apiUrl = `${API_BASE}/danh-sach/phim-moi?page=${apiPageToFetch}`;
     } else if (mode === 'category') {
         apiUrl = `${API_BASE}/danh-sach/${query}?page=${apiPageToFetch}`;
     } else if (mode === 'genre') {
