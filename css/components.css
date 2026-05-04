@@ -93,7 +93,7 @@
     justify-content: space-between;
     width: 100%;
     height: 80px;
-    background: #000000;
+    background: #fbcbdf80;
     border: 1px solid #fbcbdf80;
     border-radius: 12px;
     padding: 10px;
@@ -102,7 +102,7 @@
     box-sizing: border-box;
 }
 
-.cw-banner:hover {background: #fbcbdfcc; box-shadow: 0 0 15px #fbcbdf80; }
+.cw-banner:hover {background: #fbcbdf; box-shadow: 0 0 15px #fbcbdf80; }
 
 .cw-info-wrapper {
     display: flex;
