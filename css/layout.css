@@ -60,7 +60,7 @@
 
 .thumb-wrapper { 
     overflow: hidden; border-radius: 16px; margin-bottom: 12px; 
-    aspect-ratio: 2/3; border: 2px solid #fbcbdf; transition: 0.4s;
+    aspect-ratio: 2/3; border: 1px solid #fbcbdf; transition: 0.4s;
 }
 
 .movie-thumb { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
