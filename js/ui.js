@@ -136,6 +136,10 @@ export function renderPagination(currentPage, totalPages, containerId, onPageCli
     if (!pagDiv) return;
     
     pagDiv.innerHTML = '';
+
+    currentPage = Number(currentPage);
+    totalPages = Number(totalPages);
+
     if (totalPages <= 1) return;
 
     const prevBtn = document.createElement('button');
@@ -150,7 +154,7 @@ export function renderPagination(currentPage, totalPages, containerId, onPageCli
         for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
         if (currentPage <= 3) {
-            pages = [1, 2, 3, 4, 5, '...'];
+            pages = [1, 2, 3, 4, 5, '...', totalPages];
         } else if (currentPage >= totalPages - 2) {
             pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
         } else {
