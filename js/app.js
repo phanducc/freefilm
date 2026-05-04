@@ -189,48 +189,48 @@ function setMode(mode, query, title, isMultiFilter = false) {
     currentQuery = query;
     if (title && sectionTitle) sectionTitle.innerText = title;
     if (mode === 'new') {
-        displayHomePage(1);
-    } else {
-        displayPage(1);
-    }}
+        displayHomePage(1);
+    } else {
+        displayPage(1);
+    }}
 
 async function displayHomePage(page) {
-    if (isLoading) return;
-    isLoading = true;
+    if (isLoading) return;
+    isLoading = true;
 
-    const movieGridEl = document.getElementById('movieGrid');
-    if (movieGridEl) {
-        movieGridEl.innerHTML = '<div class="loader-container"><div class="spinner"></div><div class="loader-text">Đang tải phim mới... 🍿</div></div>';
-    }
-    document.getElementById('pagination').innerHTML = '';
+    const movieGridEl = document.getElementById('movieGrid');
+    if (movieGridEl) {
+        movieGridEl.innerHTML = '<div class="loader-container"><div class="spinner"></div><div class="loader-text">Đang tải phim mới... 🍿</div></div>';
+    }
+    document.getElementById('pagination').innerHTML = '';
 
-    try {
-        const { items, totalPages } = await fetchMoviesFromApi('new', '', page);
+    try {
+        const { items, totalPages } = await fetchMoviesFromApi('new', '', page);
 
-        if (items.length > 0) {
-            const heroSection = document.querySelector('.hero-section');
-            if (page === 1) {
-                if (!isHeroRendered) {
-                    renderHero(items, 'heroGrid'); 
-                    isHeroRendered = true;
-                }
-                if (heroSection) heroSection.style.display = 'block';
-            } else {
-                if (heroSection) heroSection.style.display = 'none';
-            }
+        if (items.length > 0) {
+            const heroSection = document.querySelector('.hero-section');
+            if (page === 1) {
+                if (!isHeroRendered) {
+                    renderHero(items, 'heroGrid'); 
+                    isHeroRendered = true;
+                }
+                if (heroSection) heroSection.style.display = 'block';
+            } else {
+                if (heroSection) heroSection.style.display = 'none';
+            }
 
-            renderMoviesGrid(items, 'movieGrid');
-            renderPagination(page, totalPages, 'pagination', displayHomePage);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            renderMoviesGrid([], 'movieGrid');
-        }
-    } catch (error) {
-        console.error("Lỗi tải trang chủ:", error);
-        renderMoviesGrid([], 'movieGrid');
-    }
-    
-    isLoading = false;
+            renderMoviesGrid(items, 'movieGrid');
+            renderPagination(page, totalPages, 'pagination', displayHomePage);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            renderMoviesGrid([], 'movieGrid');
+        }
+    } catch (error) {
+        console.error("Lỗi tải trang chủ:", error);
+        renderMoviesGrid([], 'movieGrid');
+    }
+    
+    isLoading = false;
 }
 
 async function displayPage(page) {
