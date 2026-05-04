@@ -78,6 +78,22 @@
 .movie-score { color: #ffcc36 !important; }
 .movie-title { margin-top: 8px; color: #fbcbdf !important; text-shadow: #000 0px 2px 4px; }
 
+.ad-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+}
+
+.ad-scroll-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.ad-scroll-wrapper > div {
+    min-width: 800px !important; 
+    margin: 0 auto;
+}
+
 .genres-section { border-top: 1px solid #fbcbdf80; padding-top: 40px; margin: 40px 0; }
 .genres-scroll { display: grid; grid-template-columns: repeat(11, 1fr); gap: 12px; width: 100%; }
 #countriesScroll {margin-bottom: 15px; }
