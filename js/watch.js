@@ -335,7 +335,12 @@ async function fetchDetail() {
             document.getElementById('serverSection').style.display = 'none';
             document.querySelector('.player-wrapper').style.display = 'none';
         }
-    } catch (error) { console.error(error); }
+    } catch (error) {
+        console.error(error); 
+        document.title = "Lỗi kết nối";
+        document.getElementById('movieTitle').innerText = "Oops! Lỗi tải dữ liệu 🥲";
+        document.getElementById('movieDesc').innerHTML = "Vui lòng kiểm tra lại kết nối mạng hoặc thử lại sau.";
+    }
 }
 
 fetchDetail();

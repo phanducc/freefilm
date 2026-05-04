@@ -92,8 +92,15 @@ export function renderHero(movies, containerId) {
 }
 
 export function renderContinueWatching() {
-    const item = JSON.parse(localStorage.getItem('ff_last_watched'));
-    
+    let item = null;
+    try {
+        const storedData = localStorage.getItem('ff_last_watched');
+        if (storedData) item = JSON.parse(storedData);
+    } catch (error) {
+        console.error("Dữ liệu lịch sử xem bị hỏng:", error);
+        localStorage.removeItem('ff_last_watched');
+    }
+
     if (!item) return;
 
     let block = document.getElementById('continueWatchingBlock');
@@ -145,9 +152,9 @@ export function renderPagination(currentPage, totalPages, containerId, onPageCli
         if (currentPage <= 3) {
             pages = [1, 2, 3, 4, 5, '...'];
         } else if (currentPage >= totalPages - 2) {
-            pages = ['...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+            pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
         } else {
-            pages = ['...', currentPage - 1, currentPage, currentPage + 1, '...'];
+            pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
         }
     }
 
