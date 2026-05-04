@@ -200,108 +200,59 @@ async function displayPage(page) {
     document.getElementById('pagination').innerHTML = '';
 
     try {
-        const ITEMS_PER_PAGE = 24;
-        const CHUNK_SIZE = 6;
+        // Bấm trang nào, gọi thẳng API trang đó
+        const { items, totalPages } = await fetchMoviesFromApi(currentMode, currentQuery, page);
 
-        let filterHash = currentMode + '_' + currentQuery;
-        let isMultiFiltering = false;
+        let finalItems = items;
+
+        // Xử lý bộ lọc (Filter) Client-side nếu người dùng có chọn
+        let isMultiFiltering = window.selectedFilters && (window.selectedFilters.type || window.selectedFilters.country || window.selectedFilters.genre);
         
-        if (window.selectedFilters && (window.selectedFilters.type || window.selectedFilters.country || window.selectedFilters.genre)) {
-            isMultiFiltering = true;
-            if (window.selectedFilters.type) filterHash += '_t_' + window.selectedFilters.type.slug;
-            if (window.selectedFilters.country) filterHash += '_c_' + window.selectedFilters.country.slug;
-            if (window.selectedFilters.genre) filterHash += '_g_' + window.selectedFilters.genre.slug;
-        }
-
-        if (!window.ffCache || window.ffCache.filterHash !== filterHash) {
-            window.ffCache = { filterHash: filterHash, items: [], lastApiPage: 0, isApiExhausted: false, apiTotalPages: 1 };
-        }
-
-        const LOOKAHEAD_PAGES = 6;
-        const requiredItems = (page + LOOKAHEAD_PAGES - 1) * ITEMS_PER_PAGE; 
-        
-        let loops = 0;
-        while (window.ffCache.items.length < requiredItems && !window.ffCache.isApiExhausted && loops < 5) { 
-            loops++;
-            
-            if (window.ffCache.lastApiPage >= window.ffCache.apiTotalPages) {
-                window.ffCache.isApiExhausted = true;
-                break;
+        if (isMultiFiltering && finalItems.length > 0) {
+            if (window.selectedFilters.type && currentMode !== 'category') {
+                const tSlug = window.selectedFilters.type.slug;
+                let apiType = '';
+                if (tSlug === 'phim-le') apiType = 'single';
+                else if (tSlug === 'phim-bo') apiType = 'series';
+                else if (tSlug === 'hoat-hinh') apiType = 'hoathinh';
+                else if (tSlug === 'tv-shows') apiType = 'tvshows';
+                if (apiType) finalItems = finalItems.filter(m => m.type === apiType);
             }
-
-            let chunkItems = [];
-
-            for (let i = 1; i <= CHUNK_SIZE; i++) {
-                let apiPageToFetch = window.ffCache.lastApiPage + 1;
-                
-                const { items, totalPages } = await fetchMoviesFromApi(currentMode, currentQuery, apiPageToFetch);
-
-                if (window.ffCache.lastApiPage === 0) {
-                    window.ffCache.apiTotalPages = totalPages;
-                }
-
-                if (items.length === 0) {
-                    window.ffCache.isApiExhausted = true;
-                    break;
-                }
-
-                let tempFiltered = items;
-
-                if (window.selectedFilters.type && currentMode !== 'category') {
-                    const tSlug = window.selectedFilters.type.slug;
-                    let apiType = '';
-                    if (tSlug === 'phim-le') apiType = 'single';
-                    else if (tSlug === 'phim-bo') apiType = 'series';
-                    else if (tSlug === 'hoat-hinh') apiType = 'hoathinh';
-                    else if (tSlug === 'tv-shows') apiType = 'tvshows';
-                    if (apiType) tempFiltered = tempFiltered.filter(m => m.type === apiType);
-                }
-                if (window.selectedFilters.country && currentMode !== 'country') {
-                    tempFiltered = tempFiltered.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
-                }
-                if (window.selectedFilters.genre && currentMode !== 'genre') {
-                    tempFiltered = tempFiltered.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
-                }
-
-                chunkItems = chunkItems.concat(tempFiltered);
-                window.ffCache.lastApiPage = apiPageToFetch; 
+            if (window.selectedFilters.country && currentMode !== 'country') {
+                finalItems = finalItems.filter(m => m.country && m.country.some(c => c.slug === window.selectedFilters.country.slug));
             }
-            window.ffCache.items = window.ffCache.items.concat(chunkItems);
+            if (window.selectedFilters.genre && currentMode !== 'genre') {
+                finalItems = finalItems.filter(m => m.category && m.category.some(c => c.slug === window.selectedFilters.genre.slug));
+            }
         }
 
-        const startIndex = (page - 1) * ITEMS_PER_PAGE;
-        const finalItems = window.ffCache.items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-        let displayTotalPages = 1;
-        if (!isMultiFiltering) {
-            displayTotalPages = window.ffCache.apiTotalPages;
-        } else {
-            displayTotalPages = Math.ceil(window.ffCache.items.length / ITEMS_PER_PAGE);
-        }
-        if(displayTotalPages < 1) displayTotalPages = 1;
-
+        // Render giao diện
         if (finalItems.length > 0) {
-            if (currentMode === 'new' && page === 1 && !isHeroRendered) {
-                renderHero(finalItems, 'heroGrid'); 
-                isHeroRendered = true;
-            } else if (currentMode !== 'new') {
-                document.querySelector('.hero-section').style.display = 'none';
+            // Xử lý phần Banner Hero (chỉ hiện ở trang chủ, trang 1)
+            const heroSection = document.querySelector('.hero-section');
+            if (currentMode === 'new' && page === 1) {
+                if (!isHeroRendered) {
+                    renderHero(finalItems, 'heroGrid'); 
+                    isHeroRendered = true;
+                }
+                if (heroSection) heroSection.style.display = 'block';
             } else {
-                document.querySelector('.hero-section').style.display = 'block';
+                if (heroSection) heroSection.style.display = 'none';
             }
 
             renderMoviesGrid(finalItems, 'movieGrid'); 
-            renderPagination(page, displayTotalPages, 'pagination', displayPage); 
+            renderPagination(page, totalPages, 'pagination', displayPage); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             renderMoviesGrid([], 'movieGrid');
-            renderPagination(page, displayTotalPages, 'pagination', displayPage); 
+            renderPagination(page, totalPages, 'pagination', displayPage); 
         }
 
     } catch (error) { 
-        console.error(error); 
+        console.error("Lỗi tải trang:", error); 
         renderMoviesGrid([], 'movieGrid'); 
     }
+    
     isLoading = false;
 }
 
