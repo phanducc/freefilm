@@ -102,7 +102,7 @@
     box-sizing: border-box;
 }
 
-.cw-banner:hover {background: #fbcbdfee; box-shadow: 0 0 15px #fbcbdf80; }
+.cw-banner:hover {background: #fbcbdfcc; box-shadow: 0 0 15px #fbcbdf80; }
 
 .cw-info-wrapper {
     display: flex;

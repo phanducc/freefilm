@@ -78,20 +78,16 @@
 .movie-score { color: #ffcc36 !important; }
 .movie-title { margin-top: 8px; color: #fbcbdf !important; text-shadow: #000 0px 2px 4px; }
 
-.ad-scroll-wrapper {
+.ads-responsive-container {
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px;
+    text-align: center;
+    margin: 20px 0;
 }
-
-.ad-scroll-wrapper::-webkit-scrollbar {
+.ads-pc {
+    display: block;
+}
+.ads-mobile {
     display: none;
-}
-
-.ad-scroll-wrapper > div {
-    min-width: 800px !important; 
-    margin: 0 auto;
 }
 
 .genres-section { border-top: 1px solid #fbcbdf80; padding-top: 40px; margin: 40px 0; }
@@ -137,4 +133,6 @@
     html body section.genres-section { border-top: 1px solid #fbcbdf80; margin-top: 20px; margin-bottom: 20px; padding-top: 20px; }
     html body footer.main-footer { padding: 20px 0; margin-top: 30px; }
     html body footer.main-footer .footer-content p { font-size: 12px; }
+    .ads-pc {display: none;}
+    .ads-mobile {display: block;}
 }
