@@ -209,14 +209,17 @@ async function displayHomePage(page) {
 
         if (items.length > 0) {
             const heroSection = document.querySelector('.hero-section');
+            const cwBlock = document.getElementById('continueWatchingBlock');
             if (page === 1) {
                 if (!isHeroRendered) {
                     renderHero(items, 'heroGrid'); 
                     isHeroRendered = true;
                 }
                 if (heroSection) heroSection.style.display = 'block';
+                if (cwBlock) cwBlock.style.display = 'block';
             } else {
                 if (heroSection) heroSection.style.display = 'none';
+                if (cwBlock) cwBlock.style.display = 'none';
             }
 
             renderMoviesGrid(items, 'movieGrid');
@@ -240,6 +243,11 @@ async function displayPage(page) {
     const movieGridEl = document.getElementById('movieGrid');
     movieGridEl.innerHTML = '<div class="loader-container"><div class="spinner"></div><div class="loader-text">Hơi lâu, chờ xíu nha 🤭</div></div>';    
     document.getElementById('pagination').innerHTML = '';
+
+    const heroSection = document.querySelector('.hero-section');
+    const cwBlock = document.getElementById('continueWatchingBlock');
+    if (heroSection) heroSection.style.display = 'none';
+    if (cwBlock) cwBlock.style.display = 'none';
 
     try {
         const ITEMS_PER_PAGE = 24;
@@ -323,15 +331,6 @@ async function displayPage(page) {
         if(displayTotalPages < 1) displayTotalPages = 1;
 
         if (finalItems.length > 0) {
-            if (currentMode === 'new' && page === 1 && !isHeroRendered) {
-                renderHero(finalItems, 'heroGrid'); 
-                isHeroRendered = true;
-            } else if (currentMode !== 'new') {
-                document.querySelector('.hero-section').style.display = 'none';
-            } else {
-                document.querySelector('.hero-section').style.display = 'block';
-            }
-
             renderMoviesGrid(finalItems, 'movieGrid'); 
             renderPagination(page, displayTotalPages, 'pagination', displayPage); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -344,6 +343,7 @@ async function displayPage(page) {
         console.error(error); 
         renderMoviesGrid([], 'movieGrid'); 
     }
+    
     isLoading = false;
 }
 
